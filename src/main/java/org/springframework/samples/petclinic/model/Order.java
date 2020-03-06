@@ -1,0 +1,60 @@
+package org.springframework.samples.petclinic.model;
+
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper=false)
+@Entity
+@Table(name = "orders")
+public class Order extends BaseEntity{
+
+	@Column(name = "supplier")
+	@NotBlank
+	private String supplier;
+	
+	@Column(name = "product_number")
+	@NotEmpty
+	private int productNumber;
+	
+	@Column(name = "order_date")        
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate orderDate;
+	
+	@NotNull
+	@Column(name = "order_status")
+	private OrderStatus orderStatus;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "shop_id")
+	@NotNull
+	private Shop shop;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "product_id")
+	@NotNull
+	private Product product;
+	
+	public Order() {
+		this.orderDate = LocalDate.now();
+		this.orderStatus = OrderStatus.INPROCESS;
+	}
+	
+	public void orderReceived() {
+		this.setOrderStatus(OrderStatus.RECEIVED);
+	}
+}
