@@ -27,4 +27,6 @@ public class Product extends NamedEntity {
 	@OneToOne(optional = true)
 	@JoinColumn(name = "discount_id")
 	private Discount discount;
+	
+	
 }
