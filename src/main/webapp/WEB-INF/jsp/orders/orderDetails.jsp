@@ -10,6 +10,10 @@
 
 
     <table class="table table-striped">
+   		<tr>
+            <th>Name</th>
+            <td><c:out value="${order.name}"/></td>
+        </tr>
         <tr>
             <th>Supplier</th>
             <td><c:out value="${order.supplier}"/></td>

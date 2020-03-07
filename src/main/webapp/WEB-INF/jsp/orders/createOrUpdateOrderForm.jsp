@@ -12,14 +12,11 @@
     </h2>
     <form:form modelAttribute="order" class="form-horizontal" id="add-order-form">
         <div class="form-group has-feedback">
+       		<petclinic:inputField label="Name" name="name"/>
             <petclinic:inputField label="Supplier" name="supplier"/>
             <petclinic:inputField label="Number of products" name="productNumber"/>
-             <div class="control-group">
             <petclinic:selectField label="Product" name="product" size="${productsSize}" names="${products}"/>
-            </div>
-             <div class="control-group">
             <petclinic:selectField label="Shop" name="shop" size="${shopsSize}" names="${shops}"/>
-            </div>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
