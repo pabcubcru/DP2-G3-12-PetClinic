@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Order;
+import org.springframework.samples.petclinic.model.OrderStatus;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
@@ -63,9 +64,13 @@ public class OrderController {
 	@GetMapping(value = "/orders/{orderId}/received")
 	public String processOrderReceived(@PathVariable("orderId") int orderId) {
 			Order order = this.orderService.findOrderById(orderId);
-			order.orderReceived();
-			this.orderService.saveOrder(order);
-			return "redirect:/orders/" + order.getId();
+			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
+				order.orderReceived();
+				this.orderService.saveOrder(order);
+				return "redirect:/orders/" + order.getId();
+			} else {
+				return "/exception";
+			}
 	}
 
 	@GetMapping(value = "/orders")
