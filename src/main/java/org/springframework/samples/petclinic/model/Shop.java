@@ -1,12 +1,12 @@
 package org.springframework.samples.petclinic.model;
 
 import java.util.HashSet;
+
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -14,17 +14,13 @@ import javax.persistence.Table;
 @Table(name = "shops")
 public class Shop extends NamedEntity {
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "shop_products", joinColumns = @JoinColumn(name = "shop_id"),
-	inverseJoinColumns = @JoinColumn(name = "product_id"))
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", fetch = FetchType.EAGER)
 	private Set<Product> products;
 	
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "shop_orders", joinColumns = @JoinColumn(name = "shop_id"),
-	inverseJoinColumns = @JoinColumn(name = "order_id"))
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", fetch = FetchType.EAGER)
 	private Set<Order> orders;
 	
-	protected Set<Product> getProductsInternal() {
+	public Set<Product> getProductsInternal() {
 		if (this.products == null) {
 			this.products = new HashSet<>();
 		}
@@ -43,7 +39,7 @@ public class Shop extends NamedEntity {
 		getProductsInternal().add(product);
 	}
 	
-	protected Set<Order> getOrdersInternal() {
+	public Set<Order> getOrdersInternal() {
 		if (this.orders == null) {
 			this.orders = new HashSet<>();
 		}

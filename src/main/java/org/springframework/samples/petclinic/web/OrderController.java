@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Order;
 import org.springframework.samples.petclinic.model.OrderStatus;
+import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/shops/1")
 public class OrderController {
 
 	private final OrderService orderService;
@@ -56,8 +59,11 @@ public class OrderController {
 			return "orders/createOrUpdateOrderForm";
 		}
 		else {
+			Shop shop = this.shopService.findShops().iterator().next();
+			order.setShop(shop);
 			this.orderService.saveOrder(order);
-			return "redirect:/orders/" + order.getId();
+			shop.addOrder(order);
+			return "redirect:/shops/1/orders/" + order.getId();
 		}
 	}
 	
@@ -67,18 +73,12 @@ public class OrderController {
 			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
 				order.orderReceived();
 				this.orderService.saveOrder(order);
-				return "redirect:/orders/" + order.getId();
+				return "redirect:/shops/1/orders/" + order.getId();
 			} else {
 				return "/exception";
 			}
 	}
 
-	@GetMapping(value = "/orders")
-	public String showOrders(Map<String, Object> model) {
-		model.put("orders", this.orderService.findOrders());
-		return "orders/orderList";
-	}
-	
 	@GetMapping("/orders/{orderId}")
 	public ModelAndView showOrder(@PathVariable("orderId") int orderId) {
 		ModelAndView mav = new ModelAndView("orders/orderDetails");

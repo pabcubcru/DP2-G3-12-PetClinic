@@ -41,7 +41,6 @@ public class Order extends NamedEntity{
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "shop_id")
-	@NotNull
 	private Shop shop;
 	
 	@ManyToOne(optional = false)
