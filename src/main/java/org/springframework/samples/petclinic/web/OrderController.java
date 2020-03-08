@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/shops/1")
+@RequestMapping("/shops/{shopId}")
 public class OrderController {
 
 	private final OrderService orderService;
@@ -54,7 +54,7 @@ public class OrderController {
 	}
 
 	@PostMapping(value = "/orders/new")
-	public String processNewOrderForm(@Valid Order order, BindingResult result) {
+	public String processNewOrderForm(@Valid Order order, BindingResult result, @PathVariable("shopId") int shopId) {
 		if (result.hasErrors()) {
 			return "orders/createOrUpdateOrderForm";
 		}
@@ -63,17 +63,17 @@ public class OrderController {
 			order.setShop(shop);
 			this.orderService.saveOrder(order);
 			shop.addOrder(order);
-			return "redirect:/shops/1/orders/" + order.getId();
+			return "redirect:/shops/" + shopId + "/orders/" + order.getId();
 		}
 	}
 	
 	@GetMapping(value = "/orders/{orderId}/received")
-	public String processOrderReceived(@PathVariable("orderId") int orderId) {
+	public String processOrderReceived(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
 			Order order = this.orderService.findOrderById(orderId);
 			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
 				order.orderReceived();
 				this.orderService.saveOrder(order);
-				return "redirect:/shops/1/orders/" + order.getId();
+				return "redirect:/shops/" + shopId + "/orders/" + order.getId();
 			} else {
 				return "/exception";
 			}

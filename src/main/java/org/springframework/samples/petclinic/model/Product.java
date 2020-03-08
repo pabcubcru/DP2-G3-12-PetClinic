@@ -35,4 +35,12 @@ public class Product extends NamedEntity {
 	@ManyToOne
 	@JoinColumn(name = "shop_id")
 	private Shop shop;
+	
+	public double getStockWithDiscount() {
+		double res = this.getPrice();
+		if(this.discount != null) {
+			res -= (this.price*this.discount.getPercentage())/100;
+		}
+		return res;
+	}
 }

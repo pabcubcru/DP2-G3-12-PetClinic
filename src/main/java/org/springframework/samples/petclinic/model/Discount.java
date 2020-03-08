@@ -2,10 +2,12 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,15 +20,17 @@ import lombok.EqualsAndHashCode;
 @Table(name = "discounts")
 public class Discount extends NamedEntity{
 
-	@NotEmpty
+	@NotNull
 	@Column(name = "percentage")
 	private Double percentage;
 	
-	@Column(name = "start_date")        
+	@Column(name = "start_date")     
+	@FutureOrPresent
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate startDate;
 	
-	@Column(name = "finish_date")        
+	@Column(name = "finish_date")    
+	@FutureOrPresent
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate finishDate;
 	
