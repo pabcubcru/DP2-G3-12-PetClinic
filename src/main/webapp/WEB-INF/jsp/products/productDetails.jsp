@@ -16,16 +16,19 @@
             <td><c:out value="${product.name}"/></td>
         </tr>
         <tr>
-            <th>Price</th>
+            <th>Price <c:if test="${product.discount != null}">With Discount</c:if></th>
             <td><c:out value="${product.price}"/></td>
         </tr>
         <tr>
             <th>Stock</th>
             <td><c:out value="${product.stock}"/></td>
         </tr>
-        <c:if test="${product.discount != null}">
+        </table>
+         <c:if test="${product.discount != null}">
+         <h2>Discount Information</h2>
+        <table class="table table-striped">
         <tr>
-            <th>Discount: Percentage</th>
+            <th>Percentage</th>
             <td><c:out value="${product.discount.percentage}"/></td>
         </tr>
         <tr>
@@ -36,8 +39,8 @@
             <th>Finish Date</th>
             <td><c:out value="${product.discount.finishDate}"/></td>
         </tr>
-        </c:if>
     </table>
+   	 </c:if>
     <sec:authorize access="hasAuthority('admin')">
     <c:if test="${product.discount == null}"> <a href="/shops/1/products/${product.id}/discounts/new" class="btn btn-default" >Create Discount</a></c:if>
     <c:if test="${product.discount != null}"> <a href="/shops/1/products/${product.id}/discounts/${product.discount.id}" class="btn btn-default" >Update Discount</a></c:if>
