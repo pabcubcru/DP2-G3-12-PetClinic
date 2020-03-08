@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.repository.springdatajpa.ShopRepository;
@@ -20,5 +21,10 @@ public class ShopService {
 	@Transactional(readOnly = true)	
 	public Iterable<Shop> findShops() throws DataAccessException {
 		return shopRepository.findAll();
+	}
+	
+	@Transactional
+	public void saveShop(Shop shop) throws DataAccessException {
+		this.shopRepository.save(shop);
 	}
 }

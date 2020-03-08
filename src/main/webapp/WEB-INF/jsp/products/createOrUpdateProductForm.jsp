@@ -6,21 +6,19 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="shops">
+<petclinic:layout pageName="orders">
     <h2>
-       New Order
+        <c:if test="${product['new']}">New </c:if> Product
     </h2>
-    <form:form modelAttribute="order" class="form-horizontal" id="add-order-form">
+    <form:form modelAttribute="product" class="form-horizontal" id="add-product-form">
         <div class="form-group has-feedback">
        		<petclinic:inputField label="Name" name="name"/>
-            <petclinic:inputField label="Supplier" name="supplier"/>
-            <petclinic:inputField label="Number of products" name="productNumber"/>
-            <petclinic:selectField label="Product" name="product" size="${productsSize}" names="${products}"/>
-            <petclinic:selectField label="Shop" name="shop" size="${shopsSize}" names="${shops}"/>
+            <petclinic:inputField label="Price" name="price"/>
+            <petclinic:inputField label="Stock" name="stock"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-               <button class="btn btn-default" type="submit">Add Order</button>
+               <button class="btn btn-default" type="submit">Add Product</button>
             </div>
         </div>
     </form:form>

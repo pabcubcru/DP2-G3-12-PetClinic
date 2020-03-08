@@ -1,27 +1,30 @@
 package org.springframework.samples.petclinic.model;
 
+
+
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper=false)
 @Table(name = "products")
 public class Product extends NamedEntity {
 
-	@NotEmpty
+	@NotNull
 	@Column(name = "price")
 	private Double price;
 	
-	@NotEmpty
+	@NotNull
 	@Column(name = "stock")
 	private int stock;
 	
@@ -29,5 +32,7 @@ public class Product extends NamedEntity {
 	@JoinColumn(name = "discount_id")
 	private Discount discount;
 	
-	
+	@ManyToOne
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 }
