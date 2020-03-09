@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
@@ -24,30 +25,30 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService productService;
-	private ShopService shopService;
+	private ProductService	productService;
+	private ShopService		shopService;
+
 
 	@Autowired
-	public ProductController(ProductService productService, ShopService shopService) {
+	public ProductController(final ProductService productService, final ShopService shopService) {
 		this.productService = productService;
 		this.shopService = shopService;
 	}
 
 	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
+	public void setAllowedFields(final WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
 
 	@GetMapping(value = "/products/new")
-	public String initNewProductForm(Map<String, Object> model) {
+	public String initNewProductForm(final Map<String, Object> model) {
 		Product product = new Product();
 		model.put("product", product);
 		return "products/createOrUpdateProductForm";
 	}
 
 	@PostMapping(value = "/products/new")
-	public String processNewProductForm(@Valid Product product, BindingResult result,
-			@PathVariable("shopId") int shopId) {
+	public String processNewProductForm(@Valid final Product product, final BindingResult result, @PathVariable("shopId") final int shopId) {
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
@@ -60,15 +61,14 @@ public class ProductController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ModelAndView showOrder(@PathVariable("productId") int productId) {
+	public ModelAndView showOrder(@PathVariable("productId") final int productId) {
 		ModelAndView mav = new ModelAndView("products/productDetails");
 		Product product = this.productService.findProductById(productId);
 		if (product.getDiscount() != null) {
-			if ((product.getDiscount().getFinishDate().isAfter(LocalDate.now())
-					&& product.getDiscount().getStartDate().isBefore(LocalDate.now()))
-					|| product.getDiscount().getStartDate().isEqual(LocalDate.now())
-					|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
-				product.setPrice(product.getStockWithDiscount());
+			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now()) && product.getDiscount().getStartDate().isBefore(LocalDate.now()) || product.getDiscount().getStartDate().isEqual(LocalDate.now())
+				|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
+				mav.addObject("activeDiscount", true);
+				product.setPrice(product.getPriceWithDiscount());
 			}
 		}
 		mav.addObject(product);
