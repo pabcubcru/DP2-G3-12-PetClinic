@@ -42,7 +42,9 @@
     </table>
    	 </c:if>
     <sec:authorize access="hasAuthority('admin')">
-    <c:if test="${product.discount == null}"> <a href="/shops/1/products/${product.id}/discounts/new" class="btn btn-default" >Create Discount</a></c:if>
-    <c:if test="${product.discount != null}"> <a href="/shops/1/products/${product.id}/discounts/${product.discount.id}" class="btn btn-default" >Update Discount</a></c:if>
+    <c:if test="${product.discount == null}"> <a href="/shops/${product.shop.id}/products/${product.id}/discounts/new" class="btn btn-default" >Create Discount</a></c:if>
+    <c:if test="${product.discount != null}"> <a href="/shops/${product.shop.id}/products/${product.id}/discounts/${product.discount.id}" class="btn btn-default" >Update Discount</a></c:if>
+    <c:if test="${canDeleteIt}"> <a href="/shops/${product.shop.id}/products/${product.id}/delete" class="btn btn-default" >Delete Product</a></c:if>
+    <c:if test="${!canDeleteIt}">    		This product can not be deleted because has at least one order</c:if>
     </sec:authorize>
 </petclinic:layout>
