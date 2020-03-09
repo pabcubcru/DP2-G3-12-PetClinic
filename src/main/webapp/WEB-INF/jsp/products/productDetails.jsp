@@ -16,7 +16,7 @@
             <td><c:out value="${product.name}"/></td>
         </tr>
         <tr>
-            <th>Price <c:if test="${product.discount != null}">With Discount</c:if></th>
+            <th>Price <c:if test="${activeDiscount}">With Discount</c:if></th>
             <td><c:out value="${product.price}"/></td>
         </tr>
         <tr>
