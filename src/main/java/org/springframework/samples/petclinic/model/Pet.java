@@ -61,6 +61,9 @@ public class Pet extends NamedEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Visit> visits;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	private Set<Hospitalisation> hospitalisations;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Stay> stays;
@@ -109,6 +112,28 @@ public class Pet extends NamedEntity {
 	public void addVisit(Visit visit) {
 		getVisitsInternal().add(visit);
 		visit.setPet(this);
+	}
+	
+	protected Set<Hospitalisation> getHospitalisationsInternal() {
+		if (this.hospitalisations == null) {
+			this.hospitalisations = new HashSet<>();
+		}
+		return this.hospitalisations;
+	}
+
+	protected void setHospitalisationsInternal(Set<Hospitalisation> hospitalisations) {
+		this.hospitalisations = hospitalisations;
+	}
+
+	public List<Hospitalisation> getHospitalisations() {
+		List<Hospitalisation> sortedHospitalisations = new ArrayList<>(getHospitalisationsInternal());
+		PropertyComparator.sort(sortedHospitalisations, new MutableSortDefinition("date", false, false));
+		return Collections.unmodifiableList(sortedHospitalisations);
+	}
+
+	public void addHospitalisation(Hospitalisation hospitalisation) {
+		getHospitalisationsInternal().add(hospitalisation);
+		hospitalisation.setPet(this);
 	}
 
 	protected Set<Stay> getStaysInternal() {

@@ -89,3 +89,16 @@ ALTER TABLE authorities ADD CONSTRAINT fk_authorities_users FOREIGN KEY (usernam
 
 CREATE UNIQUE INDEX ix_auth_username ON authorities (username,authority);
 
+
+CREATE TABLE hospitalisations (
+  id          INTEGER IDENTITY PRIMARY KEY,
+  pet_id      INTEGER NOT NULL,
+--   vet_id	  INTEGER NOT NULL,
+  start_date  DATE,
+  finish_date DATE,
+  treatment VARCHAR(255),
+  diagnosis VARCHAR(255),
+  hospitalisation_status VARCHAR(12)
+);
+ALTER TABLE hospitalisations ADD CONSTRAINT fk_hospitalisations_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
+CREATE INDEX hospitalisations_pet_id ON hospitalisations (pet_id);

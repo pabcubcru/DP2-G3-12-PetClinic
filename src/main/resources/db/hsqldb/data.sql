@@ -70,3 +70,6 @@ INSERT INTO products(id,name,price,stock,shop_id) VALUES (2, 'product2', 25, 10,
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, '2020-03-01', 0, 1, 1);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-02-18', 0, 1, 2);
 
+INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (1, 'hospitalisation1', '2020-01-30', '2020-02-12', 1, 0, 'Administration of antibiotics', 'Distemper', 250.0);
+INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (2, 'hospitalisation2', '2020-01-18', '2020-01-30', 2, 0, 'Vaccination ', 'Rabies', 200.0);
+INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (3, 'hospitalisation3', '2020-02-16', '2020-02-24', 3, 0, 'Administration of antibiotics', 'Brucellosis', 300.0);

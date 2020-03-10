@@ -19,10 +19,12 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.repository.HospitalisationRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
 import org.springframework.samples.petclinic.repository.StayRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
@@ -45,6 +47,7 @@ public class PetService {
 	private VisitRepository visitRepository;
 	
 	private StayRepository stayRepository;
+	private HospitalisationRepository hospitalisationRepository;
 	
 
 	@Autowired
@@ -68,6 +71,10 @@ public class PetService {
 	@Transactional
 	public void saveStay(Stay stay) throws DataAccessException {
 		stayRepository.save(stay);
+    
+  @Transactional  
+	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
+		hospitalisationRepository.save(hospitalisation);
 	}
 
 	@Transactional(readOnly = true)
@@ -91,6 +98,9 @@ public class PetService {
 	
 	public Collection<Stay> findStaysByPetId(int petId) {
 		return stayRepository.findByPetId(petId);
+    
+	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) {
+		return hospitalisationRepository.findByPetId(petId);
 	}
 
 }
