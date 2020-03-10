@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,8 +35,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Simple business object representing a pet.
@@ -48,7 +47,7 @@ import javax.persistence.TemporalType;
 @Table(name = "pets")
 public class Pet extends NamedEntity {
 
-	@Column(name = "birth_date")        
+	@Column(name = "birth_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate birthDate;
 
@@ -65,6 +64,9 @@ public class Pet extends NamedEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Hospitalisation> hospitalisations;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	private Set<Stay> stays;
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
@@ -132,6 +134,28 @@ public class Pet extends NamedEntity {
 	public void addHospitalisation(Hospitalisation hospitalisation) {
 		getHospitalisationsInternal().add(hospitalisation);
 		hospitalisation.setPet(this);
+	}
+
+	protected Set<Stay> getStaysInternal() {
+		if (this.stays == null) {
+			this.stays = new HashSet<>();
+		}
+		return this.stays;
+	}
+
+	protected void setStaysInternal(Set<Stay> stays) {
+		this.stays = stays;
+	}
+
+	public List<Stay> getStays() {
+		List<Stay> sortedStays = new ArrayList<>(getStaysInternal());
+		PropertyComparator.sort(sortedStays, new MutableSortDefinition("date", false, false));
+		return Collections.unmodifiableList(sortedStays);
+	}
+
+	public void addStay(Stay stay) {
+		getStaysInternal().add(stay);
+		stay.setPet(this);
 	}
 
 }

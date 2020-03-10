@@ -64,6 +64,17 @@ CREATE TABLE visits (
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
 
+CREATE TABLE stays (
+  id          INTEGER IDENTITY PRIMARY KEY,
+  pet_id      INTEGER NOT NULL,
+  start_date  DATE,
+  finish_date  DATE,
+  price 	DOUBLE,
+  special_cares VARCHAR(80)
+);
+ALTER TABLE stays ADD CONSTRAINT fk_stays_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
+CREATE INDEX stays_pet_id ON stays (pet_id);
+
 CREATE TABLE users(
 	username varchar_ignorecase(255) NOT NULL PRIMARY KEY,
 	password varchar_ignorecase(255) NOT NULL,

@@ -54,6 +54,17 @@ CREATE TABLE IF NOT EXISTS visits (
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 ) engine=InnoDB;
 
+CREATE TABLE IF NOT EXISTS stays (
+  id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  pet_id INT(4) UNSIGNED NOT NULL,
+  start_date  DATE,
+  finish_date  DATE,
+  price 	DOUBLE,
+  special_cares VARCHAR(80),
+  
+    FOREIGN KEY (pet_id) REFERENCES pets(id)
+) engine=InnoDB;
+  
 CREATE TABLE IF NOT EXISTS hospitalisations (
   id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   pet_id INT(4) UNSIGNED NOT NULL,
@@ -63,5 +74,6 @@ CREATE TABLE IF NOT EXISTS hospitalisations (
   treatment VARCHAR(255),
   diagnosis VARCHAR(255),
   hospitalisation_status VARCHAR(12),
+  
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 ) engine=InnoDB;
