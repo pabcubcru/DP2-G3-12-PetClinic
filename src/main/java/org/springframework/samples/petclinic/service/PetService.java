@@ -19,9 +19,11 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.repository.HospitalisationRepository;
 import org.springframework.samples.petclinic.repository.PetRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
@@ -42,6 +44,8 @@ public class PetService {
 	
 	private VisitRepository visitRepository;
 	
+	private HospitalisationRepository hospitalisationRepository;
+	
 
 	@Autowired
 	public PetService(PetRepository petRepository,
@@ -58,6 +62,11 @@ public class PetService {
 	@Transactional
 	public void saveVisit(Visit visit) throws DataAccessException {
 		visitRepository.save(visit);
+	}
+	
+	@Transactional
+	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
+		hospitalisationRepository.save(hospitalisation);
 	}
 
 	@Transactional(readOnly = true)
@@ -77,6 +86,10 @@ public class PetService {
 
 	public Collection<Visit> findVisitsByPetId(int petId) {
 		return visitRepository.findByPetId(petId);
+	}
+	
+	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) {
+		return hospitalisationRepository.findByPetId(petId);
 	}
 
 }
