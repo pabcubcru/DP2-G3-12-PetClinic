@@ -12,6 +12,7 @@ import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService	productService;
-	private ShopService		shopService;
+	private ProductService		productService;
+	private ShopService			shopService;
+
+	private static final String	VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM	= "products/createOrUpdateProductForm";
 
 
 	@Autowired
@@ -73,5 +76,23 @@ public class ProductController {
 		}
 		mav.addObject(product);
 		return mav;
+	}
+
+	@GetMapping(value = "/products/{productId}/edit")
+	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Model model) {
+		Product product = this.productService.findProductById(productId);
+		model.addAttribute(product);
+		return ProductController.VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM;
+	}
+
+	@PostMapping(value = "/products/{productId}/edit")
+	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+		if (result.hasErrors()) {
+			return ProductController.VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM;
+		} else {
+			product.setId(productId);
+			this.productService.saveProduct(product);
+			return "redirect:/shops/" + shopId + "/products/" + productId;
+		}
 	}
 }
