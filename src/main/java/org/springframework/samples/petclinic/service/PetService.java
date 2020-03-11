@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.model.Visit;
@@ -63,6 +64,11 @@ public class PetService {
 		return petRepository.findPetTypes();
 	}
 	
+	@Transactional(readOnly = true)
+	public Collection<PetStatus> findPetStatus() throws DataAccessException {
+		return petRepository.findPetStatus();
+	}
+	
 	@Transactional
 	public void saveVisit(Visit visit) throws DataAccessException {
 		visitRepository.save(visit);
@@ -71,6 +77,7 @@ public class PetService {
 	@Transactional
 	public void saveStay(Stay stay) throws DataAccessException {
 		stayRepository.save(stay);
+	}
     
   @Transactional  
 	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
@@ -98,6 +105,8 @@ public class PetService {
 	
 	public Collection<Stay> findStaysByPetId(int petId) {
 		return stayRepository.findByPetId(petId);
+		
+	}
     
 	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) {
 		return hospitalisationRepository.findByPetId(petId);

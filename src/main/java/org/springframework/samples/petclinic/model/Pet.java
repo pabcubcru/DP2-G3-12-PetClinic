@@ -56,12 +56,16 @@ public class Pet extends NamedEntity {
 	private PetType type;
 
 	@ManyToOne
+	@JoinColumn(name = "pet_status")
+	private PetStatus petStatus;
+
+	@ManyToOne
 	@JoinColumn(name = "owner_id")
 	private Owner owner;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Visit> visits;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Hospitalisation> hospitalisations;
 
@@ -92,6 +96,14 @@ public class Pet extends NamedEntity {
 		this.owner = owner;
 	}
 
+	public PetStatus getPetStatus() {
+		return petStatus;
+	}
+
+	public void setPetStatus(PetStatus petStatus) {
+		this.petStatus = petStatus;
+	}
+
 	protected Set<Visit> getVisitsInternal() {
 		if (this.visits == null) {
 			this.visits = new HashSet<>();
@@ -113,7 +125,7 @@ public class Pet extends NamedEntity {
 		getVisitsInternal().add(visit);
 		visit.setPet(this);
 	}
-	
+
 	protected Set<Hospitalisation> getHospitalisationsInternal() {
 		if (this.hospitalisations == null) {
 			this.hospitalisations = new HashSet<>();
