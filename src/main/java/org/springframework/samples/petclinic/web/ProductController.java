@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
+import org.springframework.samples.petclinic.service.DiscountService;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
@@ -29,13 +30,15 @@ public class ProductController {
 	private ProductService	productService;
 	private ShopService		shopService;
 	private OrderService 	orderService;
+	private DiscountService discountService;
 
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService) {
+	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
 		this.orderService = orderService;
+		this.discountService = discountService;
 	}
 
 	@InitBinder
@@ -69,6 +72,7 @@ public class ProductController {
 		if(orderService.findOrdersByProductId(productId).size()==0) {
 			shopService.findShops().iterator().next().deleteProduct(product);
 			productService.deleteProduct(product);
+			discountService.deleteDiscount(product.getDiscount().getId());
 		}
 		return "redirect:/shops/" + shopId;
 	}
@@ -84,8 +88,8 @@ public class ProductController {
 				product.setPrice(product.getPriceWithDiscount());
 			}
 		}
-		boolean haveOrders = orderService.findOrdersByProductId(productId).size()==0;
-		mav.addObject("canDeleteIt", haveOrders);
+		boolean noHasOrders = orderService.findOrdersByProductId(productId).size()==0;
+		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
 	}

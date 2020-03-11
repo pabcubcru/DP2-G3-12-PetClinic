@@ -44,7 +44,7 @@
     <sec:authorize access="hasAuthority('admin')">
     <c:if test="${product.discount == null}"> <a href="/shops/${product.shop.id}/products/${product.id}/discounts/new" class="btn btn-default" >Create Discount</a></c:if>
     <c:if test="${product.discount != null}"> <a href="/shops/${product.shop.id}/products/${product.id}/discounts/${product.discount.id}" class="btn btn-default" >Update Discount</a></c:if>
-    <c:if test="${canDeleteIt}"> <a href="/shops/${product.shop.id}/products/${product.id}/delete" class="btn btn-default" >Delete Product</a></c:if>
-    <c:if test="${!canDeleteIt}">    		This product can not be deleted because has at least one order</c:if>
+    <c:if test="${canDeleteIt}"> <a href="/shops/${product.shop.id}/products/${product.id}/delete" class="btn btn-default">Delete Product</a></c:if>
+    <c:if test="${!canDeleteIt}"><br><br><c:out value="This product can not be deleted because it has at least one order in process"></c:out></c:if>
     </sec:authorize>
 </petclinic:layout>

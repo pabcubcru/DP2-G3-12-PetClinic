@@ -9,6 +9,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,6 +30,7 @@ public class Product extends NamedEntity {
 	private int			stock;
 
 	@OneToOne(optional = true)
+	@Fetch(value = FetchMode.SELECT)
 	@JoinColumn(name = "discount_id")
 	private Discount	discount;
 

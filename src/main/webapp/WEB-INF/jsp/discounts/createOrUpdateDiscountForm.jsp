@@ -12,6 +12,7 @@
 		$(function() {
 			$("#startDate").datepicker({
 				dateFormat : 'yy/mm/dd'
+				enableOnReadonly: false
 			});
 		});
 	</script>
@@ -45,7 +46,7 @@
 		id="add-discount-form">
 		<div class="form-group has-feedback">
 			<petclinic:inputField label="Percentage" name="percentage" />
-			<petclinic:inputField label="Start Date" name="startDate" />
+			<petclinic:inputField label="Start Date" name="startDate"/>
 			<petclinic:inputField label="Finish Date" name="finishDate" />
 		</div>
 		<div class="form-group">

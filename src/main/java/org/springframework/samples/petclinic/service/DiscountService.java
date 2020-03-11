@@ -21,4 +21,9 @@ public class DiscountService {
 	public void saveDiscount(Discount discount) throws DataAccessException {
 		this.discountRepository.save(discount);
 	}
+	
+	@Transactional
+	public void deleteDiscount(int id) throws DataAccessException {
+		this.discountRepository.deleteById(id);
+	}
 }
