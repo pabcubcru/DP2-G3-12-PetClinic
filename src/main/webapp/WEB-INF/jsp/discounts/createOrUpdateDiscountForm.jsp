@@ -12,7 +12,6 @@
 		$(function() {
 			$("#startDate").datepicker({
 				dateFormat : 'yy/mm/dd'
-				enableOnReadonly: false
 			});
 		});
 	</script>
@@ -24,17 +23,20 @@
  </jsp:attribute>
  <jsp:body>
 	<h2>
-		<c:if test="${discount['new']}">New </c:if>
-		Discount
+		<c:if test="${discount['new']}">New </c:if> Discount
 	</h2>
 	<table class="table table-striped">
+		<tr>
+			<th>Product</th>
+			<td></td>
+		</tr>
 		<tr>
 			<th>Name</th>
 			<td><c:out value="${product.name}" /></td>
 		</tr>
 		<tr>
 			<th>Price</th>
-			<td><c:out value="${product.price}" /></td>
+			<td><c:out value="${product.price}" /> EUR</td>
 		</tr>
 		<tr>
 			<th>Stock</th>
@@ -51,7 +53,12 @@
 		</div>
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
-				<button class="btn btn-default" type="submit">Add Discount</button>
+			<c:if test="${discount['new']}">
+                        <button class="btn btn-default" type="submit">Add Discount</button>
+                   </c:if>
+                    <c:if test="${!discount['new']}">
+                        <button class="btn btn-default" type="submit">Update Discount</button>
+                   </c:if>
 			</div>
 		</div>
 	</form:form>
