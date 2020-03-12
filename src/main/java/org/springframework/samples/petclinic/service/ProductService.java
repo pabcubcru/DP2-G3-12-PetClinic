@@ -32,4 +32,9 @@ public class ProductService {
 	public void saveProduct(Product product) throws DataAccessException {
 		this.productRepository.save(product);
 	}
+	
+	@Transactional
+	public void deleteProduct(Product product) throws DataAccessException {
+		this.productRepository.delete(product);
+	}
 }

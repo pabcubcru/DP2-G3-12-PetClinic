@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
+import org.springframework.samples.petclinic.service.DiscountService;
+import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,16 @@ public class ProductController {
 
 	private ProductService	productService;
 	private ShopService		shopService;
+	private OrderService 	orderService;
+	private DiscountService discountService;
 
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService) {
+	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
+		this.orderService = orderService;
+		this.discountService = discountService;
 	}
 
 	@InitBinder
@@ -59,6 +65,17 @@ public class ProductController {
 			return "redirect:/shops/" + shopId + "/products/" + product.getId();
 		}
 	}
+	
+	@GetMapping(value = "/products/{productId}/delete")
+	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+		Product product = productService.findProductById(productId);
+		if(orderService.findOrdersByProductId(productId).size()==0) {
+			shopService.findShops().iterator().next().deleteProduct(product);
+			productService.deleteProduct(product);
+			discountService.deleteDiscount(product.getDiscount().getId());
+		}
+		return "redirect:/shops/" + shopId;
+	}
 
 	@GetMapping("/products/{productId}")
 	public ModelAndView showOrder(@PathVariable("productId") final int productId) {
@@ -71,6 +88,8 @@ public class ProductController {
 				product.setPrice(product.getPriceWithDiscount());
 			}
 		}
+		boolean noHasOrders = orderService.findOrdersByProductId(productId).size()==0;
+		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
 	}
