@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS hospitalisations (
   finish_date DATE,
   treatment VARCHAR(255),
   diagnosis VARCHAR(255),
-  hospitalisation_status VARCHAR(12),
+--   hospitalisation_status VARCHAR(40),
+  total_price 	DOUBLE,
   
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 ) engine=InnoDB;

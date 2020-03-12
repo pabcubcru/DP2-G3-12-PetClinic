@@ -98,9 +98,12 @@
 								</spring:url> <a href="${fn:escapeXml(visitUrl)}">Add Visit</a></td>
 
 							<c:if test="${pet.petStatus == 'SICK'}">
+								<c:if test="${!hospitalisation['new']}">
+								</c:if>
 								<spring:url value="/owners/{ownerId}/pets/{petId}/hospitalisations/new"
 									var="hospitalisationUrl">
 									<spring:param name="ownerId" value="${owner.id}" />
+									<spring:param name="petId" value="${pet.id}" />
 								</spring:url>
 								<a href="${fn:escapeXml(hospitalisationUrl)}" class="btn btn-default">Hospitalise</a>
 

@@ -35,6 +35,9 @@ INSERT INTO types VALUES (6, 'hamster');
 INSERT INTO status VALUES (0, 'SICK');
 INSERT INTO status VALUES (1, 'HEALTHY');
 
+-- INSERT INTO hospitalisation_status VALUES (0, 'HOSPITALISED');
+-- INSERT INTO hospitalisation_status VALUES (1, 'DISCHARGED');
+
 INSERT INTO owners VALUES (1, 'George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023', 'owner1');
 INSERT INTO owners VALUES (2, 'Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749', 'owner1');
 INSERT INTO owners VALUES (3, 'Eduardo', 'Rodriquez', '2693 Commerce St.', 'McFarland', '6085558763', 'owner1');
@@ -72,10 +75,6 @@ INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (1, 30, '2020
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);
 
-
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, '2020-03-12 12:30', 0, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-03-10 13:30', 0, 1, 2);
 
-INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (1, 'hospitalisation1', '2020-01-30', '2020-02-12', 1, 0, 'Administration of antibiotics', 'Distemper', 250.0);
-INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (2, 'hospitalisation2', '2020-01-18', '2020-01-30', 2, 0, 'Vaccination ', 'Rabies', 200.0);
-INSERT INTO hospitalisations(id,name,start_date,finish_date,pet_id,hospitalisation_status,treatment,diagnosis,total_price) VALUES (3, 'hospitalisation3', '2020-02-16', '2020-02-24', 3, 0, 'Administration of antibiotics', 'Brucellosis', 300.0);

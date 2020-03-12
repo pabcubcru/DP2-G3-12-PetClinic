@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.service.HospitalisationService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,18 +17,14 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/pets/{petId}")
 public class HospitalisationController {
 	
-	private HospitalisationService hospitalisationService;
 	private PetService petService;
 	
 	@Autowired
-	public HospitalisationController(final HospitalisationService hospitalisationService, final PetService petService) {
-		this.hospitalisationService = hospitalisationService;
+	public HospitalisationController(PetService petService) {
 		this.petService = petService;
 	}
 	
@@ -52,7 +47,11 @@ public class HospitalisationController {
 	}
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewVisitForm(@Valid Hospitalisation hospitalisation, BindingResult result) {
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result) {
+		if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
+			result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
+					"The finish date can not be before than start date");
+		}
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		}
