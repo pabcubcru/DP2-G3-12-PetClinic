@@ -73,8 +73,10 @@ public class ProductController {
 			shopService.findShops().iterator().next().deleteProduct(product);
 			productService.deleteProduct(product);
 			discountService.deleteDiscount(product.getDiscount().getId());
+			return "redirect:/shops/" + shopId;
+		} else {
+			return "/exception";
 		}
-		return "redirect:/shops/" + shopId;
 	}
 
 	@GetMapping("/products/{productId}")
@@ -85,7 +87,7 @@ public class ProductController {
 			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now()) && product.getDiscount().getStartDate().isBefore(LocalDate.now()) || product.getDiscount().getStartDate().isEqual(LocalDate.now())
 				|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
 				mav.addObject("activeDiscount", true);
-				product.setPrice(product.getPriceWithDiscount());
+				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
 		}
 		boolean noHasOrders = orderService.findOrdersByProductId(productId).size()==0;
