@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Order;
 import org.springframework.samples.petclinic.model.OrderStatus;
+import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
@@ -45,10 +46,9 @@ public class OrderController {
 
 	@GetMapping(value = "/orders/new")
 	public String initNewOrderForm(Map<String, Object> model) {
-		model.put("products", productService.findProducts());
-		model.put("shops", shopService.findShops());
-		model.put("productsSize", productService.findProducts().spliterator().estimateSize());
-		model.put("shopsSize", shopService.findShops().spliterator().estimateSize());
+		model.put("products", productService.findProductsNames());
+		model.put("productsSize", productService.findProductsNames().size());
+		model.put("productName", "");
 		Order order = new Order();
 		model.put("order", order);
 		return "orders/createOrUpdateOrderForm";
@@ -62,6 +62,8 @@ public class OrderController {
 		else {
 			Shop shop = this.shopService.findShops().iterator().next();
 			order.setShop(shop);
+			Product product = productService.findByName(order.getProduct().getName());
+			order.setProduct(product);
 			this.orderService.saveOrder(order);
 			shop.addOrder(order);
 			return "redirect:/shops/" + shopId + "/orders/" + order.getId();

@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.dao.DataAccessException;
@@ -24,8 +26,8 @@ public class ProductService {
 	}
 	
 	@Transactional(readOnly = true)	
-	public Iterable<Product> findProducts() throws DataAccessException {
-		return productRepository.findAll();
+	public List<String> findProductsNames() throws DataAccessException {
+		return productRepository.getNames();
 	}
 	
 	@Transactional
@@ -36,5 +38,10 @@ public class ProductService {
 	@Transactional
 	public void deleteProduct(Product product) throws DataAccessException {
 		this.productRepository.delete(product);
+	}
+	
+	@Transactional
+	public Product findByName(String name) throws DataAccessException {
+		return this.productRepository.findByName(name);
 	}
 }
