@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.VetService;
 import org.springframework.stereotype.Controller;
@@ -62,6 +63,11 @@ public class PetController {
 	@ModelAttribute("types")
 	public Collection<PetType> populatePetTypes() {
 		return this.petService.findPetTypes();
+	}
+	
+	@ModelAttribute("status")
+	public Collection<PetStatus> populatePetStatus() {
+		return this.petService.findPetStatus();
 	}
 
 	@ModelAttribute("owner")
@@ -140,7 +146,7 @@ public class PetController {
 		}
 		else {
                         Pet petToUpdate=this.petService.findPetById(petId);
-			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits");                                                                                  
+			BeanUtils.copyProperties(pet, petToUpdate, "id","owner","visits", "stays");                                                                                  
                     try {                    
                         this.petService.savePet(petToUpdate);                    
                     } catch (DuplicatedPetNameException ex) {

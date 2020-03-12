@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.repository.PetRepository;
 
@@ -35,5 +36,9 @@ public interface SpringDataPetRepository extends PetRepository, Repository<Pet, 
 	@Override
 	@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
 	List<PetType> findPetTypes() throws DataAccessException;
+	
+	@Override
+	@Query("SELECT pstatus FROM PetStatus pstatus ORDER BY pstatus.name")
+	List<PetStatus> findPetStatus() throws DataAccessException;
 
 }

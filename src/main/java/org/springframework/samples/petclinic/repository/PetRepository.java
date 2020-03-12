@@ -20,6 +20,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
 
 /**
@@ -40,6 +41,8 @@ public interface PetRepository {
 	 * @return a <code>Collection</code> of <code>PetType</code>s
 	 */
 	List<PetType> findPetTypes() throws DataAccessException;
+	
+	List<PetStatus> findPetStatus() throws DataAccessException;
 
 	/**
 	 * Retrieve a <code>Pet</code> from the data store by id.
