@@ -26,11 +26,13 @@ public class Discount extends NamedEntity{
 	
 	@Column(name = "start_date")     
 	@FutureOrPresent
+	@NotNull
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate startDate;
 	
 	@Column(name = "finish_date")    
 	@FutureOrPresent
+	@NotNull
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate finishDate;
 	

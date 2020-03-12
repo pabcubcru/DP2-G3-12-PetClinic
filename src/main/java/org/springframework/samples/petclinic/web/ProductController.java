@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
+import org.springframework.samples.petclinic.service.DiscountService;
+import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.stereotype.Controller;
@@ -26,16 +28,18 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService		productService;
-	private ShopService			shopService;
-
-	private static final String	VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM	= "products/createOrUpdateProductForm";
+	private ProductService	productService;
+	private ShopService		shopService;
+	private OrderService 	orderService;
+	private DiscountService discountService;
 
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService) {
+	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
+		this.orderService = orderService;
+		this.discountService = discountService;
 	}
 
 	@InitBinder
@@ -62,6 +66,19 @@ public class ProductController {
 			return "redirect:/shops/" + shopId + "/products/" + product.getId();
 		}
 	}
+	
+	@GetMapping(value = "/products/{productId}/delete")
+	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+		Product product = productService.findProductById(productId);
+		if(orderService.findOrdersByProductId(productId).size()==0) {
+			shopService.findShops().iterator().next().deleteProduct(product);
+			productService.deleteProduct(product);
+			discountService.deleteDiscount(product.getDiscount().getId());
+			return "redirect:/shops/" + shopId;
+		} else {
+			return "/exception";
+		}
+	}
 
 	@GetMapping("/products/{productId}")
 	public ModelAndView showOrder(@PathVariable("productId") final int productId) {
@@ -71,9 +88,11 @@ public class ProductController {
 			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now()) && product.getDiscount().getStartDate().isBefore(LocalDate.now()) || product.getDiscount().getStartDate().isEqual(LocalDate.now())
 				|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
 				mav.addObject("activeDiscount", true);
-				product.setPrice(product.getPriceWithDiscount());
+				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
 		}
+		boolean noHasOrders = orderService.findOrdersByProductId(productId).size()==0;
+		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
 	}
@@ -82,13 +101,13 @@ public class ProductController {
 	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Model model) {
 		Product product = this.productService.findProductById(productId);
 		model.addAttribute(product);
-		return ProductController.VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM;
+		return "products/createOrUpdateProductForm";
 	}
 
 	@PostMapping(value = "/products/{productId}/edit")
 	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
 		if (result.hasErrors()) {
-			return ProductController.VIEWS_PRODUCT_CREATE_OR_UPDATE_FORM;
+			return "products/createOrUpdateProductForm";
 		} else {
 			product.setId(productId);
 			this.productService.saveProduct(product);

@@ -49,7 +49,8 @@ CREATE TABLE pets (
   name       VARCHAR(30),
   birth_date DATE,
   type_id    INTEGER NOT NULL,
-  owner_id   INTEGER NOT NULL
+  owner_id   INTEGER NOT NULL,
+  pet_status VARCHAR(30)
 );
 ALTER TABLE pets ADD CONSTRAINT fk_pets_owners FOREIGN KEY (owner_id) REFERENCES owners (id);
 ALTER TABLE pets ADD CONSTRAINT fk_pets_types FOREIGN KEY (type_id) REFERENCES types (id);
@@ -63,6 +64,17 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
+
+CREATE TABLE stays (
+  id          INTEGER IDENTITY PRIMARY KEY,
+  pet_id      INTEGER NOT NULL,
+  start_date  DATE,
+  finish_date  DATE,
+  price 	DOUBLE,
+  special_cares VARCHAR(80)
+);
+ALTER TABLE stays ADD CONSTRAINT fk_stays_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
+CREATE INDEX stays_pet_id ON stays (pet_id);
 
 CREATE TABLE users(
 	username varchar_ignorecase(255) NOT NULL PRIMARY KEY,
@@ -78,3 +90,16 @@ ALTER TABLE authorities ADD CONSTRAINT fk_authorities_users FOREIGN KEY (usernam
 
 CREATE UNIQUE INDEX ix_auth_username ON authorities (username,authority);
 
+
+CREATE TABLE hospitalisations (
+  id          INTEGER IDENTITY PRIMARY KEY,
+  pet_id      INTEGER NOT NULL,
+--   vet_id	  INTEGER NOT NULL,
+  start_date  DATE,
+  finish_date DATE,
+  treatment VARCHAR(255),
+  diagnosis VARCHAR(255),
+  hospitalisation_status VARCHAR(12)
+);
+ALTER TABLE hospitalisations ADD CONSTRAINT fk_hospitalisations_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
+CREATE INDEX hospitalisations_pet_id ON hospitalisations (pet_id);
