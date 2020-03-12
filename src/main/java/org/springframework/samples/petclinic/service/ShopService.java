@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Shop;
-import org.springframework.samples.petclinic.repository.springdatajpa.ShopRepository;
+import org.springframework.samples.petclinic.repository.ShopRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,6 @@
-package org.springframework.samples.petclinic.repository.springdatajpa;
+package org.springframework.samples.petclinic.repository;
+
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,4 +13,7 @@ public interface OrderRepository extends CrudRepository<Order, Integer>{
 
 	@Query("SELECT o FROM Order o WHERE o.id = ?1")
 	public Order findById(int id);
+	
+	@Query("SELECT o FROM Order o WHERE o.product.id = ?1")
+	public List<Order> findOrderByProductId(int idProduct);
 }
