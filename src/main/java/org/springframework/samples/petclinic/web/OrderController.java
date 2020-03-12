@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -78,12 +79,25 @@ public class OrderController {
 				return "/exception";
 			}
 	}
+	
+	@GetMapping(value = "/orders/{orderId}/canceled")
+	public String processOrderCanceled(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
+			Order order = this.orderService.findOrderById(orderId);
+			if(!order.getOrderStatus().equals(OrderStatus.CANCELED) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
+				order.orderCanceled();
+				this.orderService.saveOrder(order);
+				return "redirect:/shops/" + shopId + "/orders/" + order.getId();
+			} else {
+				return "/exception";
+			}
+	}
 
 	@GetMapping("/orders/{orderId}")
 	public ModelAndView showOrder(@PathVariable("orderId") int orderId) {
 		ModelAndView mav = new ModelAndView("orders/orderDetails");
 		Order order = this.orderService.findOrderById(orderId);
 		mav.addObject(order);
+		mav.addObject("canBeCanceled", order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2)));
 		return mav;
 	}
 }

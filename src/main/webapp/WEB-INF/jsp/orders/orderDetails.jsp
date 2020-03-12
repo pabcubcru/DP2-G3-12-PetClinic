@@ -20,7 +20,8 @@
 		</tr>
 		<tr>
 			<th>Product</th>
-			<td><spring:url value="/shops/1/products/{productId}" var="productUrl">
+			<td><spring:url value="/shops/1/products/{productId}"
+					var="productUrl">
 					<spring:param name="productId" value="${order.product.id}" />
 				</spring:url> <a href="${fn:escapeXml(productUrl)}"><c:out
 						value="${order.product.name}" /></a></td>
@@ -39,16 +40,23 @@
 		</tr>
 		<tr>
 			<th>Shop</th>
-			<td>
-                    <spring:url value="/shops/1" var="shopUrl">
-                        <spring:param name="shopId" value="${order.shop.id}"/>
-                    </spring:url>
-                    <a href="${fn:escapeXml(shopUrl)}"><c:out value="${order.shop.name}"/></a>
-                </td>
+			<td><spring:url value="/shops/1" var="shopUrl">
+					<spring:param name="shopId" value="${order.shop.id}" />
+				</spring:url> <a href="${fn:escapeXml(shopUrl)}"><c:out
+						value="${order.shop.name}" /></a></td>
 		</tr>
 	</table>
-	<c:if test="${order.orderStatus == 'INPROCESS' }">
+	<c:if test="${order.orderStatus == 'INPROCESS'}">
 		<a href="/shops/1/orders/${order.id}/received" class="btn btn-default">Order
 			Received</a>
+	</c:if>
+	<c:if test="${order.orderStatus != 'CANCELED' and canBeCanceled}">
+		<a href="/shops/1/orders/${order.id}/canceled" class="btn btn-default">Cancel
+			Order</a>
+	</c:if>
+	<c:if test="${order.orderStatus != 'CANCELED' and !canBeCanceled}">
+	<br>
+	<br>
+		<c:out value="This order can not be canceled because it was made more than two days ago."></c:out>
 	</c:if>
 </petclinic:layout>
