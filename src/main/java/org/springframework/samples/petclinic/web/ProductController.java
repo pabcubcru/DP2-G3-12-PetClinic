@@ -14,6 +14,7 @@ import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,5 +95,23 @@ public class ProductController {
 		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
+	}
+
+	@GetMapping(value = "/products/{productId}/edit")
+	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Model model) {
+		Product product = this.productService.findProductById(productId);
+		model.addAttribute(product);
+		return "products/createOrUpdateProductForm";
+	}
+
+	@PostMapping(value = "/products/{productId}/edit")
+	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+		if (result.hasErrors()) {
+			return "products/createOrUpdateProductForm";
+		} else {
+			product.setId(productId);
+			this.productService.saveProduct(product);
+			return "redirect:/shops/" + shopId + "/products/" + productId;
+		}
 	}
 }

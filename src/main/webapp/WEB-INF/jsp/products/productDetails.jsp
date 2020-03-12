@@ -10,6 +10,7 @@
 
 	<h2>Product Information</h2>
 
+
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
@@ -47,6 +48,7 @@
 		</table>
 	</c:if>
 	<sec:authorize access="hasAuthority('admin')">
+    <a href="/shops/${product.shop.id}/products/${product.id}/edit" class="btn btn-default" >Update Product</a>
 		<c:if test="${product.discount == null}">
 			<a
 				href="/shops/${product.shop.id}/products/${product.id}/discounts/new"
