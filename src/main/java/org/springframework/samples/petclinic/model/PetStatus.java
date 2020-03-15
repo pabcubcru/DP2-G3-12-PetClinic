@@ -18,9 +18,6 @@ package org.springframework.samples.petclinic.model;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-/**
- * @author Juergen Hoeller Can be Cat, Dog, Hamster...
- */
 @Entity
 @Table(name = "status")
 public class PetStatus extends NamedEntity {

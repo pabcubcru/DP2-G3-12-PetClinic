@@ -1,7 +1,9 @@
 package org.springframework.samples.petclinic.model;
 
-import java.time.LocalDate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +35,7 @@ public class Order extends NamedEntity{
 	
 	@Column(name = "order_date")        
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private LocalDate orderDate;
+	private LocalDateTime orderDate;
 	
 	@NotNull
 	@Column(name = "order_status")
@@ -49,11 +51,15 @@ public class Order extends NamedEntity{
 	private Product product;
 	
 	public Order() {
-		this.orderDate = LocalDate.now();
+		this.orderDate = LocalDateTime.now();
 		this.orderStatus = OrderStatus.INPROCESS;
 	}
 	
 	public void orderReceived() {
 		this.setOrderStatus(OrderStatus.RECEIVED);
+	}
+	
+	public void orderCanceled() {
+		this.setOrderStatus(OrderStatus.CANCELED);
 	}
 }

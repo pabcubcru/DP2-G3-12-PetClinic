@@ -17,16 +17,14 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/pets/{petId}")
 public class HospitalisationController {
 	
 	private PetService petService;
 	
 	@Autowired
-	public HospitalisationController(final PetService petService) {
+	public HospitalisationController(PetService petService) {
 		this.petService = petService;
 	}
 	
@@ -49,7 +47,11 @@ public class HospitalisationController {
 	}
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewVisitForm(@Valid Hospitalisation hospitalisation, BindingResult result) {
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result) {
+		if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
+			result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
+					"The finish date can not be before than start date");
+		}
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		}

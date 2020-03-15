@@ -49,15 +49,6 @@ public class StayController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	/**
-	 * Called before each and every @GetMapping or @PostMapping annotated method. 2
-	 * goals: - Make sure we always have fresh data - Since we do not use the
-	 * session scope, make sure that Pet object always has an id (Even though id is
-	 * not part of the form fields)
-	 * 
-	 * @param petId
-	 * @return Pet
-	 */
 	@ModelAttribute("stay")
 	public Stay loadPetWithStay(@PathVariable("petId") int petId) {
 		Pet pet = this.petService.findPetById(petId);
