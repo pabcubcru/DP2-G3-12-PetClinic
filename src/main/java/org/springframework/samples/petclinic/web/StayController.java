@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.service.PetService;
@@ -90,6 +91,7 @@ public class StayController {
 			return "redirect:/owners/{ownerId}";
 		}
 	}
+	
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")
 	public String showStays(@PathVariable int petId, Map<String, Object> model) {
