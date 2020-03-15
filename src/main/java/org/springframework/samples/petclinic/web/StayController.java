@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.service.PetService;
-import org.springframework.samples.petclinic.service.VetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -69,10 +68,20 @@ public class StayController {
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid Stay stay, BindingResult result) {
 
-		if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+		if ((stay.getStartdate() == null || stay.getFinishdate() == null)) {
+			if ((stay.getStartdate() == null && stay.getFinishdate() == null)) {
+				result.rejectValue("startdate", "wrongstartdate", "The start date can not be empty");
+				result.rejectValue("finishdate", "wrongfinishdate", "The finish date can not be empty");
+			} else if ((stay.getStartdate() == null)) {
+				result.rejectValue("startdate", "wrongstartdate", "The start date can not be empty");
+			} else {
+				result.rejectValue("finishdate", "wrongfinishdate", "The finish date can not be empty");
+			}
+		} else if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 			result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
 					"The finish date can not be before than start date");
 		}
+
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {

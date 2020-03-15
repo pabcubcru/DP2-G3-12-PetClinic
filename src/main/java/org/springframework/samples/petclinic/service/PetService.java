@@ -78,7 +78,7 @@ public class PetService {
 	public void saveStay(Stay stay) throws DataAccessException {
 		stayRepository.save(stay);
 	}
-    
+
   @Transactional  
 	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
 		hospitalisationRepository.save(hospitalisation);
