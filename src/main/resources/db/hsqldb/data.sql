@@ -72,6 +72,11 @@ INSERT INTO shops(id,name) VALUES (1, 'shop1');
 
 INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (1, 30, '2020-09-01', '2020-10-01');
 
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (1, 30.0, '2020-09-01', '2020-10-01','special',1);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (2, 30.0, '2020-09-01', '2020-10-01','special',3);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (3, 30.0, '2020-04-01', '2020-05-01','special',1);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (4, 30.0, '2020-09-01', '2020-10-01','special',7);
+
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);
 
