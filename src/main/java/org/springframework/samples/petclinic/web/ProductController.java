@@ -28,14 +28,16 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService	productService;
-	private ShopService		shopService;
-	private OrderService 	orderService;
-	private DiscountService discountService;
+	private ProductService		productService;
+	private ShopService			shopService;
+	private OrderService		orderService;
+	private DiscountService		discountService;
+
+	private static final String	PRODUCT_CREATE_OR_UPDATE_FORM	= "products/createOrUpdateProductForm";
 
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, DiscountService discountService) {
+	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, final DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
 		this.orderService = orderService;
@@ -56,6 +58,10 @@ public class ProductController {
 
 	@PostMapping(value = "/products/new")
 	public String processNewProductForm(@Valid final Product product, final BindingResult result, @PathVariable("shopId") final int shopId) {
+
+		if (this.productService.findProductsNames().contains(product.getName())) {
+			result.rejectValue("name", "duplicated name", "This name already exist");
+		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
@@ -66,14 +72,14 @@ public class ProductController {
 			return "redirect:/shops/" + shopId + "/products/" + product.getId();
 		}
 	}
-	
+
 	@GetMapping(value = "/products/{productId}/delete")
 	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
-		Product product = productService.findProductById(productId);
-		if(orderService.findOrdersByProductId(productId).size()==0) {
-			shopService.findShops().iterator().next().deleteProduct(product);
-			productService.deleteProduct(product);
-			discountService.deleteDiscount(product.getDiscount().getId());
+		Product product = this.productService.findProductById(productId);
+		if (this.orderService.findOrdersByProductId(productId).size() == 0) {
+			this.shopService.findShops().iterator().next().deleteProduct(product);
+			this.productService.deleteProduct(product);
+			this.discountService.deleteDiscount(product.getDiscount().getId());
 			return "redirect:/shops/" + shopId;
 		} else {
 			return "/exception";
@@ -91,7 +97,7 @@ public class ProductController {
 				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
 		}
-		boolean noHasOrders = orderService.findOrdersByProductId(productId).size()==0;
+		boolean noHasOrders = this.orderService.findOrdersByProductId(productId).size() == 0;
 		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
@@ -106,11 +112,18 @@ public class ProductController {
 
 	@PostMapping(value = "/products/{productId}/edit")
 	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+		Product productWithoutUpdate = this.productService.findProductById(productId);
+		if (this.productService.findProductsNames().contains(product.getName()) && !productWithoutUpdate.getName().equals(product.getName())) {
+			result.rejectValue("name", "duplicated name", "This name already exist");
+		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
 			product.setId(productId);
+			Shop shop = this.shopService.findShops().iterator().next();
+			product.setShop(shop);
 			this.productService.saveProduct(product);
+			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + productId;
 		}
 	}
