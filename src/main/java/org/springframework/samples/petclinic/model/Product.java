@@ -7,7 +7,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,8 +21,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "products")
-public class Product extends NamedEntity {
+public class Product extends BaseEntity {
 
+	@NotBlank
+	@Size(min = 3, max = 50)
+	@Column(name = "name", unique = true)
+	private String name;
+	
 	@NotNull
 	@Column(name = "price")
 	private Double		price;
@@ -27,10 +37,11 @@ public class Product extends NamedEntity {
 	private int			stock;
 
 	@OneToOne(optional = true)
+	@Fetch(value = FetchMode.SELECT)
 	@JoinColumn(name = "discount_id")
 	private Discount	discount;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "shop_id")
 	private Shop		shop;
 

@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -7,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Order;
 import org.springframework.samples.petclinic.model.OrderStatus;
+import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
@@ -44,10 +46,9 @@ public class OrderController {
 
 	@GetMapping(value = "/orders/new")
 	public String initNewOrderForm(Map<String, Object> model) {
-		model.put("products", productService.findProducts());
-		model.put("shops", shopService.findShops());
-		model.put("productsSize", productService.findProducts().spliterator().estimateSize());
-		model.put("shopsSize", shopService.findShops().spliterator().estimateSize());
+		model.put("products", productService.findProductsNames());
+		model.put("productsSize", productService.findProductsNames().size());
+		model.put("productName", "");
 		Order order = new Order();
 		model.put("order", order);
 		return "orders/createOrUpdateOrderForm";
@@ -61,6 +62,8 @@ public class OrderController {
 		else {
 			Shop shop = this.shopService.findShops().iterator().next();
 			order.setShop(shop);
+			Product product = productService.findByName(order.getProduct().getName());
+			order.setProduct(product);
 			this.orderService.saveOrder(order);
 			shop.addOrder(order);
 			return "redirect:/shops/" + shopId + "/orders/" + order.getId();
@@ -78,12 +81,25 @@ public class OrderController {
 				return "/exception";
 			}
 	}
+	
+	@GetMapping(value = "/orders/{orderId}/canceled")
+	public String processOrderCanceled(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
+			Order order = this.orderService.findOrderById(orderId);
+			if(!order.getOrderStatus().equals(OrderStatus.CANCELED) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
+				order.orderCanceled();
+				this.orderService.saveOrder(order);
+				return "redirect:/shops/" + shopId + "/orders/" + order.getId();
+			} else {
+				return "/exception";
+			}
+	}
 
 	@GetMapping("/orders/{orderId}")
 	public ModelAndView showOrder(@PathVariable("orderId") int orderId) {
 		ModelAndView mav = new ModelAndView("orders/orderDetails");
 		Order order = this.orderService.findOrderById(orderId);
 		mav.addObject(order);
+		mav.addObject("canBeCanceled", order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2)));
 		return mav;
 	}
 }
