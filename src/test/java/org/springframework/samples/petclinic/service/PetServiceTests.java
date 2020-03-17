@@ -78,6 +78,7 @@ class PetServiceTests {
 
 	@Autowired
 	protected OwnerService ownerService;
+	
 
 	@Test
 	void shouldFindPetWithCorrectId() {
@@ -225,6 +226,8 @@ class PetServiceTests {
 		assertThat(visitArr[0].getDate()).isNotNull();
 		assertThat(visitArr[0].getPet().getId()).isEqualTo(7);
 	}
+	
+	// ADD STAY
 
 	@Test
 	@Transactional
@@ -269,7 +272,7 @@ class PetServiceTests {
 	@Test
 	void shouldFindStaysByPetIdCorrectNumberStays() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
-		assertThat(stays.size()).isEqualTo(2); // Tiene que haber 2 porque es lo que esta populado en data.sql
+		assertThat(stays.size()).isEqualTo(1); // Tiene que haber 1 porque es lo que esta populado en data.sql
 	}
 	
 	@Test
@@ -313,5 +316,40 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPet().getId()).isEqualTo(1);
 	}
-
+	
+	// EDIT STAY
+	
+	@Test
+	@Transactional
+	public void shouldUpdateStay() {
+		Pet pet7 = this.petService.findPetById(7);
+		int found = pet7.getStays().size();
+		Stay stay = petService.findStayById(1);
+		stay.setStartdate(LocalDate.now());
+		stay.setFinishdate(LocalDate.now().plusDays(5));
+		this.petService.saveStay(stay);
+		try {
+			this.petService.savePet(pet7);
+		} catch (DuplicatedPetNameException ex) {
+			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		pet7 = this.petService.findPetById(7);
+		assertThat(pet7.getStays().size()).isEqualTo(found);
+		assertThat(stay.getStartdate()).isEqualTo(LocalDate.now());
+	}
+	
+//	@Test
+//	@Transactional
+//	public void shouldNotUpdateStay() {
+//		Pet pet7 = this.petService.findPetById(7);
+//		Stay stay = petService.findStayById(1);
+//		stay.setStartdate(null);
+//		pet7.addStay(stay);
+//		try {
+//			this.petService.savePet(pet7);
+//		} catch (DuplicatedPetNameException ex) {
+//			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+//		}
+//		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay);});
+//	}
 }

@@ -50,7 +50,7 @@ public class StayControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewStayFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID).param("name", "George").with(csrf())
+		mockMvc.perform(post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID).with(csrf())
 				.param("startdate", "2020/06/06")
 				.param("finishdate", "2020/06/08").param("price", "15.0")
 				.param("specialCares", "A lot of special cares")).andExpect(status().is3xxRedirection())
