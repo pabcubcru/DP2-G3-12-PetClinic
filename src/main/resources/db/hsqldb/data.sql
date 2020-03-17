@@ -77,6 +77,10 @@ INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (3, 30.0, '2020-04-01', '2020-05-01','special',1);
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (4, 30.0, '2020-09-01', '2020-10-01','special',7);
 
+INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id) VALUES (1, '2020-09-01', '2020-10-01','treatmet1','diagnosis1',30,1);
+INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id) VALUES (2, '2020-04-15', '2020-05-03','treatmet2','diagnosis2',50,7);
+
+
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);
 
