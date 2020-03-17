@@ -53,10 +53,12 @@ public class PetService {
 	
 
 	@Autowired
-	public PetService(PetRepository petRepository,  VisitRepository visitRepository, StayRepository stayRepository) {
+	public PetService(PetRepository petRepository,
+			VisitRepository visitRepository, StayRepository stayRepository, HospitalisationRepository hospitalisationRepository) {
 		this.petRepository = petRepository;
 		this.visitRepository = visitRepository;
 		this.stayRepository = stayRepository;
+		this.hospitalisationRepository = hospitalisationRepository;
 	}
 
 	@Transactional(readOnly = true)
