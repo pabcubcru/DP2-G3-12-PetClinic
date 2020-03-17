@@ -37,12 +37,12 @@
             </tr>
             </thead>
             <tr>
-                <td><c:out value="${stay.pet.name}" /></td>
+                <td><c:out value="${pet.name}" /></td>
                 <td><petclinic:localDate
-						date="${stay.pet.birthDate}" pattern="yyyy/MM/dd" /></td>
-                <td><c:out value="${stay.pet.type.name}" /></td>
+						date="${pet.birthDate}" pattern="yyyy/MM/dd" /></td>
+                <td><c:out value="${pet.type.name}" /></td>
                 <td><c:out
-						value="${stay.pet.owner.firstName} ${stay.pet.owner.lastName}" /></td>
+						value="${pet.owner.firstName} ${pet.owner.lastName}" /></td>
             </tr>
         </table>
 
@@ -59,18 +59,13 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <c:if test="${stay['new']}">
-                        <button class="btn btn-default" type="submit">Add Stay</button>
-                   </c:if>
-                       <c:if test="${!stay['new']}">
-                        <button class="btn btn-default" type="submit">Update Stay</button>
-                   </c:if>
+                       <button class="btn btn-default" type="submit">Save Stay</button>
                 </div>
             </div>
         </form:form>
 
         <br />
-        <b>Previous Hotels</b>
+        <b>Previous Stays</b>
         <table class="table table-striped">
             <tr>
                 <th>Start Date</th>
@@ -78,7 +73,7 @@
                 <th>Special Cares</th>
                 <th>Price</th>
             </tr>
-            <c:forEach var="stay" items="${stay.pet.stays}">
+            <c:forEach var="stay" items="${pet.stays}">
                 <c:if test="${!stay['new']}">
                     <tr>
                        <td><petclinic:localDate

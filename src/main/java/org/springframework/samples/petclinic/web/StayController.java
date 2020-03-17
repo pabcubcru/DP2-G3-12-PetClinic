@@ -49,24 +49,17 @@ public class StayController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@ModelAttribute("stay")
-	public Stay loadPetWithStay(@PathVariable("petId") int petId) {
-		Pet pet = this.petService.findPetById(petId);
-		Stay stay = new Stay();
-		pet.addStay(stay);
-		return stay;
-	}
-
 	// Spring MVC calls method loadPetWithStay(...) before initNewStayForm is called
 	@GetMapping(value = "/owners/*/pets/{petId}/stays/new")
-	public String initNewStayForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+	public String initNewStayForm(Map<String, Object> model) {
+		model.put("stay", new Stay());
 		return "pets/createOrUpdateStayForm";
 	}
 
 	// Spring MVC calls method loadPetWithStay(...) before processNewStayForm is
 	// called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
-	public String processNewStayForm(@Valid Stay stay, BindingResult result) {
+	public String processNewStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId) {
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
@@ -76,6 +69,8 @@ public class StayController {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
+			Pet pet = this.petService.findPetById(petId);
+			pet.addStay(stay);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
@@ -106,6 +101,7 @@ public class StayController {
 			return "pets/createOrUpdateStayForm";
 		} else {
 			stay.setId(stayId);
+			stay.setPet(pet);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
