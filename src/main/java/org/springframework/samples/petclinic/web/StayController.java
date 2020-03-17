@@ -80,6 +80,36 @@ public class StayController {
 			return "redirect:/owners/{ownerId}";
 		}
 	}
+	
+	@GetMapping(value = "/owners/*/pets/{petId}/stays/{stayId}/edit")
+	public String initEditStayForm(@PathVariable("petId") int petId, Map<String, Object> model, @PathVariable("stayId") int stayId) {
+		Stay stay = petService.findStayById(stayId);
+		Pet pet = petService.findPetById(petId);
+		model.put("stay", stay);
+		model.put("pet", pet);
+		return "pets/createOrUpdateStayForm";
+	}
+
+	
+	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
+	public String processEditStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId, Map<String, Object> model,
+			@PathVariable("stayId") int stayId) {
+		
+		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+		}
+		Pet pet = petService.findPetById(petId);
+		if (result.hasErrors()) {
+			model.put("pet", pet);
+			return "pets/createOrUpdateStayForm";
+		} else {
+			stay.setId(stayId);
+			this.petService.saveStay(stay);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")
 	public String showStays(@PathVariable int petId, Map<String, Object> model) {

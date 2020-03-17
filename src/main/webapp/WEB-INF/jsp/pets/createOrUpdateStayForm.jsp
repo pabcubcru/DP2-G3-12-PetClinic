@@ -59,9 +59,12 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <input type="hidden" name="petId"
-						value="${stay.pet.id}" />
-                    <button class="btn btn-default" type="submit">Add Stay</button>
+                    <c:if test="${stay['new']}">
+                        <button class="btn btn-default" type="submit">Add Stay</button>
+                   </c:if>
+                       <c:if test="${!stay['new']}">
+                        <button class="btn btn-default" type="submit">Update Stay</button>
+                   </c:if>
                 </div>
             </div>
         </form:form>

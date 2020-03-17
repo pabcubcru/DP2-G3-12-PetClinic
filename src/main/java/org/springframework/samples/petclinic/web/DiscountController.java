@@ -75,6 +75,7 @@ public class DiscountController {
 	public String processEditDiscountForm(@Valid Discount discount, BindingResult result,
 			@PathVariable("productId") int productId, @PathVariable("shopId") int shopId,
 			@PathVariable("discountId") int discountId, Map<String, Object> model) {
+		
 		if (discount.getFinishDate() != null && discount.getStartDate() != null) {
 			if (discount.getFinishDate().isBefore(discount.getStartDate())) {
 				result.rejectValue("finishDate", "wrongDate", "Finish date must be after than start date");
