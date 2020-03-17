@@ -37,12 +37,12 @@
             </tr>
             </thead>
             <tr>
-            	<td><c:out value="${hospitalisation.pet.name}" /></td>
+            	<td><c:out value="${pet.name}" /></td>
                 <td><petclinic:localDate
-						date="${hospitalisation.pet.birthDate}" pattern="yyyy/MM/dd" /></td>
-                <td><c:out value="${hospitalisation.pet.type.name}" /></td>
+						date="${pet.birthDate}" pattern="yyyy/MM/dd" /></td>
+                <td><c:out value="${pet.type.name}" /></td>
                 <td><c:out
-						value="${hospitalisation.pet.owner.firstName} ${hospitalisation.pet.owner.lastName}" /></td>
+						value="${pet.owner.firstName} ${pet.owner.lastName}" /></td>
             </tr>
         </table>
         
@@ -57,8 +57,6 @@
         	
         	<div class="form-group">
             	<div class="col-sm-offset-2 col-sm-10">
-            		<input type="hidden" name="petId"
-						value="${hospitalisation.pet.id}" />
                		<button class="btn btn-default" type="submit">Hospitalise</button>
             	</div>
         	</div>
@@ -72,7 +70,7 @@
                 <th>Finish Date</th>
                 <th>Diagnosis</th>
             </tr>
-            <c:forEach var="hospitalisation" items="${hospitalisation.pet.hospitalisations}">
+            <c:forEach var="hospitalisation" items="${pet.hospitalisations}">
                 <c:if test="${!hospitalisation['new']}">
                     <tr>
                        <td><petclinic:localDate

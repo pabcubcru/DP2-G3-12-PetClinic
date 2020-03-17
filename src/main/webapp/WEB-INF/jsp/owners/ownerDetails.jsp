@@ -97,17 +97,6 @@
 									<spring:param name="petId" value="${pet.id}" />
 								</spring:url> <a href="${fn:escapeXml(visitUrl)}">Add Visit</a></td>
 
-							<c:if test="${pet.petStatus == 'SICK'}">
-								<c:if test="${!hospitalisation['new']}">
-								</c:if>
-								<spring:url value="/owners/{ownerId}/pets/{petId}/hospitalisations/new"
-									var="hospitalisationUrl">
-									<spring:param name="ownerId" value="${owner.id}" />
-									<spring:param name="petId" value="${pet.id}" />
-								</spring:url>
-								<a href="${fn:escapeXml(hospitalisationUrl)}" class="btn btn-default">Hospitalise</a>
-
-							</c:if>
 						</tr>
 					</table>
 				</td>
@@ -176,6 +165,74 @@
 									<spring:param name="ownerId" value="${owner.id}" />
 									<spring:param name="petId" value="${pet.id}" />
 								</spring:url> <a href="${fn:escapeXml(stayUrl)}">Add Stay</a></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+		</c:forEach>
+	</table>
+	
+	<br />
+	<br />
+	<br />
+	<h2>Pets and Hospitalisations</h2>
+
+	<table class="table table-striped">
+		<c:forEach var="pet" items="${owner.pets}">
+
+			<tr>
+				<td valign="top">
+					<dl class="dl-horizontal">
+						<dt>Name</dt>
+						<dd>
+							<c:out value="${pet.name}" />
+						</dd>
+						<dt>Birth Date</dt>
+						<dd>
+							<petclinic:localDate date="${pet.birthDate}" pattern="yyyy-MM-dd" />
+						</dd>
+						<dt>Type</dt>
+						<dd>
+							<c:out value="${pet.type.name}" />
+						</dd>
+						<dt>Status</dt>
+						<dd>
+							<c:out value="${pet.petStatus}" />
+						</dd>
+					</dl>
+				</td>
+				<td valign="top">
+					<table class="table-condensed">
+						<thead>
+							<tr>
+								<th>Start Date</th>
+              					<th>Finish Date</th>
+                				<th>Diagnosis</th>
+							</tr>
+						</thead>
+						<c:forEach var="hospitalisation" items="${pet.hospitalisations}">
+							<tr>
+								<td><petclinic:localDate date="${hospitalisation.startDate}"
+										pattern="yyyy-MM-dd" /></td>
+								<td><petclinic:localDate date="${hospitalisation.finishDate}"
+										pattern="yyyy-MM-dd" /></td>
+								<td><c:out value="${hospitalisation.diagnosis}" /></td>
+							</tr>
+						</c:forEach>
+						<tr>
+							<td><spring:url value="/owners/{ownerId}/pets/{petId}/edit"
+									var="petUrl">
+									<spring:param name="ownerId" value="${owner.id}" />
+									<spring:param name="petId" value="${pet.id}" />
+								</spring:url> <a href="${fn:escapeXml(petUrl)}">Edit Pet</a></td>
+							<c:if test="${pet.petStatus == 'SICK'}">
+							<td><spring:url
+									value="/owners/{ownerId}/pets/{petId}/hospitalisations/new" var="hospitalisationsUrl">
+									<spring:param name="ownerId" value="${owner.id}" />
+									<spring:param name="petId" value="${pet.id}" />
+								</spring:url> <a href="${fn:escapeXml(hospitalisationsUrl)}">Hospitalise</a></td>
+							</c:if>
 						</tr>
 					</table>
 				</td>

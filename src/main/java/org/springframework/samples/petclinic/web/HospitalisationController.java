@@ -33,30 +33,31 @@ public class HospitalisationController {
 		dataBinder.setDisallowedFields("id");
 	}
 	
-	@ModelAttribute("hospitalisation")
-	public Hospitalisation loadPetWithHospitalisation(@PathVariable("petId") int petId) {
-		Pet pet = this.petService.findPetById(petId);
-		Hospitalisation hospitalisation = new Hospitalisation();
-		pet.addHospitalisation(hospitalisation);
-		return hospitalisation;
-	}
-	
 	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/new")
 	public String initNewHospitalisationForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+		Pet pet = this.petService.findPetById(petId);
+		model.put("pet", pet);
+		model.put("hospitalisation", new Hospitalisation());
 		return "pets/createOrUpdateHospitalisationForm";
 	}
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result) {
-		if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
-			result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
-					"The finish date can not be before than start date");
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, @PathVariable("petId") int petId, Map<String, Object> model) {
+		if(hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
+			if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
+				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
+						"The finish date can not be before than start date");
+			}
 		}
+		Pet pet = this.petService.findPetById(petId);
 		if (result.hasErrors()) {
+			model.put("pet", pet);
 			return "pets/createOrUpdateHospitalisationForm";
 		}
 		else {
+			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
+			pet.addHospitalisation(hospitalisation);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
