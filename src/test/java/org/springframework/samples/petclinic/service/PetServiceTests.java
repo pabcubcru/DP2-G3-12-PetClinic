@@ -16,11 +16,14 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -245,17 +248,69 @@ class PetServiceTests {
 		assertThat(pet7.getStays().size()).isEqualTo(found + 1);
 		assertThat(stay.getId()).isNotNull();
 	}
-
+	
 	@Test
-	void shouldFindStaysByPetId() throws Exception {
+	@Transactional
+	public void shouldAddNewStayForPetNullPrice() {
+		Pet pet7 = this.petService.findPetById(7);
+		Stay stay = new Stay();
+		stay.setFinishdate(LocalDate.now().plusDays(2));
+		stay.setStartdate(LocalDate.now());
+		stay.setPrice(null);
+		stay.setSpecialCares("special cares");
+		try {
+			this.petService.savePet(pet7);
+		} catch (DuplicatedPetNameException ex) {
+			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay); this.petService.findPetById(7).addStay(stay);});
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdCorrectNumberStays() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		assertThat(stays.size()).isEqualTo(2); // Tiene que haber 2 porque es lo que esta populado en data.sql
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdPetNotNull() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPet()).isNotNull();
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdFinishDateNotNull() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
+		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getFinishdate()).isNotNull();
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdStartDateNotNull() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
+		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getStartdate()).isNotNull();
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdPriceNotNull() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
+		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPrice()).isNotNull();
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdSpecialCaresNotBlank() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
+		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getSpecialCares()).isNotBlank();
+	}
+	
+	@Test
+	void shouldFindStaysByPetIdEqualPetId() throws Exception {
+		Collection<Stay> stays = this.petService.findStaysByPetId(1);
+		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPet().getId()).isEqualTo(1);
 	}
 
