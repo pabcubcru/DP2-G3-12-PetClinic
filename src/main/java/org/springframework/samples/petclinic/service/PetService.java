@@ -77,7 +77,7 @@ public class PetService {
 	}
 	
 	@Transactional
-	public void saveStay(Stay stay) throws DataAccessException {
+	public void saveStay(Stay stay) {
 		stayRepository.save(stay);
 	}
 
@@ -86,7 +86,6 @@ public class PetService {
 		hospitalisationRepository.save(hospitalisation);
 	}
 
-	@Transactional(readOnly = true)
 	public Pet findPetById(int id) throws DataAccessException {
 		return petRepository.findById(id);
 	}
@@ -107,6 +106,11 @@ public class PetService {
 	
 	public Collection<Stay> findStaysByPetId(int petId) {
 		return stayRepository.findByPetId(petId);
+		
+	}
+	
+	public Stay findStayById(int id) throws DataAccessException {
+		return stayRepository.findById(id).get();
 		
 	}
     
