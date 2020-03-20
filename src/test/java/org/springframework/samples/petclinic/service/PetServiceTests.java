@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -218,6 +220,7 @@ class PetServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldFindVisitsByPetId() throws Exception {
 		Collection<Visit> visits = this.petService.findVisitsByPetId(7);
 		assertThat(visits.size()).isEqualTo(2);
@@ -270,12 +273,14 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdCorrectNumberStays() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		assertThat(stays.size()).isEqualTo(1); // Tiene que haber 1 porque es lo que esta populado en data.sql
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdPetNotNull() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -283,6 +288,7 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdFinishDateNotNull() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -290,6 +296,7 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdStartDateNotNull() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -297,6 +304,7 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdPriceNotNull() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -304,6 +312,7 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdSpecialCaresNotBlank() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -311,6 +320,7 @@ class PetServiceTests {
 	}
 	
 	@Test
+	@Transactional
 	void shouldFindStaysByPetIdEqualPetId() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
@@ -326,30 +336,17 @@ class PetServiceTests {
 		int found = pet7.getStays().size();
 		Stay stay = petService.findStayById(1);
 		stay.setStartdate(LocalDate.now());
-		stay.setFinishdate(LocalDate.now().plusDays(5));
 		this.petService.saveStay(stay);
-		try {
-			this.petService.savePet(pet7);
-		} catch (DuplicatedPetNameException ex) {
-			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		pet7 = this.petService.findPetById(7);
 		assertThat(pet7.getStays().size()).isEqualTo(found);
 		assertThat(stay.getStartdate()).isEqualTo(LocalDate.now());
 	}
 	
-//	@Test
-//	@Transactional
-//	public void shouldNotUpdateStay() {
-//		Pet pet7 = this.petService.findPetById(7);
-//		Stay stay = petService.findStayById(1);
-//		stay.setStartdate(null);
-//		pet7.addStay(stay);
-//		try {
-//			this.petService.savePet(pet7);
-//		} catch (DuplicatedPetNameException ex) {
-//			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-//		}
-//		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay);});
-//	}
+	@Test
+	@Transactional
+	@Disabled
+	public void shouldNotUpdateStay() {
+		Stay stay = petService.findStayById(1);
+		stay.setStartdate(null);
+		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay);});
+	}
 }
