@@ -37,6 +37,7 @@ public class Shop extends NamedEntity {
 	
 	public void addProduct(Product product) {
 		getProductsInternal().add(product);
+		product.setShop(this);
 	}
 	
 	public void deleteProduct(Product product) {
