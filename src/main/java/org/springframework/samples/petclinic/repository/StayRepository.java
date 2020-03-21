@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.repository;
 
 import java.util.Collection;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.samples.petclinic.model.Stay;
@@ -33,12 +34,11 @@ import org.springframework.stereotype.Repository;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-
 @Repository
 public interface StayRepository extends CrudRepository<Stay, Integer> {
 
 	@Query("select s from Stay s where s.pet.id = ?1")
-	Collection<Stay> findByPetId(int petId);
+	Collection<Stay> findByPetId(int petId)  throws DataAccessException;
 
 	/**
 	 * Save a <code>Stay</code> to the data store, either inserting or updating it.

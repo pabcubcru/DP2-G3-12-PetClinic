@@ -80,7 +80,6 @@ class PetServiceTests {
 
 	@Autowired
 	protected OwnerService ownerService;
-	
 
 	@Test
 	void shouldFindPetWithCorrectId() {
@@ -229,7 +228,7 @@ class PetServiceTests {
 		assertThat(visitArr[0].getDate()).isNotNull();
 		assertThat(visitArr[0].getPet().getId()).isEqualTo(7);
 	}
-	
+
 	// ADD STAY
 
 	@Test
@@ -254,10 +253,10 @@ class PetServiceTests {
 		assertThat(pet7.getStays().size()).isEqualTo(found + 1);
 		assertThat(stay.getId()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
-	public void shouldAddNewStayForPetNullPrice() {
+	public void shouldThrowExceptionInsertingStay() {
 		Pet pet7 = this.petService.findPetById(7);
 		Stay stay = new Stay();
 		stay.setFinishdate(LocalDate.now().plusDays(2));
@@ -269,16 +268,19 @@ class PetServiceTests {
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay); this.petService.findPetById(7).addStay(stay);});
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.petService.saveStay(stay);
+			this.petService.findPetById(7).addStay(stay);
+		});
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdCorrectNumberStays() throws Exception {
 		Collection<Stay> stays = this.petService.findStaysByPetId(1);
 		assertThat(stays.size()).isEqualTo(1); // Tiene que haber 1 porque es lo que esta populado en data.sql
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdPetNotNull() throws Exception {
@@ -286,7 +288,7 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPet()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdFinishDateNotNull() throws Exception {
@@ -294,7 +296,7 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getFinishdate()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdStartDateNotNull() throws Exception {
@@ -302,7 +304,7 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getStartdate()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdPriceNotNull() throws Exception {
@@ -310,7 +312,7 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPrice()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdSpecialCaresNotBlank() throws Exception {
@@ -318,7 +320,7 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getSpecialCares()).isNotBlank();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdEqualPetId() throws Exception {
@@ -326,9 +328,9 @@ class PetServiceTests {
 		Stay[] stayArr = stays.toArray(new Stay[stays.size()]);
 		assertThat(stayArr[0].getPet().getId()).isEqualTo(1);
 	}
-	
+
 	// EDIT STAY
-	
+
 	@Test
 	@Transactional
 	public void shouldUpdateStay() {
@@ -340,13 +342,28 @@ class PetServiceTests {
 		assertThat(pet7.getStays().size()).isEqualTo(found);
 		assertThat(stay.getStartdate()).isEqualTo(LocalDate.now());
 	}
-	
+
 	@Test
 	@Transactional
 	@Disabled
-	public void shouldNotUpdateStay() {
-		Stay stay = petService.findStayById(1);
-		stay.setStartdate(null);
-		assertThrows(ConstraintViolationException.class, () -> {this.petService.saveStay(stay);});
+	public void shouldThrowExceptionUpdatingStay() {
+		Pet pet7 = this.petService.findPetById(7);
+		Stay stay = new Stay();
+		stay.setFinishdate(LocalDate.now().plusDays(2));
+		stay.setStartdate(LocalDate.now());
+		stay.setPrice(15.0);
+		stay.setSpecialCares("special cares");
+		this.petService.saveStay(stay);
+		this.petService.findPetById(7).addStay(stay);
+		try {
+			this.petService.savePet(pet7);
+		} catch (DuplicatedPetNameException ex) {
+			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		assertThrows(Exception.class, () -> {
+			stay.setPrice(null);
+			this.petService.findPetById(7).addStay(stay);
+			this.petService.saveStay(stay);
+		});
 	}
 }
