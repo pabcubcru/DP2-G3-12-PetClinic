@@ -77,10 +77,11 @@ public class StayControllerTest {
 
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessNewVisitFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID).with(csrf()).param("startdate", "2020/06/06")
+	void testProcessNewStayFormHasErrors() throws Exception {
+		mockMvc.perform(post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID).with(csrf()).param("startdate", "2020/06/06").param("finishdate", "2020/06/04")
 				.param("specialCares", "A lot of special cares"))
-				.andExpect(model().attributeHasErrors("stay")).andExpect(model().attributeHasFieldErrors("stay", "finishdate", "price")).andExpect(status().isOk())
+				.andExpect(model().attributeHasErrors("stay")).andExpect(model().attributeHasFieldErrors("stay", "price"))
+				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 
@@ -103,6 +104,27 @@ public class StayControllerTest {
 				.andExpect(model().attribute("stay", hasProperty("specialCares", is("test special cares"))))
 				.andExpect(model().attribute("stay", hasProperty("price", is(30.0))))
 				.andExpect(model().attribute("stay", hasProperty("id", is(TEST_STAY_ID))))
+				.andExpect(view().name("pets/createOrUpdateStayForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessEditStayFormSuccess() throws Exception {
+		mockMvc.perform(post("/owners/*/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID, TEST_STAY_ID).with(csrf()).param("startdate", "2020/06/06")
+				.param("finishdate", "2020/06/08").param("price", "15.0")
+				.param("specialCares", "A lot of special cares"))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessEditStayFormHasErrors() throws Exception {
+		mockMvc.perform(post("/owners/*/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID, TEST_STAY_ID).with(csrf()).param("startdate", "2020/06/06")
+				.param("finishdate", "2020/06/04")
+				.param("specialCares", "A lot of special cares"))
+				.andExpect(model().attributeHasErrors("stay")).andExpect(model().attributeHasFieldErrors("stay", "price"))
+				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 }
