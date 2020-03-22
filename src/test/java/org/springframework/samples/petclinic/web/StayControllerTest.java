@@ -1,5 +1,8 @@
 package org.springframework.samples.petclinic.web;
 
+import static org.hamcrest.Matchers.hasProperty;
+
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -10,7 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
+import java.util.regex.Matcher;
 
+import org.hamcrest.beans.HasProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +89,20 @@ public class StayControllerTest {
 	void testShowStays() throws Exception {
 		mockMvc.perform(get("/owners/*/pets/{petId}/stays", TEST_PET_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitEditStayForm() throws Exception {
+		mockMvc.perform(get("/owners/*/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID, TEST_STAY_ID)).andExpect(status().isOk())
+				.andExpect(model().attributeExists("stay"))
+				.andExpect(model().attributeExists("pet"))
+				.andExpect(model().attribute("pet", this.clinicService.findPetById(TEST_PET_ID)))
+				.andExpect(model().attribute("stay", hasProperty("startdate", is(LocalDate.now()))))
+				.andExpect(model().attribute("stay", hasProperty("finishdate", is(LocalDate.now().plusDays(2)))))
+				.andExpect(model().attribute("stay", hasProperty("specialCares", is("test special cares"))))
+				.andExpect(model().attribute("stay", hasProperty("price", is(30.0))))
+				.andExpect(model().attribute("stay", hasProperty("id", is(TEST_STAY_ID))))
+				.andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 }
