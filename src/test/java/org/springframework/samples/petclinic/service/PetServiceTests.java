@@ -241,8 +241,7 @@ class PetServiceTests {
 		stay.setFinishdate(LocalDate.now().plusDays(2));
 		stay.setStartdate(LocalDate.now());
 		stay.setPrice(15.0);
-		stay.setPet(pet7);
-		stay.setSpecialCares("special cares");
+		stay.setSpecialCares("test special cares");
 		this.petService.saveStay(stay);
 		try {
 			this.petService.savePet(pet7);
@@ -268,10 +267,7 @@ class PetServiceTests {
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		assertThrows(ConstraintViolationException.class, () -> {
-			this.petService.saveStay(stay);
-			this.petService.findPetById(7).addStay(stay);
-		});
+		assertThrows(ConstraintViolationException.class, () -> {this.petService.findPetById(7).addStay(stay); this.petService.saveStay(stay);});
 	}
 
 	@Test
