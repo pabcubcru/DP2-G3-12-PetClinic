@@ -76,7 +76,7 @@ class DiscountServiceTests {
 	@Test
 	void shouldFindDiscountById() {
 
-		Discount discount1 = this.discountService.findDiscountById(1).get();
+		Discount discount1 = this.discountService.findDiscountById(1);
 
 		assertThat(discount1.getStartDate().isEqual(LocalDate.of(2020, 9, 1)));
 		assertThat(discount1.getPercentage()).isEqualTo(30.0);
@@ -110,7 +110,7 @@ class DiscountServiceTests {
 	@Test
 	@Transactional
 	public void shouldUpdateDiscountPercentage() throws Exception {
-		Discount discount1 = this.discountService.findDiscountById(1).get();
+		Discount discount1 = this.discountService.findDiscountById(1);
 		Double oldPercentage = discount1.getPercentage();
 
 		Double newPercentage = oldPercentage + 10.0;
@@ -128,7 +128,7 @@ class DiscountServiceTests {
 	@Test
 	@Transactional
 	public void shouldNotUpdateDiscount() throws Exception { //SALE MAL
-		Discount discount1 = this.discountService.findDiscountById(1).get();
+		Discount discount1 = this.discountService.findDiscountById(1);
 
 		discount1.setPercentage(null);
 		

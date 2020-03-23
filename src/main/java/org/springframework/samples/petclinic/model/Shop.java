@@ -61,5 +61,6 @@ public class Shop extends NamedEntity {
 	
 	public void addOrder(Order order) {
 		getOrdersInternal().add(order);
+		order.setShop(this);
 	}
 }

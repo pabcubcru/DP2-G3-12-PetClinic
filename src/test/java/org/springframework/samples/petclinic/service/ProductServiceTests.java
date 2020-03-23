@@ -246,7 +246,7 @@ class ProductServiceTests {
 	@Test
 	void shouldEditDiscountForProduct() throws Exception {
 		Product product1 = this.productService.findByName("product1");
-		Discount discount = this.discountService.findDiscountById(1).get();
+		Discount discount = this.discountService.findDiscountById(1);
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		this.discountService.saveDiscount(discount);
 		product1.setDiscount(discount);
@@ -257,7 +257,7 @@ class ProductServiceTests {
 
 	@Test
 	void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
-		Discount discount = this.discountService.findDiscountById(1).get();
+		Discount discount = this.discountService.findDiscountById(1);
 		assertThrows(Exception.class, () -> {
 			discount.setPercentage(null);
 			this.discountService.saveDiscount(discount);
