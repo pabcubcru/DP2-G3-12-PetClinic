@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Product;
@@ -15,14 +16,13 @@ public class ProductService {
 
 	private ProductRepository productRepository;
 
-
 	@Autowired
 	public ProductService(final ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
 
 	public Product findProductById(final int id) throws DataAccessException {
-		return this.productRepository.findById(id);
+		return this.productRepository.findById(id).get();
 	}
 
 	@Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void saveProduct(final Product product) throws DataAccessException {
+	public void saveProduct(Product product) throws DataAccessException {
 		this.productRepository.save(product);
 	}
 
@@ -43,5 +43,9 @@ public class ProductService {
 	@Transactional
 	public Product findByName(final String name) throws DataAccessException {
 		return this.productRepository.findByName(name);
+	}
+	
+	public Iterable<Product> findAll() throws DataAccessException {
+		return this.productRepository.findAll();
 	}
 }

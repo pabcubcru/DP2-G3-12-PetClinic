@@ -64,7 +64,7 @@ public class DiscountController {
 	@GetMapping(value = "/discounts/{discountId}/edit")
 	public String initEditDiscountForm(Map<String, Object> model, @PathVariable("productId") int productId,
 			@PathVariable("discountId") int discountId) {
-		Discount discount = discountService.findDiscountById(discountId).get();
+		Discount discount = discountService.findDiscountById(discountId);
 		Product product = productService.findProductById(productId);
 		model.put("discount", discount);
 		model.put("product", product);

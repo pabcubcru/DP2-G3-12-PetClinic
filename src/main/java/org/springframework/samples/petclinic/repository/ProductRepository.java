@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Integer>{
 
-	@Query("SELECT p FROM Product p WHERE p.id = ?1")
-	public Product findById(int id);
 	
 	@Query("select p.name from Product p")
 	public List<String> getNames();
