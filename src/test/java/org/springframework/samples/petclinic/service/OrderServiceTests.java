@@ -2,15 +2,16 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Order;
-import org.springframework.samples.petclinic.model.OrderStatus;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class OrderServiceTests {
 
 	@Autowired
 	protected ProductService productService;
-
+	
 	@Test
 	@Transactional
 	public void shouldMakeOrder() {
@@ -35,8 +36,6 @@ public class OrderServiceTests {
 
 		Order order = new Order();
 		order.setName("order3");
-		order.setOrderDate(LocalDateTime.now());
-		order.setOrderStatus(OrderStatus.INPROCESS);
 		order.setProduct(product);
 		order.setProductNumber(50);
 		order.setShop(shop);
@@ -48,17 +47,25 @@ public class OrderServiceTests {
 		orders = this.orderService.findOrdersByProductId(product.getId());
 		assertThat(orders.size()).isEqualTo(tam + 1);
 	}
-
+	
 	@Test
 	@Transactional
-	public void shouldUpdateOrder() {
-		Order order = orderService.findOrderById(1);
-		order.setOrderStatus(OrderStatus.CANCELED);
-		this.orderService.saveOrder(order);
+	public void shouldThrowExceptionMakingOrder() {
+		Product product = productService.findProductById(1);
+		Shop shop = product.getShop();
 
-		order = this.orderService.findOrderById(1);
-		assertThat(order.getOrderStatus().equals(OrderStatus.CANCELED));
-
+		Order order = new Order();
+		order.setName("order3");
+		order.setProduct(product);
+		order.setProductNumber(50);
+		order.setShop(shop);
+		order.setSupplier("");
+		shop.addOrder(order);
+		
+		Assertions.assertThrows(ConstraintViolationException.class, () -> {
+			shop.addOrder(order);
+			orderService.saveOrder(order);
+		});
 	}
 
 	@Test
