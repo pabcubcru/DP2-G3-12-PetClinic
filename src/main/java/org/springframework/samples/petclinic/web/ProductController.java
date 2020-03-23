@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
+
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -13,7 +14,6 @@ import org.springframework.samples.petclinic.service.DiscountService;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
-import org.springframework.samples.petclinic.service.exceptions.DuplicatedProductNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,8 +71,7 @@ public class ProductController {
 			product.setShop(shop);
 			try {
 				this.productService.saveProduct(product);
-
-			} catch (DuplicatedProductNameException e) {
+			} catch (Exception e) {
 				result.rejectValue("name", "duplicate", "already exists");
 				return "products/createOrUpdateProductForm";
 			}
@@ -137,7 +136,7 @@ public class ProductController {
 			product.setShop(shop);
 			try {
 				this.productService.saveProduct(product);
-			} catch (DuplicatedProductNameException e) {
+			} catch (Exception e) {
 				result.rejectValue("name", "duplicate", "already exists");
 				return "products/createOrUpdateProductForm";
 			}
