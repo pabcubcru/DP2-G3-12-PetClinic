@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.service.DiscountService;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedProductNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,16 +29,16 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService		productService;
-	private ShopService			shopService;
-	private OrderService		orderService;
-	private DiscountService		discountService;
+	private ProductService productService;
+	private ShopService shopService;
+	private OrderService orderService;
+	private DiscountService discountService;
 
-	private static final String	PRODUCT_CREATE_OR_UPDATE_FORM	= "products/createOrUpdateProductForm";
-
+	private static final String PRODUCT_CREATE_OR_UPDATE_FORM = "products/createOrUpdateProductForm";
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, final DiscountService discountService) {
+	public ProductController(final ProductService productService, final ShopService shopService,
+			final OrderService orderService, final DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
 		this.orderService = orderService;
@@ -57,7 +58,8 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/new")
-	public String processNewProductForm(@Valid final Product product, final BindingResult result, @PathVariable("shopId") final int shopId) {
+	public String processNewProductForm(@Valid final Product product, final BindingResult result,
+			@PathVariable("shopId") final int shopId) {
 
 		if (this.productService.findProductsNames().contains(product.getName())) {
 			result.rejectValue("name", "duplicated name", "This name already exist");
@@ -67,14 +69,21 @@ public class ProductController {
 		} else {
 			Shop shop = this.shopService.findShops().iterator().next();
 			product.setShop(shop);
-			this.productService.saveProduct(product);
+			try {
+				this.productService.saveProduct(product);
+
+			} catch (DuplicatedProductNameException e) {
+				result.rejectValue("name", "duplicate", "already exists");
+				return "products/createOrUpdateProductForm";
+			}
 			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + product.getId();
 		}
 	}
 
 	@GetMapping(value = "/products/{productId}/delete")
-	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId,
+			@PathVariable("shopId") final int shopId) {
 		Product product = this.productService.findProductById(productId);
 		if (this.orderService.findOrdersByProductId(productId).size() == 0) {
 			this.shopService.findShops().iterator().next().deleteProduct(product);
@@ -91,8 +100,10 @@ public class ProductController {
 		ModelAndView mav = new ModelAndView("products/productDetails");
 		Product product = this.productService.findProductById(productId);
 		if (product.getDiscount() != null) {
-			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now()) && product.getDiscount().getStartDate().isBefore(LocalDate.now()) || product.getDiscount().getStartDate().isEqual(LocalDate.now())
-				|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
+			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now())
+					&& product.getDiscount().getStartDate().isBefore(LocalDate.now())
+					|| product.getDiscount().getStartDate().isEqual(LocalDate.now())
+					|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
 				mav.addObject("activeDiscount", true);
 				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
@@ -111,9 +122,11 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/{productId}/edit")
-	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+	public String processUpdateProductForm(@Valid final Product product, final BindingResult result,
+			@PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
 		Product productWithoutUpdate = this.productService.findProductById(productId);
-		if (this.productService.findProductsNames().contains(product.getName()) && !productWithoutUpdate.getName().equals(product.getName())) {
+		if (this.productService.findProductsNames().contains(product.getName())
+				&& !productWithoutUpdate.getName().equals(product.getName())) {
 			result.rejectValue("name", "duplicated name", "This name already exist");
 		}
 		if (result.hasErrors()) {
@@ -122,7 +135,12 @@ public class ProductController {
 			product.setId(productId);
 			Shop shop = this.shopService.findShops().iterator().next();
 			product.setShop(shop);
-			this.productService.saveProduct(product);
+			try {
+				this.productService.saveProduct(product);
+			} catch (DuplicatedProductNameException e) {
+				result.rejectValue("name", "duplicate", "already exists");
+				return "products/createOrUpdateProductForm";
+			}
 			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + productId;
 		}

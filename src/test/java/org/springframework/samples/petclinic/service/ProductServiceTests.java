@@ -15,9 +15,6 @@
  */
 package org.springframework.samples.petclinic.service;
 
-
-
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,32 +29,35 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Discount;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedProductNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration test of the Service and the Repository layer.
  * <p>
- * ClinicServiceSpringDataJpaTests subclasses benefit from the following services provided
- * by the Spring TestContext Framework:
+ * ClinicServiceSpringDataJpaTests subclasses benefit from the following
+ * services provided by the Spring TestContext Framework:
  * </p>
  * <ul>
- * <li><strong>Spring IoC container caching</strong> which spares us unnecessary set up
- * time between test execution.</li>
- * <li><strong>Dependency Injection</strong> of test fixture instances, meaning that we
- * don't need to perform application context lookups. See the use of
+ * <li><strong>Spring IoC container caching</strong> which spares us unnecessary
+ * set up time between test execution.</li>
+ * <li><strong>Dependency Injection</strong> of test fixture instances, meaning
+ * that we don't need to perform application context lookups. See the use of
  * {@link Autowired @Autowired} on the <code>{@link
- * ClinicServiceTests#clinicService clinicService}</code> instance variable, which uses
- * autowiring <em>by type</em>.
- * <li><strong>Transaction management</strong>, meaning each test method is executed in
- * its own transaction, which is automatically rolled back by default. Thus, even if tests
- * insert or otherwise change database state, there is no need for a teardown or cleanup
- * script.
- * <li>An {@link org.springframework.context.ApplicationContext ApplicationContext} is
- * also inherited and can be used for explicit bean lookup if necessary.</li>
+ * ClinicServiceTests#clinicService clinicService}</code> instance variable,
+ * which uses autowiring <em>by type</em>.
+ * <li><strong>Transaction management</strong>, meaning each test method is
+ * executed in its own transaction, which is automatically rolled back by
+ * default. Thus, even if tests insert or otherwise change database state, there
+ * is no need for a teardown or cleanup script.
+ * <li>An {@link org.springframework.context.ApplicationContext
+ * ApplicationContext} is also inherited and can be used for explicit bean
+ * lookup if necessary.</li>
  * </ul>
  *
  * @author Ken Krebs
@@ -72,88 +72,118 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductServiceTests {
 
 	@Autowired
-	protected ProductService productService;	
-	
+	protected ProductService productService;
+
 	@Autowired
-	protected ShopService shopService;	
-	
+	protected ShopService shopService;
+
 	@Autowired
-	protected DiscountService discountService;	
+	protected DiscountService discountService;
 
 	@Test
 	void shouldFindProductWithCorrectId() {
-		
+
 		Product product2 = this.productService.findProductById(2);
-		
+
 		assertThat(product2.getStock()).isEqualTo(10);
 		assertThat(product2.getPrice()).isEqualTo(25.0);
 	}
-	
+
 	@Test
 	void shoudFindProductsNames() {
-		
+
 		List<String> products = this.productService.findProductsNames();
-		
+
 		assertThat(products.contains("product1")).isTrue();
 		assertThat(products.contains("product4")).isFalse();
-		
-		
 	}
-	
-	
+
 	@Test
 	void shouldAddNewProduct() {
-		
+
 		List<String> products = this.productService.findProductsNames();
 		int tamaño = products.size();
-		
+
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
 		product.setName("product3");
 		product.setPrice(50.0);
 		product.setStock(20);
 		shop1.addProduct(product);
-		Discount discount = new Discount();
-		discount.setName("discount1");
-		discount.setStartDate(LocalDate.now());
-		discount.setFinishDate(LocalDate.of(2020, 12, 12));
-		discount.setPercentage(50.0);
-		discountService.saveDiscount(discount);
-		product.setDiscount(discount);
+
+		try {
+			this.productService.saveProduct(product);
+		} catch (DuplicatedProductNameException ex) {
+			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		products = this.productService.findProductsNames();
+
+		assertThat(products.size()).isEqualTo(tamaño + 1);
+		assertThat(product.getId()).isNotNull();
+	}	
+	
+	@Test
+	void shouldThrowExceptionAddingNewProduct() {
+
+		Shop shop1 = shopService.findShops().iterator().next();
+		Product product = new Product();
+		product.setName("product3");
+		product.setPrice(null);
+		product.setStock(20);
+		shop1.addProduct(product);
+
+		assertThrows(Exception.class, () -> {
+		this.productService.saveProduct(product);
+	});
+	}	
+	
+	@Test
+	void shouldThrowDuplicatedProductNameExceptionAddingNewProduct() {
+
+		Shop shop1 = shopService.findShops().iterator().next();
+		Product product = new Product();
+		product.setName("product2");
+		product.setPrice(50.0);
+		product.setStock(20);
+		shop1.addProduct(product);
+
+//		assertThrows(DuplicatedProductNameException.class, () -> {
+//		this.productService.saveProduct(product);
+//	});
 		
 		try {
 			this.productService.saveProduct(product);
-		} catch (Exception ex) {
+		} catch (DuplicatedProductNameException ex) {
 			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
-		products = this.productService.findProductsNames();
-		assertThat(products.size()).isEqualTo(tamaño + 1);
-		assertThat(product.getId()).isNotNull();
-
-	}
+	}	
 	
+	
+	
+	
+
 	@Test
 	@Transactional
-	public void shouldDeleteProduct() {  
-		
+	public void shouldDeleteProduct() {
+
 		List<String> products = this.productService.findProductsNames();
 		Product product1 = this.productService.findProductById(1);
 		int tamaño = products.size();
-		
+
 		Shop shop1 = shopService.findShops().iterator().next();
 		shop1.deleteProduct(product1);
-		
+
 		if (product1.getDiscount() != null) {
 			discountService.deleteDiscount(product1.getDiscount().getId());
 		}
 		productService.deleteProduct(product1);
 		products = this.productService.findProductsNames();
-		
+
 		assertThat(products.size()).isEqualTo(tamaño - 1);
 
 	}
-	
+
 	@Test
 	@Transactional
 	public void shouldUpdateProductName() throws Exception {
@@ -165,29 +195,41 @@ class ProductServiceTests {
 
 		try {
 			this.productService.saveProduct(product1);
-		} catch (Exception ex) {
+		} catch (DuplicatedProductNameException ex) {
 			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		product1 = this.productService.findProductById(1);
 		assertThat(product1.getName()).isEqualTo(newName);
 	}
-	
+
 	@Test
 	@Transactional
-	public void shouldNotUpdateProduct() throws Exception { //SALE MAL
+	public void shouldThrowExceptionUpdatingProductNull() throws Exception { // MAAAAAAAAL
 		Product product1 = this.productService.findProductById(1);
 
 		product1.setPrice(null);
+
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.productService.saveProduct(product1);
+		});
 		
-		assertThrows(ConstraintViolationException.class, () -> {this.productService.saveProduct(product1);});
 	}
 	
+	@Test
+	@Transactional
+	public void shouldThrowExceptionUpdatingProductDuplicatedName() throws DuplicatedProductNameException { // MAAAAAL
+		Product product1 = this.productService.findProductById(1);
+		
+		assertThrows(DuplicatedProductNameException.class, () -> {product1.setName("product2");
+			this.productService.saveProduct(product1);
+		});
+	}
+
 	@Test
 	void shouldFindProductByName() {
 		Product product1 = this.productService.findByName("product1");
 		assertThat(product1.getStock()).isEqualTo(5);
 		assertThat(product1.getPrice()).isEqualTo(15.0);
 	}
-
 
 }

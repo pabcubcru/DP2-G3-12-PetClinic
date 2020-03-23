@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.repository.ProductRepository;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedProductNameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ProductService {
 
 	private ProductRepository productRepository;
-
 
 	@Autowired
 	public ProductService(final ProductRepository productRepository) {
@@ -22,7 +23,7 @@ public class ProductService {
 	}
 
 	public Product findProductById(final int id) throws DataAccessException {
-		return this.productRepository.findById(id);
+		return this.productRepository.findById(id).get();
 	}
 
 	@Transactional(readOnly = true)
@@ -30,9 +31,26 @@ public class ProductService {
 		return this.productRepository.getNames();
 	}
 
-	@Transactional
-	public void saveProduct(final Product product) throws DataAccessException {
-		this.productRepository.save(product);
+	@Transactional(rollbackFor = DuplicatedProductNameException.class)
+	public void saveProduct(Product product) throws DataAccessException, DuplicatedProductNameException {
+		
+		if (product.getId() == null) { // CREAR PRODUCTO
+			if (StringUtils.hasLength(product.getName()) && (!findProductsNames().contains(product.getName()))) {
+				this.productRepository.save(product);
+
+			} else {
+				throw new DuplicatedProductNameException();
+			}
+		} else { // EDITAR PRODUCTO
+			String oldName = this.productRepository.findById(product.getId()).get().getName();
+			if (StringUtils.hasLength(product.getName())
+					&& (oldName.equals(product.getName()) || !findProductsNames().contains(product.getName()))) {
+				this.productRepository.save(product);
+
+			} else {
+				throw new DuplicatedProductNameException();
+			}
+		}
 	}
 
 	@Transactional
