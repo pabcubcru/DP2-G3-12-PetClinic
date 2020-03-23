@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
 import static org.hamcrest.Matchers.hasProperty;
-
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
@@ -13,9 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
-import java.util.regex.Matcher;
 
-import org.hamcrest.beans.HasProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +108,7 @@ public class StayControllerTest {
 	@Test
 	void testProcessEditStayFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/*/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID, TEST_STAY_ID).with(csrf()).param("startdate", "2020/06/06")
-				.param("finishdate", "2020/06/08").param("price", "15.0")
+				.param("finishdate", "2020/06/08").param("price", "15.0").param("id", "1")
 				.param("specialCares", "A lot of special cares"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
@@ -121,7 +118,7 @@ public class StayControllerTest {
 	@Test
 	void testProcessEditStayFormHasErrors() throws Exception {
 		mockMvc.perform(post("/owners/*/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID, TEST_STAY_ID).with(csrf()).param("startdate", "2020/06/06")
-				.param("finishdate", "2020/06/04")
+				.param("finishdate", "2020/06/04").param("id", "1")
 				.param("specialCares", "A lot of special cares"))
 				.andExpect(model().attributeHasErrors("stay")).andExpect(model().attributeHasFieldErrors("stay", "price"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate")).andExpect(status().isOk())
