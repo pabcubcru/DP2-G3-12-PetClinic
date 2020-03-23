@@ -30,7 +30,7 @@ public class DiscountService {
 	}
 	
 	@Transactional
-	public Optional<Discount> findDiscountById(int id) throws DataAccessException {
-		return this.discountRepository.findById(id);
+	public Discount findDiscountById(int id) throws DataAccessException {
+		return this.discountRepository.findById(id).get();
 	}
 }
