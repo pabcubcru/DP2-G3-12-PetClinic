@@ -34,8 +34,6 @@ public class ProductController {
 	private OrderService orderService;
 	private DiscountService discountService;
 
-	private static final String PRODUCT_CREATE_OR_UPDATE_FORM = "products/createOrUpdateProductForm";
-
 	@Autowired
 	public ProductController(final ProductService productService, final ShopService shopService,
 			final OrderService orderService, final DiscountService discountService) {
@@ -95,7 +93,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ModelAndView showOrder(@PathVariable("productId") final int productId) {
+	public ModelAndView showProduct(@PathVariable("productId") final int productId) {
 		ModelAndView mav = new ModelAndView("products/productDetails");
 		Product product = this.productService.findProductById(productId);
 		if (product.getDiscount() != null) {
@@ -126,20 +124,14 @@ public class ProductController {
 		Product productWithoutUpdate = this.productService.findProductById(productId);
 		if (this.productService.findProductsNames().contains(product.getName())
 				&& !productWithoutUpdate.getName().equals(product.getName())) {
-			result.rejectValue("name", "duplicated name", "This name already exist");
+			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
 			product.setId(productId);
 			Shop shop = this.shopService.findShops().iterator().next();
-			product.setShop(shop);
-			try {
-				this.productService.saveProduct(product);
-			} catch (Exception e) {
-				result.rejectValue("name", "duplicate", "already exists");
-				return "products/createOrUpdateProductForm";
-			}
+			this.productService.saveProduct(product);
 			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + productId;
 		}

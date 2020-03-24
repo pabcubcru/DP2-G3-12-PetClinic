@@ -19,7 +19,6 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Table(name = "products")
 public class Product extends BaseEntity {
 	
@@ -36,7 +35,6 @@ public class Product extends BaseEntity {
 	private int			stock;
 
 	@OneToOne(optional = true)
-	@Fetch(value = FetchMode.SELECT)
 	@JoinColumn(name = "discount_id")
 	private Discount	discount;
 

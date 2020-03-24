@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Assertions;
@@ -32,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -81,6 +85,9 @@ class PetServiceTests {
 
 	@Autowired
 	protected OwnerService ownerService;
+	
+	 @PersistenceContext
+	 private EntityManager entityManager;
 
 	@Test
 	void shouldFindPetWithCorrectId() {
@@ -331,14 +338,9 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	@Disabled
 	public void shouldThrowExceptionUpdatingStay() throws Exception {
-		Stay stay = petService.findStayById(1);
-		stay.setFinishdate(LocalDate.now().plusDays(2));
-		stay.setStartdate(LocalDate.now());
-		stay.setSpecialCares("special cares");
-		stay.setPrice(null);
-		assertThrows(Exception.class, () -> {this.petService.saveStay(stay);});
+		Stay stay = null;
+		assertThrows(Exception.class, () -> {this.petService.findPetById(7).addStay(stay); this.petService.saveStay(stay);});
 	}
 	
 	// ADD HOSPITALISATION

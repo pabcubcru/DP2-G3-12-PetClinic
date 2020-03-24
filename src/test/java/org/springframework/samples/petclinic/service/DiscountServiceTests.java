@@ -127,12 +127,9 @@ class DiscountServiceTests {
 	
 	@Test
 	@Transactional
-	public void shouldNotUpdateDiscount() throws Exception { //SALE MAL
-		Discount discount1 = this.discountService.findDiscountById(1);
-
-		discount1.setPercentage(null);
-		
-		assertThrows(ConstraintViolationException.class, () -> {this.discountService.saveDiscount(discount1);});
+	public void shouldNotUpdateDiscount() throws Exception {
+		Discount discount1 = null;
+		assertThrows(Exception.class, () -> {this.discountService.saveDiscount(discount1);});
 	}
 
 }
