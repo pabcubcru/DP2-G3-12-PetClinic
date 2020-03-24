@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 
@@ -73,6 +75,9 @@ class DiscountServiceTests {
 	@Autowired
 	protected ProductService productService;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	@Test
 	void shouldFindDiscountById() {
 
@@ -84,7 +89,7 @@ class DiscountServiceTests {
 	}
 
 	@Test
-	void shouldApplyDiscountToProduct() {
+	void shouldInsertDiscountForProduct() {
 
 		Product producto2 = this.productService.findProductById(2);
 		Discount discount2 = new Discount();
@@ -106,7 +111,7 @@ class DiscountServiceTests {
 		assertThat(discount2.getId()).isNotNull();
 
 	}
-	
+
 	@Test
 	@Transactional
 	public void shouldUpdateDiscountPercentage() throws Exception {
@@ -121,15 +126,19 @@ class DiscountServiceTests {
 		} catch (Exception ex) {
 			Logger.getLogger(DiscountServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		
+
 		assertThat(discount1.getPercentage()).isEqualTo(newPercentage);
 	}
-	
+
 	@Test
 	@Transactional
-	public void shouldNotUpdateDiscount() throws Exception {
-		Discount discount1 = null;
-		assertThrows(Exception.class, () -> {this.discountService.saveDiscount(discount1);});
+	public void shouldThowsExceptionEditingDiscountNullParameter() throws Exception {
+		Discount discount = discountService.findDiscountById(1);
+		assertThrows(Exception.class, () -> {
+			discount.setPercentage(null);
+			entityManager.flush();
+			this.discountService.saveDiscount(discount);
+		});
 	}
 
 }

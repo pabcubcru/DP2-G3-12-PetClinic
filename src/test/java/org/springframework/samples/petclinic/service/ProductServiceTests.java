@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Disabled;
@@ -80,6 +82,9 @@ class ProductServiceTests {
 	@Autowired
 	protected DiscountService discountService;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 //	FIND PRODUCT BY ID
 
 	@Test
@@ -127,9 +132,9 @@ class ProductServiceTests {
 		product.setName("product3");
 		product.setPrice(null);
 		product.setStock(20);
-		shop1.addProduct(product);
 		assertThrows(ConstraintViolationException.class, () -> {
 			this.productService.saveProduct(product);
+			shop1.addProduct(product);
 		});
 	}
 
@@ -137,12 +142,22 @@ class ProductServiceTests {
 	void shouldThrowExceptionInsertingNewProductDuplicatedName() throws Exception {
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
-		product.setName("product2");
+		product.setName("product1");
 		product.setPrice(50.0);
 		product.setStock(20);
-		shop1.addProduct(product);
-		assertThrows(Exception.class, () -> {
+		try {
 			this.productService.saveProduct(product);
+			shop1.addProduct(product);
+		} catch (Exception ex) {
+			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		Product productTest = new Product();
+		productTest.setName("product1");
+		productTest.setPrice(50.0);
+		productTest.setStock(20);
+		assertThrows(Exception.class, () -> {
+			this.productService.saveProduct(productTest);
+			shop1.addProduct(productTest);
 		});
 	}
 
@@ -187,19 +202,41 @@ class ProductServiceTests {
 	@Test
 	@Transactional
 	public void shouldThrowExceptionEditingProductNullParameter() throws Exception {
-		Product product1 = null;
+		Shop shop1 = shopService.findShops().iterator().next();
+		Product product = new Product();
+		product.setName("product2");
+		product.setPrice(50.0);
+		product.setStock(20);
+		shop1.addProduct(product);
 		assertThrows(Exception.class, () -> {
-			this.productService.saveProduct(product1);
+			this.productService.saveProduct(product);
 		});
 	}
 
 	@Test
 	@Transactional
-	@Disabled
 	public void shouldThrowExceptionEditingProductDuplicatedName() throws Exception {
-		Product product1 = this.productService.findProductById(1);
+		Shop shop1 = shopService.findShops().iterator().next();
+		Product product1 = new Product();
+		product1.setName("productTest1");
+		product1.setPrice(50.0);
+		product1.setStock(20);
+		shop1.addProduct(product1);
+		Product product2 = new Product();
+		product2.setName("productTest2");
+		product2.setPrice(50.0);
+		product2.setStock(20);
+		shop1.addProduct(product2);
+
+		try {
+			this.productService.saveProduct(product1);
+			this.productService.saveProduct(product2);
+		} catch (Exception ex) {
+			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
 		assertThrows(Exception.class, () -> {
-			product1.setName("product2");
+			product1.setName("productTest2");
+			entityManager.flush();
 			this.productService.saveProduct(product1);
 		});
 	}
@@ -258,8 +295,18 @@ class ProductServiceTests {
 
 	@Test
 	void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
-		Discount discount = null;
+		Discount discount = new Discount();
+		discount.setFinishDate(LocalDate.now().plusDays(2));
+		discount.setStartDate(LocalDate.now());
+		discount.setName("test discount");
+		try {
+			this.discountService.saveDiscount(discount);
+		} catch (Exception ex) {
+			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
 		assertThrows(Exception.class, () -> {
+			discount.setFinishDate(null); 
+			entityManager.flush();
 			this.discountService.saveDiscount(discount);
 		});
 	}

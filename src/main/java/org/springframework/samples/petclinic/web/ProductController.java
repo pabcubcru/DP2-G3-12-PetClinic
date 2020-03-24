@@ -58,22 +58,15 @@ public class ProductController {
 	@PostMapping(value = "/products/new")
 	public String processNewProductForm(@Valid final Product product, final BindingResult result,
 			@PathVariable("shopId") final int shopId) {
-
 		if (this.productService.findProductsNames().contains(product.getName())) {
-			result.rejectValue("name", "duplicated name", "This name already exist");
+			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
 			Shop shop = this.shopService.findShops().iterator().next();
-			product.setShop(shop);
-			try {
-				this.productService.saveProduct(product);
-			} catch (Exception e) {
-				result.rejectValue("name", "duplicate", "already exists");
-				return "products/createOrUpdateProductForm";
-			}
 			shop.addProduct(product);
+			this.productService.saveProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + product.getId();
 		}
 	}
@@ -131,8 +124,8 @@ public class ProductController {
 		} else {
 			product.setId(productId);
 			Shop shop = this.shopService.findShops().iterator().next();
+			product.setShop(shop);
 			this.productService.saveProduct(product);
-			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + productId;
 		}
 	}

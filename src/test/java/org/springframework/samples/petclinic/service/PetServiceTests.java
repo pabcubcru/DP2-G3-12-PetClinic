@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -85,9 +84,9 @@ class PetServiceTests {
 
 	@Autowired
 	protected OwnerService ownerService;
-	
-	 @PersistenceContext
-	 private EntityManager entityManager;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Test
 	void shouldFindPetWithCorrectId() {
@@ -264,7 +263,10 @@ class PetServiceTests {
 		stay.setStartdate(LocalDate.now());
 		stay.setPrice(null);
 		stay.setSpecialCares("special cares");
-		assertThrows(ConstraintViolationException.class, () -> {this.petService.findPetById(7).addStay(stay); this.petService.saveStay(stay);});
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.petService.findPetById(7).addStay(stay);
+			this.petService.saveStay(stay);
+		});
 	}
 
 	@Test
@@ -326,7 +328,7 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldUpdateStay() throws Exception{
+	public void shouldUpdateStay() throws Exception {
 		Pet pet7 = this.petService.findPetById(7);
 		int found = pet7.getStays().size();
 		Stay stay = petService.findStayById(1);
@@ -339,12 +341,16 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	public void shouldThrowExceptionUpdatingStay() throws Exception {
-		Stay stay = null;
-		assertThrows(Exception.class, () -> {this.petService.findPetById(7).addStay(stay); this.petService.saveStay(stay);});
+		Stay stay = petService.findStayById(1);
+		assertThrows(Exception.class, () -> {
+			stay.setPrice(null);
+			entityManager.flush();
+			this.petService.saveStay(stay);
+		});
 	}
-	
+
 	// ADD HOSPITALISATION
-	
+
 	@Test
 	@Transactional
 	public void shouldAddNewHospitalisationForPet() throws Exception {
@@ -362,7 +368,7 @@ class PetServiceTests {
 		assertThat(pet7.getHospitalisations().size()).isEqualTo(found + 1);
 		assertThat(hospitalisation.getId()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	public void shouldThrowExceptionInsertingHospitalisation() throws Exception {
@@ -372,7 +378,10 @@ class PetServiceTests {
 		hospitalisation.setTotalPrice(30.0);
 		hospitalisation.setTreatment("test treatment");
 		hospitalisation.setDiagnosis("test diagnosis");
-		assertThrows(ConstraintViolationException.class, () -> {this.petService.findPetById(7).addHospitalisation(hospitalisation); this.petService.saveHospitalisation(hospitalisation);});
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.petService.findPetById(7).addHospitalisation(hospitalisation);
+			this.petService.saveHospitalisation(hospitalisation);
+		});
 	}
 
 	@Test
@@ -421,7 +430,7 @@ class PetServiceTests {
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getDiagnosis()).isNotBlank();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdTreatmentNotBlank() throws Exception {
@@ -429,7 +438,7 @@ class PetServiceTests {
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getTreatment()).isNotBlank();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdEqualPetId() throws Exception {

@@ -103,9 +103,8 @@ public class ProductControllerTests {
 
 	@WithMockUser(value = "spring")
 	@Test
-	@Disabled
 	void testProcessNewProductFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/{shopId}/products/new", TEST_SHOP_ID).with(csrf()).param("name", "product1")
+		mockMvc.perform(post("/shops/{shopId}/products/new", TEST_SHOP_ID).with(csrf()).param("name", "product5")
 				.param("price", "18.0").param("stock", "6")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_1));
 	}
@@ -135,10 +134,9 @@ public class ProductControllerTests {
 
 	@WithMockUser(value = "spring")
 	@Test
-	@Disabled
 	void testProcessUpdateProductFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/*/products/{productId}/edit", TEST_PRODUCT_ID_1).with(csrf())
-				.param("name", "product1").param("price", "18.0").param("stock", "6").param("id", "1"))
+				.param("name", "product6").param("price", "18.0").param("stock", "6").param("id", "1"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_1));
 	}
@@ -162,7 +160,6 @@ public class ProductControllerTests {
 
 	@WithMockUser(value = "spring")
 	@Test
-	@Disabled
 	void testProcessDeleteProductFormSuccess() throws Exception {
 		mockMvc.perform(get("/shops/*/products/{productId}/delete", TEST_PRODUCT_ID_2)).andExpect(status().isOk())
 				.andExpect(view().name("redirect:/shops/1"));
