@@ -61,7 +61,6 @@ public class OrderController {
 		}
 		else {
 			Shop shop = this.shopService.findShops().iterator().next();
-			order.setShop(shop);
 			Product product = productService.findByName(order.getProduct().getName());
 			order.setProduct(product);
 			this.orderService.saveOrder(order);
@@ -76,7 +75,7 @@ public class OrderController {
 			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
 				order.orderReceived();
 				this.orderService.saveOrder(order);
-				return "redirect:/shops/" + shopId + "/orders/" + order.getId();
+				return "redirect:/shops/" + shopId + "/orders/" + orderId;
 			} else {
 				return "/exception";
 			}
@@ -88,7 +87,7 @@ public class OrderController {
 			if(!order.getOrderStatus().equals(OrderStatus.CANCELED) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
 				order.orderCanceled();
 				this.orderService.saveOrder(order);
-				return "redirect:/shops/" + shopId + "/orders/" + order.getId();
+				return "redirect:/shops/" + shopId + "/orders/" + orderId;
 			} else {
 				return "/exception";
 			}

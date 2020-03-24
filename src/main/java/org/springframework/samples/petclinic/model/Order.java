@@ -2,8 +2,6 @@ package org.springframework.samples.petclinic.model;
 
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,7 +45,6 @@ public class Order extends NamedEntity{
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "product_id")
-	@NotNull
 	private Product product;
 	
 	public Order() {
