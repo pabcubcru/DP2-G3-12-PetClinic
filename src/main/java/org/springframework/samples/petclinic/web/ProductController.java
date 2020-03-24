@@ -4,7 +4,6 @@ package org.springframework.samples.petclinic.web;
 import java.time.LocalDate;
 
 import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +55,9 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/new")
-	public String processNewProductForm(@Valid final Product product, final BindingResult result,
+	public String processNewProductForm(@Valid Product product, final BindingResult result,
 			@PathVariable("shopId") final int shopId) {
-		if (this.productService.findProductsNames().contains(product.getName())) {
+		if (productService.findProductsNames().contains(product.getName())) {
 			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
@@ -78,7 +77,9 @@ public class ProductController {
 		if (this.orderService.findOrdersByProductId(productId).size() == 0) {
 			this.shopService.findShops().iterator().next().deleteProduct(product);
 			this.productService.deleteProduct(product);
-			this.discountService.deleteDiscount(product.getDiscount().getId());
+			if (product.getDiscount() != null) {
+				this.discountService.deleteDiscount(product.getDiscount().getId());
+			}
 			return "redirect:/shops/" + shopId;
 		} else {
 			return "/exception";

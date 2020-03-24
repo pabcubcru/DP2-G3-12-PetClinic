@@ -23,6 +23,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.collections.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -75,8 +76,7 @@ public class ProductControllerTests {
 		testProduct.setId(TEST_PRODUCT_ID_1);
 		testProduct.setPrice(18.0);
 		testProduct.setStock(6);
-		testProduct.setShop(shop1);
-		testProduct.setDiscount(null);
+		
 
 		Order order1 = new Order();
 		order1.setId(1);
@@ -84,19 +84,19 @@ public class ProductControllerTests {
 		order1.setName("order 1");
 		order1.setSupplier("supplier");
 		order1.setProductNumber(10);
-		order1.setShop(shop1);
+		
+		shop1.addOrder(order1);
+		shop1.addProduct(testProduct);
 
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(Lists.newArrayList(order1));
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_2)).willReturn(Lists.emptyList());
-		given(this.clinicService.findProductsNames()).willReturn(Lists.newArrayList("product1", "product2"));
-		given(this.clinicService.findProductById(TEST_PRODUCT_ID_1)).willReturn(this.testProduct);
-
+		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(Lists.list(order1));
+		given(this.clinicService.findProductById(TEST_PRODUCT_ID_1)).willReturn(testProduct);
+		given(this.shopService.findShops()).willReturn(Lists.list(shop1));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitNewProductForm() throws Exception {
-		mockMvc.perform(get("/shops/{shopId}/products/new", TEST_SHOP_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/shops/1/products/new")).andExpect(status().isOk())
 				.andExpect(model().attributeExists("product"))
 				.andExpect(view().name("products/createOrUpdateProductForm"));
 	}
@@ -104,8 +104,9 @@ public class ProductControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewProductFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/{shopId}/products/new", TEST_SHOP_ID).with(csrf()).param("name", "product5")
-				.param("price", "18.0").param("stock", "6")).andExpect(status().is3xxRedirection())
+		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product6")
+				.param("price", "18.0").param("stock", "6"))
+				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_1));
 	}
 
@@ -154,14 +155,14 @@ public class ProductControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessDeleteProductFormHasOrdersInProcess() throws Exception {
-		mockMvc.perform(get("/shops/*/products/{productId}/delete", TEST_PRODUCT_ID_1)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+		mockMvc.perform(get("/shops/1/products/{productId}/delete", TEST_PRODUCT_ID_1)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}
 
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessDeleteProductFormSuccess() throws Exception {
-		mockMvc.perform(get("/shops/*/products/{productId}/delete", TEST_PRODUCT_ID_2)).andExpect(status().isOk())
+		mockMvc.perform(get("/shops/1/products/{productId}/delete", TEST_PRODUCT_ID_2)).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1"));
 	}
 
