@@ -47,11 +47,11 @@ class OwnerControllerTests {
 	@MockBean
 	private OwnerService clinicService;
         
-        @MockBean
+    @MockBean
 	private UserService userService;
         
-        @MockBean
-        private AuthoritiesService authoritiesService; 
+    @MockBean
+    private AuthoritiesService authoritiesService; 
 
 	@Autowired
 	private MockMvc mockMvc;
