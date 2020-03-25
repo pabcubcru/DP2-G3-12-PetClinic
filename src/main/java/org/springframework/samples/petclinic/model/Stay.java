@@ -2,13 +2,14 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,7 +39,7 @@ public class Stay extends BaseEntity {
 	@Column(name = "price")
 	private Double price;
 
-	@NotEmpty
+	@NotBlank
 	@Column(name = "special_cares")
 	private String specialCares;
 

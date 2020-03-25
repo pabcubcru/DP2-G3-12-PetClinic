@@ -2,8 +2,8 @@
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
-import java.util.Map;
 
+import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +28,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shops/{shopId}")
 public class ProductController {
 
-	private ProductService		productService;
-	private ShopService			shopService;
-	private OrderService		orderService;
-	private DiscountService		discountService;
-
-	private static final String	PRODUCT_CREATE_OR_UPDATE_FORM	= "products/createOrUpdateProductForm";
-
+	private ProductService productService;
+	private ShopService shopService;
+	private OrderService orderService;
+	private DiscountService discountService;
 
 	@Autowired
-	public ProductController(final ProductService productService, final ShopService shopService, final OrderService orderService, final DiscountService discountService) {
+	public ProductController(final ProductService productService, final ShopService shopService,
+			final OrderService orderService, final DiscountService discountService) {
 		this.productService = productService;
 		this.shopService = shopService;
 		this.orderService = orderService;
@@ -57,29 +55,31 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/new")
-	public String processNewProductForm(@Valid final Product product, final BindingResult result, @PathVariable("shopId") final int shopId) {
-
-		if (this.productService.findProductsNames().contains(product.getName())) {
-			result.rejectValue("name", "duplicated name", "This name already exist");
+	public String processNewProductForm(@Valid Product product, final BindingResult result,
+			@PathVariable("shopId") final int shopId) {
+		if (productService.findProductsNames().contains(product.getName())) {
+			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
 			Shop shop = this.shopService.findShops().iterator().next();
-			product.setShop(shop);
-			this.productService.saveProduct(product);
 			shop.addProduct(product);
-			return "redirect:/shops/" + shopId + "/products/" + product.getId();
+			this.productService.saveProduct(product);
+			return "redirect:/shops/" + shopId;
 		}
 	}
 
 	@GetMapping(value = "/products/{productId}/delete")
-	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId,
+			@PathVariable("shopId") final int shopId) {
 		Product product = this.productService.findProductById(productId);
 		if (this.orderService.findOrdersByProductId(productId).size() == 0) {
 			this.shopService.findShops().iterator().next().deleteProduct(product);
 			this.productService.deleteProduct(product);
-			this.discountService.deleteDiscount(product.getDiscount().getId());
+			if (product.getDiscount() != null) {
+				this.discountService.deleteDiscount(product.getDiscount().getId());
+			}
 			return "redirect:/shops/" + shopId;
 		} else {
 			return "/exception";
@@ -87,12 +87,14 @@ public class ProductController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ModelAndView showOrder(@PathVariable("productId") final int productId) {
+	public ModelAndView showProduct(@PathVariable("productId") final int productId) {
 		ModelAndView mav = new ModelAndView("products/productDetails");
 		Product product = this.productService.findProductById(productId);
 		if (product.getDiscount() != null) {
-			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now()) && product.getDiscount().getStartDate().isBefore(LocalDate.now()) || product.getDiscount().getStartDate().isEqual(LocalDate.now())
-				|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
+			if (product.getDiscount().getFinishDate().isAfter(LocalDate.now())
+					&& product.getDiscount().getStartDate().isBefore(LocalDate.now())
+					|| product.getDiscount().getStartDate().isEqual(LocalDate.now())
+					|| product.getDiscount().getFinishDate().isEqual(LocalDate.now())) {
 				mav.addObject("activeDiscount", true);
 				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
@@ -111,10 +113,12 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/{productId}/edit")
-	public String processUpdateProductForm(@Valid final Product product, final BindingResult result, @PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+	public String processUpdateProductForm(@Valid final Product product, final BindingResult result,
+			@PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
 		Product productWithoutUpdate = this.productService.findProductById(productId);
-		if (this.productService.findProductsNames().contains(product.getName()) && !productWithoutUpdate.getName().equals(product.getName())) {
-			result.rejectValue("name", "duplicated name", "This name already exist");
+		if (this.productService.findProductsNames().contains(product.getName())
+				&& !productWithoutUpdate.getName().equals(product.getName())) {
+			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
@@ -123,7 +127,6 @@ public class ProductController {
 			Shop shop = this.shopService.findShops().iterator().next();
 			product.setShop(shop);
 			this.productService.saveProduct(product);
-			shop.addProduct(product);
 			return "redirect:/shops/" + shopId + "/products/" + productId;
 		}
 	}

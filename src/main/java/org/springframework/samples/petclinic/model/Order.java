@@ -2,8 +2,6 @@ package org.springframework.samples.petclinic.model;
 
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,7 +32,7 @@ public class Order extends NamedEntity{
 	private int productNumber;
 	
 	@Column(name = "order_date")        
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss.SSSXXX")
 	private LocalDateTime orderDate;
 	
 	@NotNull
@@ -47,7 +45,6 @@ public class Order extends NamedEntity{
 	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "product_id")
-	@NotNull
 	private Product product;
 	
 	public Order() {
