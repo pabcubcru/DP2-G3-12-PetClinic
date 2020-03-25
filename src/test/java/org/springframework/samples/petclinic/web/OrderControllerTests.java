@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -37,7 +39,8 @@ excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classe
 excludeAutoConfiguration = SecurityConfiguration.class)
 class OrderControllerTests {
 
-	private static final int TEST_ORDER_ID = 1;
+	private static final int TEST_ORDER_ID_1 = 1;
+	private static final int TEST_ORDER_ID_2 = 2;
 	private static final int TEST_PRODUCT_ID = 1;
 
 	@MockBean
@@ -52,7 +55,8 @@ class OrderControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private Order testOrder;
+	private Order testOrder1;
+	private Order testOrder2;
 
 	@BeforeEach
 	void setup() {
@@ -65,18 +69,34 @@ class OrderControllerTests {
 		testProduct.setId(TEST_PRODUCT_ID);
 		testProduct.setPrice(18.0);
 		testProduct.setStock(6);
-		testProduct.setShop(shop1);
 		testProduct.setDiscount(null);
 		
-		testOrder = new Order();
-		testOrder.setName("testOrder");
-		testOrder.setProduct(testProduct);
-		testOrder.setProductNumber(50);
-		testOrder.setSupplier("supplier");
-		testOrder.setShop(shop1);
+		testOrder1 = new Order();
+		testOrder1.setName("testOrder");
+		testOrder1.setProduct(testProduct);
+		testOrder1.setProductNumber(50);
+		testOrder1.setSupplier("supplier");
 		
-		given(this.clinicService.findOrderById(TEST_ORDER_ID)).willReturn(testOrder);
-		given(this.productService.findProductById(TEST_PRODUCT_ID)).willReturn(new Product());
+		testOrder2 = new Order();
+		testOrder2.setOrderStatus(OrderStatus.RECEIVED);
+		testOrder2.setOrderDate(LocalDateTime.now().minusDays(3));
+		testOrder2.setName("testOrder");
+		testOrder2.setProduct(testProduct);
+		testOrder2.setProductNumber(50);
+		testOrder2.setSupplier("supplier");
+		
+		shop1.addProduct(testProduct);
+		shop1.addOrder(testOrder1);
+		shop1.addOrder(testOrder2);
+		
+		List<Shop> shops = new ArrayList<Shop>();
+		shops.add(shop1);
+		
+		given(this.clinicService.findOrderById(TEST_ORDER_ID_1)).willReturn(testOrder1);
+		given(this.clinicService.findOrderById(TEST_ORDER_ID_2)).willReturn(testOrder2);
+		given(this.productService.findProductById(TEST_PRODUCT_ID)).willReturn(testProduct);
+		given(this.productService.findByName("product1")).willReturn(testProduct);
+		given(shopService.findShops()).willReturn(shops);
 
 	}
 
@@ -89,16 +109,14 @@ class OrderControllerTests {
 
 	@WithMockUser(value = "spring")
 	@Test
-	@Disabled
 	void testProcessNewOrderFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/orders/new").with(csrf())
 					.param("name", "New order")
-					.param("orderDate", "2007-12-03T10:15:30")
-					.param("orderStatus", "INPROCESS")
 					.param("productNumber", "100")
-					.param("supplier", "Groc Groc"))
+					.param("supplier", "Groc Groc")
+					.param("product.name", "product1"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID));
+				.andExpect(view().name("redirect:/shops/1"));
 	}
 
 	@WithMockUser(value = "spring")
@@ -106,7 +124,8 @@ class OrderControllerTests {
 	void testProcessNewOrderFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/orders/new").with(csrf())
 				.param("name", "New order")
-				.param("productNumber", "100"))
+				.param("productNumber", "100")
+				.param("product.name", "product1"))
 				.andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("order"))
 				.andExpect(model().attributeHasFieldErrors("order", "supplier"))
@@ -116,38 +135,39 @@ class OrderControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessOrderReceivedSuccess() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/received", TEST_ORDER_ID)).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/received", TEST_ORDER_ID_1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_1));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessOrderCanceledSuccess() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID)).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_1));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessOrderReceivedError() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/received", 2)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/received", TEST_ORDER_ID_2)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}
 	
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessOrderCanceledError() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", 2)).andExpect(status().isOk())
-				.andExpect(view().name("exception"));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_2)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}	
 
 	@WithMockUser(value = "spring")
 	@Test
-	void testShowOwner() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}", TEST_ORDER_ID)).andExpect(status().isOk())
+	void testShowOrder() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}", TEST_ORDER_ID_1)).andExpect(status().isOk())
 				.andExpect(model().attribute("order", hasProperty("supplier", is("supplier"))))
 				.andExpect(model().attribute("order", hasProperty("productNumber", is(50))))
 				.andExpect(model().attribute("order", hasProperty("name", is("testOrder"))))
+				.andExpect(model().attribute("order", hasProperty("orderStatus", is(OrderStatus.INPROCESS))))
 				.andExpect(view().name("orders/orderDetails"));
 	}
 

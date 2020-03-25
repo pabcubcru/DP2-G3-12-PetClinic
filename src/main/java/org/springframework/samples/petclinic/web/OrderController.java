@@ -63,9 +63,9 @@ public class OrderController {
 			Shop shop = this.shopService.findShops().iterator().next();
 			Product product = productService.findByName(order.getProduct().getName());
 			order.setProduct(product);
-			this.orderService.saveOrder(order);
 			shop.addOrder(order);
-			return "redirect:/shops/" + shopId + "/orders/" + order.getId();
+			this.orderService.saveOrder(order);
+			return "redirect:/shops/" + shopId;
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class OrderController {
 	@GetMapping(value = "/orders/{orderId}/canceled")
 	public String processOrderCanceled(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
 			Order order = this.orderService.findOrderById(orderId);
-			if(!order.getOrderStatus().equals(OrderStatus.CANCELED) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
+			if(order.getOrderStatus().equals(OrderStatus.INPROCESS) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
 				order.orderCanceled();
 				this.orderService.saveOrder(order);
 				return "redirect:/shops/" + shopId + "/orders/" + orderId;

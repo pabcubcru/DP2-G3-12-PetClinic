@@ -44,8 +44,4 @@ public class ProductService {
 	public Product findByName(final String name) throws DataAccessException {
 		return this.productRepository.findByName(name);
 	}
-	
-	public Iterable<Product> findAll() throws DataAccessException {
-		return this.productRepository.findAll();
-	}
 }

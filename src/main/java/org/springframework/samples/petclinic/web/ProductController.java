@@ -66,7 +66,7 @@ public class ProductController {
 			Shop shop = this.shopService.findShops().iterator().next();
 			shop.addProduct(product);
 			this.productService.saveProduct(product);
-			return "redirect:/shops/" + shopId + "/products/" + product.getId();
+			return "redirect:/shops/" + shopId;
 		}
 	}
 
