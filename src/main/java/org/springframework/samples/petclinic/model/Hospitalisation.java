@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
@@ -11,114 +12,116 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 @Entity
 @Table(name = "hospitalisations")
-public class Hospitalisation extends BaseEntity{
-	
-	@Column(name = "start_date")   
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
-	@FutureOrPresent
-	private LocalDate startDate;
+public class Hospitalisation extends BaseEntity {
 
-	@Column(name = "finish_date")   
+	@Column(name = "start_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
 	@FutureOrPresent
-	private LocalDate finishDate;
-	
+	private LocalDate	startDate;
+
+	@Column(name = "finish_date")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@NotNull
+	@FutureOrPresent
+	private LocalDate	finishDate;
+
 	@ManyToOne
 	@JoinColumn(name = "pet_id")
-	private Pet pet;
-	
-//	@ManyToMany(fetch = FetchType.EAGER)
-//	private Set<Vet> vets;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "hospitalisation_status")
-//	private HospitalisationStatus hospitalisationStatus;
-	
+	private Pet			pet;
+
+	//	@ManyToMany(fetch = FetchType.EAGER)
+	//	private Set<Vet> vets;
+
+	//	@ManyToOne
+	//	@JoinColumn(name = "hospitalisation_status")
+	//	private HospitalisationStatus hospitalisationStatus;
+
 	@NotEmpty
 	@Column(name = "treatment")
-	private String treatment;
-	
+	private String		treatment;
+
 	@NotEmpty
 	@Column(name = "diagnosis")
-	private String diagnosis;
-	
+	private String		diagnosis;
+
 	@NotNull
+	@Range(min = 0)
 	@Column(name = "total_price")
-	private Double totalPrice;
-	
+	private Double		totalPrice;
+
+
 	public Pet getPet() {
 		return this.pet;
 	}
 
-	public void setPet(Pet pet) {
+	public void setPet(final Pet pet) {
 		this.pet = pet;
 	}
-	
+
 	public LocalDate getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 
-	public void setStartDate(LocalDate startDate) {
+	public void setStartDate(final LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
 	public LocalDate getFinishDate() {
-		return finishDate;
+		return this.finishDate;
 	}
 
-	public void setFinishDate(LocalDate finishDate) {
+	public void setFinishDate(final LocalDate finishDate) {
 		this.finishDate = finishDate;
 	}
 
-//	public Set<Vet> getVets() {
-//		return vets;
-//	}
-//
-//	public void setVets(Set<Vet> vets) {
-//		this.vets = vets;
-//	}
+	//	public Set<Vet> getVets() {
+	//		return vets;
+	//	}
+	//
+	//	public void setVets(Set<Vet> vets) {
+	//		this.vets = vets;
+	//	}
 
-//	public HospitalisationStatus getHospitalisationStatus() {
-//		return hospitalisationStatus;
-//	}
-//
-//	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
-//		this.hospitalisationStatus = hospitalisationStatus;
-//	}
+	//	public HospitalisationStatus getHospitalisationStatus() {
+	//		return hospitalisationStatus;
+	//	}
+	//
+	//	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
+	//		this.hospitalisationStatus = hospitalisationStatus;
+	//	}
 
 	public String getTreatment() {
-		return treatment;
+		return this.treatment;
 	}
 
-	public void setTreatment(String treatment) {
+	public void setTreatment(final String treatment) {
 		this.treatment = treatment;
 	}
 
 	public String getDiagnosis() {
-		return diagnosis;
+		return this.diagnosis;
 	}
 
-	public void setDiagnosis(String diagnosis) {
+	public void setDiagnosis(final String diagnosis) {
 		this.diagnosis = diagnosis;
 	}
 
 	public Double getTotalPrice() {
-		return totalPrice;
+		return this.totalPrice;
 	}
 
-	public void setTotalPrice(Double totalPrice) {
+	public void setTotalPrice(final Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	
+
 	public Hospitalisation() {
 		this.startDate = LocalDate.now();
 	}
-	
+
 }

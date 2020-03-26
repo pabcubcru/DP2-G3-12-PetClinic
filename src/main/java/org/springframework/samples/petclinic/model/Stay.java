@@ -1,7 +1,7 @@
+
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
-
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +12,8 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 @Entity
 @Table(name = "stays")
@@ -21,65 +21,67 @@ public class Stay extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "pet_id")
-	private Pet pet;
+	private Pet			pet;
 
 	@Column(name = "start_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
 	@FutureOrPresent
-	private LocalDate startdate;
+	private LocalDate	startdate;
 
 	@Column(name = "finish_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
 	@FutureOrPresent
-	private LocalDate finishdate;
+	private LocalDate	finishdate;
 
 	@NotNull
+	@Range(min = 0)
 	@Column(name = "price")
-	private Double price;
+	private Double		price;
 
 	@NotBlank
 	@Column(name = "special_cares")
-	private String specialCares;
+	private String		specialCares;
+
 
 	public Pet getPet() {
-		return pet;
+		return this.pet;
 	}
 
-	public void setPet(Pet pet) {
+	public void setPet(final Pet pet) {
 		this.pet = pet;
 	}
 
 	public LocalDate getStartdate() {
-		return startdate;
+		return this.startdate;
 	}
 
-	public void setStartdate(LocalDate startdate) {
+	public void setStartdate(final LocalDate startdate) {
 		this.startdate = startdate;
 	}
 
 	public LocalDate getFinishdate() {
-		return finishdate;
+		return this.finishdate;
 	}
 
-	public void setFinishdate(LocalDate finishdate) {
+	public void setFinishdate(final LocalDate finishdate) {
 		this.finishdate = finishdate;
 	}
 
 	public Double getPrice() {
-		return price;
+		return this.price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(final Double price) {
 		this.price = price;
 	}
 
 	public String getSpecialCares() {
-		return specialCares;
+		return this.specialCares;
 	}
 
-	public void setSpecialCares(String specialCares) {
+	public void setSpecialCares(final String specialCares) {
 		this.specialCares = specialCares;
 	}
 

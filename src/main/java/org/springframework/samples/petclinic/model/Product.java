@@ -2,7 +2,6 @@
 package org.springframework.samples.petclinic.model;
 
 import javax.persistence.Column;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,26 +10,26 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.validator.constraints.Range;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @Table(name = "products")
 public class Product extends BaseEntity {
-	
+
 	@NotBlank
 	@Column(name = "name", unique = true)
-	private String name;
-	
+	private String		name;
+
 	@NotNull
+	@Range(min = 0)
 	@Column(name = "price")
 	private Double		price;
 
 	@NotNull
+	@Range(min = 0)
 	@Column(name = "stock")
 	private int			stock;
 
@@ -50,5 +49,5 @@ public class Product extends BaseEntity {
 		}
 		return res;
 	}
-	
+
 }
