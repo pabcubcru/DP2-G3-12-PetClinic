@@ -152,6 +152,13 @@
 										pattern="yyyy-MM-dd" /></td>
 								<td><c:out value="${stay.specialCares}" /></td>
 								<td><c:out value="${stay.price}" /> EUR</td>
+									<td><spring:url
+											value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
+											var="stayUrl">
+											<spring:param name="ownerId" value="${owner.id}" />
+											<spring:param name="petId" value="${pet.id}" />
+											<spring:param name="stayId" value="${stay.id}" />
+										</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update Stay</a></td>
 							</tr>
 						</c:forEach>
 						<tr>
@@ -165,6 +172,8 @@
 									<spring:param name="ownerId" value="${owner.id}" />
 									<spring:param name="petId" value="${pet.id}" />
 								</spring:url> <a href="${fn:escapeXml(stayUrl)}">Add Stay</a></td>
+
+
 						</tr>
 					</table>
 				</td>

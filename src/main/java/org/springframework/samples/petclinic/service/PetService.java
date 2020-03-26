@@ -81,12 +81,11 @@ public class PetService {
 		stayRepository.save(stay);
 	}
 
-  @Transactional  
+	@Transactional  
 	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
 		hospitalisationRepository.save(hospitalisation);
 	}
 
-	@Transactional(readOnly = true)
 	public Pet findPetById(int id) throws DataAccessException {
 		return petRepository.findById(id);
 	}
@@ -101,16 +100,21 @@ public class PetService {
 	}
 
 
-	public Collection<Visit> findVisitsByPetId(int petId) {
+	public Collection<Visit> findVisitsByPetId(int petId) throws DataAccessException {
 		return visitRepository.findByPetId(petId);
 	}
 	
-	public Collection<Stay> findStaysByPetId(int petId) {
+	public Collection<Stay> findStaysByPetId(int petId) throws DataAccessException {
 		return stayRepository.findByPetId(petId);
 		
 	}
+	
+	public Stay findStayById(int id) throws DataAccessException {
+		return stayRepository.findById(id).get();
+		
+	}
     
-	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) {
+	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) throws DataAccessException{
 		return hospitalisationRepository.findByPetId(petId);
 	}
 

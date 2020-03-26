@@ -15,11 +15,16 @@
  */
 package org.springframework.samples.petclinic.repository;
 
-import java.util.List;
+import java.util.Collection;
+
+import javax.transaction.Transactional;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.samples.petclinic.model.Stay;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository class for <code>Stay</code> domain objects All method names are
@@ -32,16 +37,10 @@ import org.springframework.samples.petclinic.model.Stay;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-public interface StayRepository {
 
-	/**
-	 * Save a <code>Stay</code> to the data store, either inserting or updating it.
-	 * 
-	 * @param Stay the <code>Stay</code> to save
-	 * @see BaseEntity#isNew
-	 */
-	void save(Stay Stay) throws DataAccessException;
+public interface StayRepository extends CrudRepository<Stay, Integer> {
 
-	List<Stay> findByPetId(Integer petId);
-
+	@Query("select s from Stay s where s.pet.id = ?1")
+	Collection<Stay> findByPetId(int petId)  throws DataAccessException;
+	
 }

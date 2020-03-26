@@ -64,7 +64,7 @@ public class DiscountController {
 	@GetMapping(value = "/discounts/{discountId}/edit")
 	public String initEditDiscountForm(Map<String, Object> model, @PathVariable("productId") int productId,
 			@PathVariable("discountId") int discountId) {
-		Discount discount = discountService.findDiscountById(discountId).get();
+		Discount discount = discountService.findDiscountById(discountId);
 		Product product = productService.findProductById(productId);
 		model.put("discount", discount);
 		model.put("product", product);
@@ -75,6 +75,7 @@ public class DiscountController {
 	public String processEditDiscountForm(@Valid Discount discount, BindingResult result,
 			@PathVariable("productId") int productId, @PathVariable("shopId") int shopId,
 			@PathVariable("discountId") int discountId, Map<String, Object> model) {
+		
 		if (discount.getFinishDate() != null && discount.getStartDate() != null) {
 			if (discount.getFinishDate().isBefore(discount.getStartDate())) {
 				result.rejectValue("finishDate", "wrongDate", "Finish date must be after than start date");

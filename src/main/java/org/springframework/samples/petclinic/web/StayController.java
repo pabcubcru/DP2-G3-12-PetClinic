@@ -49,42 +49,59 @@ public class StayController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@ModelAttribute("stay")
-	public Stay loadPetWithStay(@PathVariable("petId") int petId) {
-		Pet pet = this.petService.findPetById(petId);
-		Stay stay = new Stay();
-		pet.addStay(stay);
-		return stay;
-	}
-
 	// Spring MVC calls method loadPetWithStay(...) before initNewStayForm is called
 	@GetMapping(value = "/owners/*/pets/{petId}/stays/new")
-	public String initNewStayForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+	public String initNewStayForm(Map<String, Object> model) {
+		model.put("stay", new Stay());
 		return "pets/createOrUpdateStayForm";
 	}
 
 	// Spring MVC calls method loadPetWithStay(...) before processNewStayForm is
 	// called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
-	public String processNewStayForm(@Valid Stay stay, BindingResult result) {
-
-		if ((stay.getStartdate() == null || stay.getFinishdate() == null)) {
-			if ((stay.getStartdate() == null && stay.getFinishdate() == null)) {
-				result.rejectValue("startdate", "wrongstartdate", "The start date can not be empty");
-				result.rejectValue("finishdate", "wrongfinishdate", "The finish date can not be empty");
-			} else if ((stay.getStartdate() == null)) {
-				result.rejectValue("startdate", "wrongstartdate", "The start date can not be empty");
-			} else {
-				result.rejectValue("finishdate", "wrongfinishdate", "The finish date can not be empty");
+	public String processNewStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId) {
+		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
+						"The finish date must be after than start date");
 			}
-		} else if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-			result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
-					"The finish date can not be before than start date");
 		}
-
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
+			Pet pet = this.petService.findPetById(petId);
+			pet.addStay(stay);
+			this.petService.saveStay(stay);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
+	
+	@GetMapping(value = "/owners/*/pets/{petId}/stays/{stayId}/edit")
+	public String initEditStayForm(@PathVariable("petId") int petId, Map<String, Object> model, @PathVariable("stayId") int stayId) {
+		Stay stay = petService.findStayById(stayId);
+		Pet pet = petService.findPetById(petId);
+		model.put("stay", stay);
+		model.put("pet", pet);
+		return "pets/createOrUpdateStayForm";
+	}
+
+	
+	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
+	public String processEditStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId, Map<String, Object> model,
+			@PathVariable("stayId") int stayId) {
+		
+		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+		}
+		Pet pet = petService.findPetById(petId);
+		if (result.hasErrors()) {
+			model.put("pet", pet);
+			return "pets/createOrUpdateStayForm";
+		} else {
+			stay.setId(stayId);
+			stay.setPet(pet);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
