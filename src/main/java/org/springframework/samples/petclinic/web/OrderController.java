@@ -55,8 +55,12 @@ public class OrderController {
 	}
 
 	@PostMapping(value = "/orders/new")
-	public String processNewOrderForm(@Valid Order order, BindingResult result, @PathVariable("shopId") int shopId) {
+	public String processNewOrderForm(@Valid Order order, BindingResult result, @PathVariable("shopId") int shopId, Map<String, Object> model) {
 		if (result.hasErrors()) {
+			model.put("products", productService.findProductsNames());
+			model.put("productsSize", productService.findProductsNames().size());
+			model.put("productName", "");
+			model.put("order", order);
 			return "orders/createOrUpdateOrderForm";
 		}
 		else {
