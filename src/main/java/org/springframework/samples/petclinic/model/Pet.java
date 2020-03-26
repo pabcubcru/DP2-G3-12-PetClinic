@@ -56,8 +56,8 @@ public class Pet extends NamedEntity {
 	private PetType type;
 
 	@ManyToOne
-	@JoinColumn(name = "pet_status")
-	private PetStatus petStatus;
+	@JoinColumn(name = "status_id")
+	private PetStatus status;
 
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
@@ -87,7 +87,7 @@ public class Pet extends NamedEntity {
 	public void setType(PetType type) {
 		this.type = type;
 	}
-
+	
 	public Owner getOwner() {
 		return this.owner;
 	}
@@ -96,12 +96,12 @@ public class Pet extends NamedEntity {
 		this.owner = owner;
 	}
 
-	public PetStatus getPetStatus() {
-		return petStatus;
+	public PetStatus getStatus() {
+		return status;
 	}
 
-	public void setPetStatus(PetStatus petStatus) {
-		this.petStatus = petStatus;
+	public void setStatus(PetStatus status) {
+		this.status = status;
 	}
 
 	protected Set<Visit> getVisitsInternal() {

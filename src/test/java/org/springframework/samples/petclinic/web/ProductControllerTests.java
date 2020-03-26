@@ -3,7 +3,9 @@ package org.springframework.samples.petclinic.web;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -15,10 +17,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.security.AccessControlContext;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.Subject;
+import javax.security.auth.SubjectDomainCombiner;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +45,10 @@ import org.springframework.samples.petclinic.service.DiscountService;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
+import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContext;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -68,7 +78,7 @@ public class ProductControllerTests {
 	private Product testProduct1;
 	private Product testProduct2;
 	private Product testProduct3;
-
+	
 	@BeforeEach
 	void setup() {
 		Shop shop1 = new Shop();
@@ -143,15 +153,15 @@ public class ProductControllerTests {
 
 //	INSERT PRODUCT
 
-	@WithMockUser(value = "spring")
+	@WithMockUser(authorities={"ROLE_OWNER"}, username = "owner1")
 	@Test
 	void testInitNewProductForm() throws Exception {
-		mockMvc.perform(get("/shops/1/products/new")).andExpect(status().isOk())
-				.andExpect(model().attributeExists("product"))
+		mockMvc.perform(get("/shops/1/products/new"))
+				.andExpect(model().attributeExists("product")).andExpect(status().isOk())
 				.andExpect(view().name("products/createOrUpdateProductForm"));
 	}
 
-	@WithMockUser(value = "spring")
+	@WithMockUser(authorities = "owner", username = "owner1")
 	@Test
 	void testProcessNewProductFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product3").param("price", "18.0")
@@ -162,7 +172,7 @@ public class ProductControllerTests {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewProductFormHasErrors() throws Exception {
-		mockMvc.perform(post("/shops/{shopId}/products/new", TEST_SHOP_ID).with(csrf()).param("name", "product3")
+		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product3")
 				.param("stock", "6")).andExpect(status().isOk()).andExpect(model().attributeHasErrors("product"))
 				.andExpect(model().attributeHasFieldErrors("product", "price"))
 				.andExpect(view().name("products/createOrUpdateProductForm"));

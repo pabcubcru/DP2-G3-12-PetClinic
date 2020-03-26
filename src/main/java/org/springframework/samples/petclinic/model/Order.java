@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "orders")
-public class Order extends NamedEntity{
+public class Order extends NamedEntity {
 
 	@Column(name = "supplier")
 	@NotBlank
