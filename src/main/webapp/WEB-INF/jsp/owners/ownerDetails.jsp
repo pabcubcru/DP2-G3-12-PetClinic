@@ -42,7 +42,6 @@
 
 	<br />
 	<br />
-	<br />
 	<h2>Pets and Visits</h2>
 
 	<table class="table table-striped">
@@ -65,7 +64,7 @@
 						</dd>
 						<dt>Status</dt>
 						<dd>
-							<c:out value="${pet.petStatus}" />
+							<c:out value="${pet.status}" />
 						</dd>
 					</dl>
 				</td>
@@ -107,7 +106,6 @@
 
 	<br />
 	<br />
-	<br />
 	<h2>Pets and Stays</h2>
 
 	<table class="table table-striped">
@@ -130,7 +128,7 @@
 						</dd>
 						<dt>Status</dt>
 						<dd>
-							<c:out value="${pet.petStatus}" />
+							<c:out value="${pet.status}" />
 						</dd>
 					</dl>
 				</td>
@@ -184,7 +182,6 @@
 	
 	<br />
 	<br />
-	<br />
 	<h2>Pets and Hospitalisations</h2>
 
 	<table class="table table-striped">
@@ -207,7 +204,7 @@
 						</dd>
 						<dt>Status</dt>
 						<dd>
-							<c:out value="${pet.petStatus}" />
+							<c:out value="${pet.status}" />
 						</dd>
 					</dl>
 				</td>
@@ -218,6 +215,8 @@
 								<th>Start Date</th>
               					<th>Finish Date</th>
                 				<th>Diagnosis</th>
+                				<th>Treatment</th>
+                				<th>Total Price</th>
 							</tr>
 						</thead>
 						<c:forEach var="hospitalisation" items="${pet.hospitalisations}">
@@ -227,6 +226,8 @@
 								<td><petclinic:localDate date="${hospitalisation.finishDate}"
 										pattern="yyyy-MM-dd" /></td>
 								<td><c:out value="${hospitalisation.diagnosis}" /></td>
+								<td><c:out value="${hospitalisation.treatment}" /></td>
+								<td><c:out value="${hospitalisation.totalPrice}" /></td>
 							</tr>
 						</c:forEach>
 						<tr>
@@ -235,7 +236,7 @@
 									<spring:param name="ownerId" value="${owner.id}" />
 									<spring:param name="petId" value="${pet.id}" />
 								</spring:url> <a href="${fn:escapeXml(petUrl)}">Edit Pet</a></td>
-							<c:if test="${pet.petStatus == 'SICK'}">
+							<c:if test="${pet.status == 'SICK'}">
 							<td><spring:url
 									value="/owners/{ownerId}/pets/{petId}/hospitalisations/new" var="hospitalisationsUrl">
 									<spring:param name="ownerId" value="${owner.id}" />

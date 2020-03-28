@@ -33,23 +33,26 @@ public class HospitalisationController {
 		dataBinder.setDisallowedFields("id");
 	}
 	
-	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/new")
-	public String initNewHospitalisationForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+	@ModelAttribute("pet")
+	public Pet loadPetWithVisit(@PathVariable("petId") int petId) {
 		Pet pet = this.petService.findPetById(petId);
-		model.put("pet", pet);
+		return pet;
+	}
+	
+	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/new")
+	public String initNewHospitalisationForm(Pet pet, Map<String, Object> model) {
 		model.put("hospitalisation", new Hospitalisation());
 		return "pets/createOrUpdateHospitalisationForm";
 	}
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, @PathVariable("petId") int petId, Map<String, Object> model) {
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model) {
 		if(hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
 			if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
 				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
 						"The finish date can not be before than start date");
 			}
 		}
-		Pet pet = this.petService.findPetById(petId);
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return "pets/createOrUpdateHospitalisationForm";
@@ -63,8 +66,8 @@ public class HospitalisationController {
 	}
 	
 	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations")
-	public String showHospitalisations(@PathVariable int petId, Map<String, Object> model) {
-		model.put("hospitalisations", this.petService.findPetById(petId).getHospitalisations());
+	public String showHospitalisations(Pet pet, Map<String, Object> model) {
+		model.put("hospitalisations", pet.getHospitalisations());
 		return "hospitalisationList";
 	}
 	

@@ -43,6 +43,12 @@ public class StayController {
 	public StayController(PetService petService) {
 		this.petService = petService;
 	}
+	
+	@ModelAttribute("pet")
+	public Pet loadPetWithVisit(@PathVariable("petId") int petId) {
+		Pet pet = this.petService.findPetById(petId);
+		return pet;
+	}
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -59,7 +65,7 @@ public class StayController {
 	// Spring MVC calls method loadPetWithStay(...) before processNewStayForm is
 	// called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
-	public String processNewStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId) {
+	public String processNewStayForm(@Valid Stay stay, BindingResult result, Pet pet) {
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
@@ -69,7 +75,6 @@ public class StayController {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
-			Pet pet = this.petService.findPetById(petId);
 			pet.addStay(stay);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
@@ -77,27 +82,22 @@ public class StayController {
 	}
 	
 	@GetMapping(value = "/owners/*/pets/{petId}/stays/{stayId}/edit")
-	public String initEditStayForm(@PathVariable("petId") int petId, Map<String, Object> model, @PathVariable("stayId") int stayId) {
+	public String initEditStayForm(Pet pet, Map<String, Object> model, @PathVariable("stayId") int stayId) {
 		Stay stay = petService.findStayById(stayId);
-		Pet pet = petService.findPetById(petId);
 		model.put("stay", stay);
-		model.put("pet", pet);
 		return "pets/createOrUpdateStayForm";
 	}
 
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
-	public String processEditStayForm(@Valid Stay stay, BindingResult result, @PathVariable("petId") int petId, Map<String, Object> model,
+	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model,
 			@PathVariable("stayId") int stayId) {
-		
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
 			}
 		}
-		Pet pet = petService.findPetById(petId);
 		if (result.hasErrors()) {
-			model.put("pet", pet);
 			return "pets/createOrUpdateStayForm";
 		} else {
 			stay.setId(stayId);
@@ -108,8 +108,8 @@ public class StayController {
 	}
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")
-	public String showStays(@PathVariable int petId, Map<String, Object> model) {
-		model.put("stays", this.petService.findPetById(petId).getStays());
+	public String showStays(Pet pet, Map<String, Object> model) {
+		model.put("stays", pet.getStays());
 		return "stayList";
 	}
 

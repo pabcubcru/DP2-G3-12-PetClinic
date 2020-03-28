@@ -153,7 +153,7 @@ public class ProductControllerTests {
 
 //	INSERT PRODUCT
 
-	@WithMockUser(authorities={"ROLE_OWNER"}, username = "owner1")
+	@WithMockUser(value = "spring")
 	@Test
 	void testInitNewProductForm() throws Exception {
 		mockMvc.perform(get("/shops/1/products/new"))
@@ -161,7 +161,7 @@ public class ProductControllerTests {
 				.andExpect(view().name("products/createOrUpdateProductForm"));
 	}
 
-	@WithMockUser(authorities = "owner", username = "owner1")
+	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewProductFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product3").param("price", "18.0")
