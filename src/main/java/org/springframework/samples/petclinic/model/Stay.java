@@ -45,6 +45,10 @@ public class Stay extends BaseEntity {
 	private String		specialCares;
 
 
+	public Stay() {
+		this.startdate = LocalDate.now();
+	}
+	
 	public Pet getPet() {
 		return this.pet;
 	}

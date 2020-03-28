@@ -37,5 +37,9 @@ public class Discount extends NamedEntity {
 	@NotNull
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate	finishDate;
+	
+	public Discount() {
+		this.startDate = LocalDate.now();
+	}
 
 }

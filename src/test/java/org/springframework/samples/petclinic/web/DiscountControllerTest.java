@@ -75,7 +75,7 @@ public class DiscountControllerTest {
 				.param("finishDate", "2020/06/03")
 				.param("name", "discount1")
 				.param("percentage", "20.0")).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID));
+				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
 	}
 
 	@WithMockUser(value = "spring")
@@ -112,7 +112,7 @@ public class DiscountControllerTest {
 				.param("name", "discount1")
 				.param("percentage", "20.0").param("id", "1"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID));
+				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
 	}
 	
 	@WithMockUser(value = "spring")
