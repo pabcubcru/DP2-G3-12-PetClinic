@@ -15,10 +15,8 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "orders")
 public class Order extends NamedEntity {
@@ -33,7 +31,7 @@ public class Order extends NamedEntity {
 	private int				productNumber;
 
 	@Column(name = "order_date")
-	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss.SSSXXX")
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:SS")
 	private LocalDateTime	orderDate;
 
 	@NotNull

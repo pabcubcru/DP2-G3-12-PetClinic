@@ -62,8 +62,7 @@ public class OrderController {
 			model.put("productName", "");
 			model.put("order", order);
 			return "orders/createOrUpdateOrderForm";
-		}
-		else {
+		} else {
 			Shop shop = this.shopService.findShops().iterator().next();
 			Product product = productService.findByName(order.getProduct().getName());
 			order.setProduct(product);
@@ -95,6 +94,22 @@ public class OrderController {
 			} else {
 				return "/exception";
 			}
+	}
+	
+	@GetMapping(value = "/orders/{orderId}/delete")
+	public String processOrderDetele(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
+		Order order = this.orderService.findOrderById(orderId);
+		if(!order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
+			this.shopService.findShops().iterator().next().deleteOrder(order);
+			try {
+				this.orderService.deleteOrder(order);
+			} catch (Exception e) {
+				System.out.println();
+			}
+			return "redirect:/shops/" + shopId;
+		} else {
+			return "/exception";
+		}
 	}
 
 	@GetMapping("/orders/{orderId}")

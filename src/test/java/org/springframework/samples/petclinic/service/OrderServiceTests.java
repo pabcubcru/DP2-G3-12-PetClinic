@@ -30,8 +30,7 @@ public class OrderServiceTests {
 	@Transactional
 	public void shouldMakeOrder() {
 		Product product = productService.findProductById(1);
-		List<Order> orders = this.orderService.findOrdersByProductId(product.getId());
-		int tam = orders.size();
+		int numOrdersBefore = this.orderService.countOrdersByProductId(product.getId());
 		Shop shop = product.getShop();
 
 		Order order = new Order();
@@ -44,8 +43,8 @@ public class OrderServiceTests {
 		this.orderService.saveOrder(order);
 		assertThat(order.getId().longValue()).isNotEqualTo(0);
 
-		orders = this.orderService.findOrdersByProductId(product.getId());
-		assertThat(orders.size()).isEqualTo(tam + 1);
+		int numOrdersAfter = this.orderService.countOrdersByProductId(product.getId());
+		assertThat(numOrdersAfter).isEqualTo(numOrdersBefore + 1);
 	}
 	
 	@Test
@@ -78,17 +77,17 @@ public class OrderServiceTests {
 	
 	@Test
 	void shouldFindOrdersByProductId() {
-		List<Order> orders = orderService.findOrdersByProductId(1);
-		assertThat(orders.isEmpty()).isTrue();
+		int numOrders = orderService.countOrdersByProductId(1);
+		assertThat(numOrders == 0);
 		
-		orders = orderService.findOrdersByProductId(2);
-		assertThat(orders.size()).isEqualTo(2);
+		numOrders = orderService.countOrdersByProductId(2);
+		assertThat(numOrders == 0);
 	}
 	
 	@Test
 	void shouldFindOrders() {
 		Iterable<Order> orders = orderService.findOrders();
-		assertThat(orders).asList().size().isEqualTo(2);
+		assertThat(orders).asList().size().isEqualTo(3);
 	}
 
 }

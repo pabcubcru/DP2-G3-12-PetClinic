@@ -54,9 +54,17 @@
 		<a href="/shops/1/orders/${order.id}/canceled" class="btn btn-default">Cancel
 			Order</a>
 	</c:if>
-	<c:if test="${order.orderStatus != 'CANCELED' and !canBeCanceled}">
+	<c:if test="${order.orderStatus == 'INPROCESS' and !canBeCanceled}">
 	<br>
 	<br>
 		<c:out value="This order can not be canceled because it was made more than two days ago."></c:out>
+	</c:if>
+	<c:if test="${order.orderStatus == 'INPROCESS'}">
+	<br>
+	<br>
+		<c:out value="This order can not be deleted because the status is 'INPROCESS'."></c:out>
+	</c:if>
+	<c:if test="${order.orderStatus != 'INPROCESS'}">
+		<a href="/shops/1/orders/${order.id}/delete" class="btn btn-default">Delete</a>
 	</c:if>
 </petclinic:layout>
