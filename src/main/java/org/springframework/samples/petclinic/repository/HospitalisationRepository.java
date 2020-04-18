@@ -13,7 +13,11 @@ public interface HospitalisationRepository extends CrudRepository<Hospitalisatio
 	@Query("select h from Hospitalisation h where h.pet.id = ?1")
 	List<Hospitalisation> findByPetId(int petId);
 	
+
+	void delete(Hospitalisation hospitalisation) throws DataAccessException;
+
 	@Query("SELECT hstatus FROM HospitalisationStatus hstatus ORDER BY hstatus.name")
 	List<HospitalisationStatus> findHospitalisationStatus() throws DataAccessException;
+
 
 }
