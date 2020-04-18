@@ -65,6 +65,32 @@ public class HospitalisationController {
 		}
 	}
 	
+	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
+	public String initEditHospitalisationForm(Pet pet, Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
+		Hospitalisation hospitalisation = petService.findHospitalisationById(hospitalisationId);
+		model.put("hospitalisation", hospitalisation);
+		return "pets/createOrUpdateHospitalisationForm";
+	}
+
+	
+	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
+	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model,
+			@PathVariable("hospitalisationId") int hospitalisationId) {
+		if (hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
+			if (hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
+				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+		}
+		if (result.hasErrors()) {
+			return "pets/createOrUpdateHospitalisationForm";
+		} else {
+			hospitalisation.setId(hospitalisationId);
+			hospitalisation.setPet(pet);
+			this.petService.saveHospitalisation(hospitalisation);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
+	
 	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations")
 	public String showHospitalisations(Pet pet, Map<String, Object> model) {
 		model.put("hospitalisations", pet.getHospitalisations());

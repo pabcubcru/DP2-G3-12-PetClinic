@@ -227,7 +227,14 @@
 										pattern="yyyy-MM-dd" /></td>
 								<td><c:out value="${hospitalisation.diagnosis}" /></td>
 								<td><c:out value="${hospitalisation.treatment}" /></td>
-								<td><c:out value="${hospitalisation.totalPrice}" /></td>
+								<td><c:out value="${hospitalisation.totalPrice}" /> EUR</td>
+								<td><spring:url
+											value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
+											var="hospitaliationUrl">
+											<spring:param name="ownerId" value="${owner.id}" />
+											<spring:param name="petId" value="${pet.id}" />
+											<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
+										</spring:url> <a href="${fn:escapeXml(hospitaliationUrl)}">Update Hospitalisation</a></td>
 							</tr>
 						</c:forEach>
 						<tr>
