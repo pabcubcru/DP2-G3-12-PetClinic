@@ -53,6 +53,8 @@
        			<petclinic:inputField label="Treatment" name="treatment" />
        			<petclinic:inputField label="Diagnosis" name="diagnosis" />
        			<petclinic:inputField label="Total price" name="totalPrice" />
+       			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus" 
+       			names="${hospitalisation_status}" size="2"/>
         	</div>
         	
         	<div class="form-group">

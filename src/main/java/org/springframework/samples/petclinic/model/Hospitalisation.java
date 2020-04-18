@@ -35,12 +35,9 @@ public class Hospitalisation extends BaseEntity {
 	@JoinColumn(name = "pet_id")
 	private Pet			pet;
 
-	//	@ManyToMany(fetch = FetchType.EAGER)
-	//	private Set<Vet> vets;
-
-	//	@ManyToOne
-	//	@JoinColumn(name = "hospitalisation_status")
-	//	private HospitalisationStatus hospitalisationStatus;
+	@ManyToOne
+	@JoinColumn(name = "hospitalisation_status")
+	private HospitalisationStatus hospitalisationStatus;
 
 	@NotEmpty
 	@Column(name = "treatment")
@@ -80,21 +77,13 @@ public class Hospitalisation extends BaseEntity {
 		this.finishDate = finishDate;
 	}
 
-	//	public Set<Vet> getVets() {
-	//		return vets;
-	//	}
-	//
-	//	public void setVets(Set<Vet> vets) {
-	//		this.vets = vets;
-	//	}
+	public HospitalisationStatus getHospitalisationStatus() {
+		return hospitalisationStatus;
+	}
 
-	//	public HospitalisationStatus getHospitalisationStatus() {
-	//		return hospitalisationStatus;
-	//	}
-	//
-	//	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
-	//		this.hospitalisationStatus = hospitalisationStatus;
-	//	}
+	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
+		this.hospitalisationStatus = hospitalisationStatus;
+	}
 
 	public String getTreatment() {
 		return this.treatment;
