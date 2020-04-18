@@ -1,12 +1,14 @@
 package org.springframework.samples.petclinic.web;
 
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Hospitalisation;
+import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,11 @@ public class HospitalisationController {
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
+	}
+	
+	@ModelAttribute("hospitalisation_status")
+	public Collection<HospitalisationStatus> populateHospitalisationStatus() {
+		return this.petService.findhHospitalisationStatus();
 	}
 	
 	@ModelAttribute("pet")
@@ -61,6 +68,32 @@ public class HospitalisationController {
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
+	
+	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
+	public String initEditHospitalisationForm(Pet pet, Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
+		Hospitalisation hospitalisation = petService.findHospitalisationById(hospitalisationId);
+		model.put("hospitalisation", hospitalisation);
+		return "pets/createOrUpdateHospitalisationForm";
+	}
+
+	
+	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
+	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model,
+			@PathVariable("hospitalisationId") int hospitalisationId) {
+		if (hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
+			if (hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
+				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+		}
+		if (result.hasErrors()) {
+			return "pets/createOrUpdateHospitalisationForm";
+		} else {
+			hospitalisation.setId(hospitalisationId);
+			hospitalisation.setPet(pet);
+			this.petService.saveHospitalisation(hospitalisation);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
