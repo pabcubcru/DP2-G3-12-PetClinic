@@ -77,13 +77,28 @@ public class PetService {
 	}
 	
 	@Transactional
+	public void deleteVisit(Visit visit) throws DataAccessException {
+		visitRepository.delete(visit);
+	}
+	
+	@Transactional
 	public void saveStay(Stay stay) throws DataAccessException {
 		stayRepository.save(stay);
+	}
+	
+	@Transactional
+	public void deleteStay(Stay stay) throws DataAccessException {
+		stayRepository.delete(stay);
 	}
 
 	@Transactional  
 	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
 		hospitalisationRepository.save(hospitalisation);
+	}
+	
+	@Transactional
+	public void deleteHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
+		hospitalisationRepository.delete(hospitalisation);
 	}
 
 	public Pet findPetById(int id) throws DataAccessException {
@@ -97,6 +112,11 @@ public class PetService {
             	throw new DuplicatedPetNameException();
             }else
                 petRepository.save(pet);                
+	}
+	
+	@Transactional
+	public void deletePet(Pet pet) throws DataAccessException {
+		petRepository.delete(pet);
 	}
 
 
