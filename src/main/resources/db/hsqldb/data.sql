@@ -35,8 +35,8 @@ INSERT INTO types VALUES (6, 'hamster');
 INSERT INTO status VALUES (0, 'SICK');
 INSERT INTO status VALUES (1, 'HEALTHY');
 
--- INSERT INTO hospitalisation_status VALUES (0, 'HOSPITALISED');
--- INSERT INTO hospitalisation_status VALUES (1, 'DISCHARGED');
+INSERT INTO hospitalisation_status VALUES (0, 'HOSPITALISED');
+INSERT INTO hospitalisation_status VALUES (1, 'DISCHARGED');
 
 INSERT INTO owners VALUES (1, 'George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023', 'owner1');
 INSERT INTO owners VALUES (2, 'Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749', 'owner1');
@@ -77,10 +77,9 @@ INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (3, 30.0, '2020-04-01', '2020-05-01','special',7);
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (4, 30.0, '2020-09-01', '2020-10-01','special',7);
 
-INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id) VALUES (1, '2020-09-01', '2020-10-01','treatmet1','diagnosis1',30,1);
-INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id) VALUES (2, '2020-04-15', '2020-05-03','treatmet2','diagnosis2',50,7);
-INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id) VALUES (3, '2020-04-15', '2020-05-03','treatmet3','diagnosis3',70,7);
-
+INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-09-01', '2020-10-01','treatment1','diagnosis1',30,1,0);
+-- INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-05-03','treatment2','diagnosis2',50,7);
+-- INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-04-15', '2020-05-03','treatment3','diagnosis3',70,7);
 
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);

@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Hospitalisation;
+import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
@@ -121,6 +122,9 @@ public class PetService {
 	public Hospitalisation findHospitalisationById(int id) throws DataAccessException {
 		return hospitalisationRepository.findById(id).get();
 		
+	@Transactional(readOnly = true)
+	public Collection<HospitalisationStatus> findhHospitalisationStatus() throws DataAccessException {
+		return hospitalisationRepository.findHospitalisationStatus();
 	}
 
 }

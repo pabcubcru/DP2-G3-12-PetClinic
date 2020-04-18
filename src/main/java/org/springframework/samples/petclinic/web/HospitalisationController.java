@@ -1,12 +1,14 @@
 package org.springframework.samples.petclinic.web;
 
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Hospitalisation;
+import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,11 @@ public class HospitalisationController {
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
+	}
+	
+	@ModelAttribute("hospitalisation_status")
+	public Collection<HospitalisationStatus> populateHospitalisationStatus() {
+		return this.petService.findhHospitalisationStatus();
 	}
 	
 	@ModelAttribute("pet")
