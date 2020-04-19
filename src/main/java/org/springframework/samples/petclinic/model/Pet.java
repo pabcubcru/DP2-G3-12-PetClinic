@@ -86,7 +86,7 @@ public class Pet extends NamedEntity {
 	public void setType(PetType type) {
 		this.type = type;
 	}
-	
+
 	public Owner getOwner() {
 		return this.owner;
 	}
@@ -145,6 +145,10 @@ public class Pet extends NamedEntity {
 	public void addHospitalisation(Hospitalisation hospitalisation) {
 		getHospitalisationsInternal().add(hospitalisation);
 		hospitalisation.setPet(this);
+	}
+
+	public void deleteHospitalisation(Hospitalisation hospitalisation) {
+		getHospitalisationsInternal().remove(hospitalisation);
 	}
 
 	protected Set<Stay> getStaysInternal() {
