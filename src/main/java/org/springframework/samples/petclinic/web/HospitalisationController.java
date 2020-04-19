@@ -49,8 +49,12 @@ public class HospitalisationController {
 	
 	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations/new")
 	public String initNewHospitalisationForm(Pet pet, Map<String, Object> model) {
-		model.put("hospitalisation", new Hospitalisation());
-		return "pets/createOrUpdateHospitalisationForm";
+		if(pet.getStatus().getName().equals("HEALTHY")) {
+			model.put("hospitalisation", new Hospitalisation());
+			return "pets/createOrUpdateHospitalisationForm";
+		}else {
+		return "/exception";
+	}
 	}
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")

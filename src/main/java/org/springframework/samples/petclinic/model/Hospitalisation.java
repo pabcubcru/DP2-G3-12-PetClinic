@@ -52,7 +52,7 @@ public class Hospitalisation extends BaseEntity {
 	@Column(name = "total_price")
 	private Double		totalPrice;
 
-
+	
 	public Pet getPet() {
 		return this.pet;
 	}
@@ -113,6 +113,7 @@ public class Hospitalisation extends BaseEntity {
 		this.startDate = LocalDate.now();
 		HospitalisationStatus hs = new HospitalisationStatus();
 		hs.setName("HOSPITALISED");
+		hs.setId(0);
 		this.hospitalisationStatus = hs;
 	}
 

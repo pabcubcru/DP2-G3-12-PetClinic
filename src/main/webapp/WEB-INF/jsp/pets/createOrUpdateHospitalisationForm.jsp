@@ -57,9 +57,7 @@
        			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus" 
        			names="${hospitalisation_status}" size="2"/>
        			</c:if>
-       			<c:if test="${hospitalisation['new']}">
-       			<petclinic:inputField label="Hospitalisation status" name="hospitalisationStatus"/>
-       			</c:if>
+       			
         	</div>
         	
         	<div class="form-group">
