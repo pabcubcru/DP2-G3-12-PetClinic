@@ -19,5 +19,4 @@ public interface HospitalisationRepository extends CrudRepository<Hospitalisatio
 	@Query("SELECT hstatus FROM HospitalisationStatus hstatus ORDER BY hstatus.name")
 	List<HospitalisationStatus> findHospitalisationStatus() throws DataAccessException;
 
-
 }

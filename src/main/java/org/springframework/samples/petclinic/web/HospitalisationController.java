@@ -57,8 +57,7 @@ public class HospitalisationController {
 	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model) {
 		if(hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
 			if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
-				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
-						"The finish date can not be before than start date");
+				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate","The finish date can not be before than start date");
 			}
 		}
 		if (result.hasErrors()) {
@@ -66,6 +65,7 @@ public class HospitalisationController {
 			return "pets/createOrUpdateHospitalisationForm";
 		}
 		else {
+			pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
@@ -98,6 +98,9 @@ public class HospitalisationController {
 				hospitalisation.setFinishDate(LocalDate.now());
 			}
 			hospitalisation.setId(hospitalisationId);
+			if(hospitalisation.getHospitalisationStatus().getName().equals("DISCHARGED")) {
+			pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst().get());
+			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			return "redirect:/owners/{ownerId}";
