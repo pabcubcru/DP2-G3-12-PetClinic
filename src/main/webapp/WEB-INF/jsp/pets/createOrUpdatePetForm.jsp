@@ -31,7 +31,6 @@
                 <div class="control-group">
                     <petclinic:selectField name="type" label="Type " names="${types}" size="5"/>
                 </div>
-                	<petclinic:selectField name="status" label="Status " names="${status}" size="2"/>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">

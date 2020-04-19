@@ -18,19 +18,15 @@ package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.model.Stay;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
@@ -166,42 +162,16 @@ public class PetController {
 	}
 
 	@GetMapping(value = "/pets/{petId}/delete")
-	public String initDeleteForm(@PathVariable("petId") int petId, ModelMap model, Owner owner, Hospitalisation hospitalisation, Stay stay, BindingResult result) {
+	public String initDeleteForm(@PathVariable("petId") int petId, Owner owner) {
 		Pet pet = this.petService.findPetById(petId);
-		
-		if(LocalDate.now().isAfter(hospitalisation.getStartDate()) && LocalDate.now().isBefore(hospitalisation.getFinishDate())) {
-				if(LocalDate.now().isAfter(stay.getStartdate()) && LocalDate.now().isBefore(stay.getFinishdate())) {
-					result.rejectValue("finishdate", "wrongDelete", "NOOOOOOOOOOOOOOOOOO");
-					
-				}
-			}
-		
-		if (result.hasErrors()) {
-			model.put("pet", pet);
-			return "pets/createOrUpdateHospitalisationForm";
+
+		if (pet.getStatus().getName().equals("HEALTHY")) {
+			owner.removePet(pet);
+			this.petService.deletePet(pet);
+			return "redirect:/owners/{ownerId}";
+		}else {
+			return "/exception";
 		}
-		else {
-		owner.removePet(pet);
-		model.remove("pet", pet);
-		List<Visit> visits;
-		visits = pet.getVisits();
-		List<Stay> stays;
-		stays = pet.getStays();
-		List<Hospitalisation> hospitalisations;
-		hospitalisations = pet.getHospitalisations();
-		
-		for (Visit visit : visits) {
-			this.petService.deleteVisit(visit);
-		}
-		for (Stay s : stays) {
-			this.petService.deleteStay(s);
-		}
-		for (Hospitalisation h : hospitalisations) {
-			this.petService.deleteHospitalisation(h);
-		}
-		this.petService.deletePet(pet);
-		return "redirect:/owners/{ownerId}";
 	}
 
-}
 }
