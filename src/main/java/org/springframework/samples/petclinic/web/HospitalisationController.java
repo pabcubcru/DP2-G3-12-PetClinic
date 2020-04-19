@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.web;
 
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 
@@ -91,6 +92,11 @@ public class HospitalisationController {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
+			HospitalisationStatus hs = new HospitalisationStatus();
+			hs.setName("DISCHARGED");
+			if (hospitalisation.getHospitalisationStatus().getName().equals(hs.getName())) {
+				hospitalisation.setFinishDate(LocalDate.now());
+			}
 			hospitalisation.setId(hospitalisationId);
 			if(hospitalisation.getHospitalisationStatus().getName().equals("DISCHARGED")) {
 			pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst().get());
