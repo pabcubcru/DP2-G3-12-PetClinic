@@ -18,15 +18,19 @@ package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Stay;
+import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
@@ -50,11 +54,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 
-	private static final String	VIEWS_PETS_CREATE_OR_UPDATE_FORM	= "pets/createOrUpdatePetForm";
+	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-	private final PetService	petService;
-	private final OwnerService	ownerService;
-
+	private final PetService petService;
+	private final OwnerService ownerService;
 
 	@Autowired
 	public PetController(final PetService petService, final OwnerService ownerService) {
@@ -78,15 +81,10 @@ public class PetController {
 	}
 
 	/*
-	 * @ModelAttribute("pet")
-	 * public Pet findPet(@PathVariable("petId") Integer petId) {
-	 * Pet result=null;
-	 * if(petId!=null)
-	 * result=this.clinicService.findPetById(petId);
-	 * else
-	 * result=new Pet();
-	 * return result;
-	 * }
+	 * @ModelAttribute("pet") public Pet findPet(@PathVariable("petId") Integer
+	 * petId) { Pet result=null; if(petId!=null)
+	 * result=this.clinicService.findPetById(petId); else result=new Pet(); return
+	 * result; }
 	 */
 
 	@InitBinder("owner")
@@ -108,7 +106,8 @@ public class PetController {
 	}
 
 	@PostMapping(value = "/pets/new")
-	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result, final ModelMap model) {
+	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
+			final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
 			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
 		}
@@ -145,7 +144,8 @@ public class PetController {
 	 * @return
 	 */
 	@PostMapping(value = "/pets/{petId}/edit")
-	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner, @PathVariable("petId") final int petId, final ModelMap model) {
+	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner,
+			@PathVariable("petId") final int petId, final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
 			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
 		}
@@ -165,4 +165,43 @@ public class PetController {
 		}
 	}
 
+	@GetMapping(value = "/pets/{petId}/delete")
+	public String initDeleteForm(@PathVariable("petId") int petId, ModelMap model, Owner owner, Hospitalisation hospitalisation, Stay stay, BindingResult result) {
+		Pet pet = this.petService.findPetById(petId);
+		
+		if(LocalDate.now().isAfter(hospitalisation.getStartDate()) && LocalDate.now().isBefore(hospitalisation.getFinishDate())) {
+				if(LocalDate.now().isAfter(stay.getStartdate()) && LocalDate.now().isBefore(stay.getFinishdate())) {
+					result.rejectValue("finishdate", "wrongDelete", "NOOOOOOOOOOOOOOOOOO");
+					
+				}
+			}
+		
+		if (result.hasErrors()) {
+			model.put("pet", pet);
+			return "pets/createOrUpdateHospitalisationForm";
+		}
+		else {
+		owner.removePet(pet);
+		model.remove("pet", pet);
+		List<Visit> visits;
+		visits = pet.getVisits();
+		List<Stay> stays;
+		stays = pet.getStays();
+		List<Hospitalisation> hospitalisations;
+		hospitalisations = pet.getHospitalisations();
+		
+		for (Visit visit : visits) {
+			this.petService.deleteVisit(visit);
+		}
+		for (Stay s : stays) {
+			this.petService.deleteStay(s);
+		}
+		for (Hospitalisation h : hospitalisations) {
+			this.petService.deleteHospitalisation(h);
+		}
+		this.petService.deletePet(pet);
+		return "redirect:/owners/{ownerId}";
+	}
+
+}
 }
