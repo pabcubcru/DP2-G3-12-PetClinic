@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
 <petclinic:layout pageName="stays">
@@ -38,8 +39,8 @@
             </thead>
             <tr>
                 <td><c:out value="${pet.name}" /></td>
-                <td><petclinic:localDate
-						date="${pet.birthDate}" pattern="yyyy/MM/dd" /></td>
+                <td><petclinic:localDate date="${pet.birthDate}"
+						pattern="yyyy/MM/dd" /></td>
                 <td><c:out value="${pet.type.name}" /></td>
                 <td><c:out
 						value="${pet.owner.firstName} ${pet.owner.lastName}" /></td>
@@ -48,8 +49,7 @@
 
         <form:form modelAttribute="stay" class="form-horizontal">
             <div class="form-group has-feedback">
-                <petclinic:inputField label="Start Date"
-					name="startdate" />
+				<petclinic:inputField label="Start Date" name="startdate" />
                 <petclinic:inputField label="Finish Date"
 					name="finishdate" />
                  <petclinic:inputField label="Special Cares"
@@ -65,7 +65,7 @@
         </form:form>
 
         <br />
-        <b>Previous Stays</b>
+        <b>Every Stay</b>
         <table class="table table-striped">
             <tr>
                 <th>Start Date</th>

@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -67,6 +68,10 @@ public class StayController {
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid Stay stay, BindingResult result, Pet pet) {
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if(stay.getStartdate().isBefore(LocalDate.now())) {
+				result.rejectValue("startdate", "dateStartDateIsPast",
+						"The start date must be present or future");
+			}
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
 						"The finish date must be after than start date");
@@ -105,6 +110,14 @@ public class StayController {
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
+	}
+	
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/end")
+	public String initEndStayForm(@PathVariable("stayId") int stayId) {
+		Stay stay = petService.findStayById(stayId);
+		stay.setFinishdate(LocalDate.now());
+		this.petService.saveStay(stay);
+		return "redirect:/owners/{ownerId}";
 	}
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")

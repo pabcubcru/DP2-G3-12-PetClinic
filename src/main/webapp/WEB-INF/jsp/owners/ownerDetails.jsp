@@ -108,6 +108,17 @@
 										<spring:param name="petId" value="${pet.id}" />
 										<spring:param name="stayId" value="${stay.id}" />
 									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update</a></td>
+								<td>
+								<c:if test="${stay.activeStay()}">
+           							 <spring:url
+										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/end"
+										var="stayUrl">
+										<spring:param name="ownerId" value="${owner.id}" />
+										<spring:param name="petId" value="${pet.id}" />
+										<spring:param name="stayId" value="${stay.id}" />
+                      				</spring:url> <a href="${fn:escapeXml(stayUrl)}">End Stay</a>
+           						</c:if>
+           						</td>
 							</tr>
 						</c:forEach>
 						<thead>
