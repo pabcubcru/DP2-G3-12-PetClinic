@@ -141,9 +141,9 @@ public class ProductControllerTests {
 		List<Shop> shops = new ArrayList<Shop>();
 		shops.add(shop1);
 
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(ordersP1);
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_2)).willReturn(new ArrayList<Order>());
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_3)).willReturn(new ArrayList<Order>());
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(1);
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_2)).willReturn(0);
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_3)).willReturn(0);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_1)).willReturn(this.testProduct1);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_2)).willReturn(this.testProduct2);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_3)).willReturn(this.testProduct3);

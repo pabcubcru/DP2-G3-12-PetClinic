@@ -72,8 +72,8 @@
                     <c:out value="${order.productNumber}"/>
                 </td>
                 <td>
-                    <c:out value="${order.orderDate}"/>
-                </td>
+                    <petclinic:localDate date="${order.orderDate.toLocalDate()}" pattern="yyyy/MM/dd" /><c:out value=" ${order.orderDate.toLocalTime()}" />
+				</td>
                 <td>
                     <c:out value="${order.orderStatus}"/>
                 </td>

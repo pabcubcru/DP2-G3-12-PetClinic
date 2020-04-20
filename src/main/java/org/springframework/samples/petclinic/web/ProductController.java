@@ -19,13 +19,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/shops/{shopId}")
+@RequestMapping("/shops/1")
 public class ProductController {
 
 	private ProductService productService;
@@ -42,6 +43,16 @@ public class ProductController {
 		this.discountService = discountService;
 	}
 
+	@ModelAttribute("shop")
+	public Shop loadShop() {
+		return this.shopService.findShops().iterator().next();
+	}
+	
+	@InitBinder("shop")
+	public void initOwnerBinder(final WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
+
 	@InitBinder
 	public void setAllowedFields(final WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -55,32 +66,30 @@ public class ProductController {
 	}
 
 	@PostMapping(value = "/products/new")
-	public String processNewProductForm(@Valid Product product, final BindingResult result,
-			@PathVariable("shopId") final int shopId) {
+	public String processNewProductForm(@Valid Product product, final BindingResult result, final Shop shop) {
 		if (productService.findProductsNames().contains(product.getName())) {
 			result.rejectValue("name", "duplicatedName", "This name already exist");
 		}
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
-			Shop shop = this.shopService.findShops().iterator().next();
 			shop.addProduct(product);
 			this.productService.saveProduct(product);
-			return "redirect:/shops/" + shopId;
+			return "redirect:/shops/" + shop.getId();
 		}
 	}
 
 	@GetMapping(value = "/products/{productId}/delete")
 	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId,
-			@PathVariable("shopId") final int shopId) {
+			final Shop shop) {
 		Product product = this.productService.findProductById(productId);
-		if (this.orderService.findOrdersByProductId(productId).size() == 0) {
+		if (this.orderService.countOrdersByProductId(productId) == 0) {
 			this.shopService.findShops().iterator().next().deleteProduct(product);
 			this.productService.deleteProduct(product);
 			if (product.getDiscount() != null) {
 				this.discountService.deleteDiscount(product.getDiscount().getId());
 			}
-			return "redirect:/shops/" + shopId;
+			return "redirect:/shops/" + shop.getId();
 		} else {
 			return "/exception";
 		}
@@ -99,7 +108,7 @@ public class ProductController {
 				mav.addObject("priceWithDiscount", product.getPriceWithDiscount());
 			}
 		}
-		boolean noHasOrders = this.orderService.findOrdersByProductId(productId).size() == 0;
+		boolean noHasOrders = this.orderService.countOrdersByProductId(productId) == 0;
 		mav.addObject("canDeleteIt", noHasOrders);
 		mav.addObject(product);
 		return mav;
@@ -114,7 +123,7 @@ public class ProductController {
 
 	@PostMapping(value = "/products/{productId}/edit")
 	public String processUpdateProductForm(@Valid final Product product, final BindingResult result,
-			@PathVariable("productId") final int productId, @PathVariable("shopId") final int shopId) {
+			@PathVariable("productId") final int productId, Shop shop) {
 		Product productWithoutUpdate = this.productService.findProductById(productId);
 		if (this.productService.findProductsNames().contains(product.getName())
 				&& !productWithoutUpdate.getName().equals(product.getName())) {
@@ -124,10 +133,9 @@ public class ProductController {
 			return "products/createOrUpdateProductForm";
 		} else {
 			product.setId(productId);
-			Shop shop = this.shopService.findShops().iterator().next();
 			product.setShop(shop);
 			this.productService.saveProduct(product);
-			return "redirect:/shops/" + shopId + "/products/" + productId;
+			return "redirect:/shops/" + shop.getId() + "/products/" + productId;
 		}
 	}
 }
