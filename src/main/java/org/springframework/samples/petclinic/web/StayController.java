@@ -108,6 +108,7 @@ public class StayController {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
 			}
 			Stay s = this.petService.findStayById(stayId);
+			stays.remove(s);
 			if(!s.getStartdate().equals(stay.getStartdate()) || !s.getFinishdate().equals(stay.getFinishdate())) {
 				if (Validaciones.validacionReserva(stay, stays)) {
 				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
