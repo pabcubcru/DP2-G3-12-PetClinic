@@ -50,11 +50,11 @@
 		<a href="/shops/1/orders/${order.id}/received" class="btn btn-default">Order
 			Received</a>
 	</c:if>
-	<c:if test="${order.orderStatus != 'CANCELED' and canBeCanceled}">
+	<c:if test="${order.orderStatus == 'INPROCESS' and canBeCanceled}">
 		<a href="/shops/1/orders/${order.id}/canceled" class="btn btn-default">Cancel
 			Order</a>
 	</c:if>
-	<c:if test="${order.orderStatus != 'CANCELED' and !canBeCanceled}">
+	<c:if test="${order.orderStatus == 'INPROCESS' and !canBeCanceled}">
 	<br>
 	<br>
 		<c:out value="This order can not be canceled because it was made more than two days ago."></c:out>
