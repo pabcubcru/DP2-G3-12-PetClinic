@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -115,6 +116,11 @@ public class Hospitalisation extends BaseEntity {
 		hs.setName("HOSPITALISED");
 		hs.setId(0);
 		this.hospitalisationStatus = hs;
+	}
+	
+	@Transient
+	public Boolean pastHospitalisation() {
+		return !this.finishDate.isAfter(LocalDate.now());
 	}
 
 }

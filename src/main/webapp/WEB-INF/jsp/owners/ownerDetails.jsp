@@ -145,6 +145,7 @@
 								<td><c:out value="${hospitalisation.treatment}" /></td>
 								<td><c:out value="${hospitalisation.hospitalisationStatus}" /></td>
 								<td><c:out value="${hospitalisation.totalPrice}" /></td>
+								<c:if test="${!hospitalisation.pastHospitalisation()}">
 								<td><spring:url
 										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
 										var="hospitaliationUrl">
@@ -152,6 +153,7 @@
 										<spring:param name="petId" value="${pet.id}" />
 										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
 									</spring:url> <a href="${fn:escapeXml(hospitaliationUrl)}">Update</a></td>
+								</c:if>
 									
 									<c:if test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}">
 								<td><spring:url

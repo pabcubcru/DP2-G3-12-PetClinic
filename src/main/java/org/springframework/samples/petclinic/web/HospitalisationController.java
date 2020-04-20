@@ -100,8 +100,9 @@ public class HospitalisationController {
 						"The finish date must be after than start date");
 			}
 			Hospitalisation h = this.petService.findHospitalisationById(hospitalisationId);
-			if(!h.getStartDate().equals(hospitalisation.getStartDate()) || !h.getFinishDate().equals(hospitalisation.getFinishDate())) {
-				if (HospitalValidation.validationHospital(hospitalisation, hospitalisations)) {
+			hospitalisations.remove(h);
+			if(!h.getStartDate().equals(hospitalisation.getStartDate())) {
+				if (HospitalValidation.validationHospital(hospitalisation, hospitalisations) && !hospitalisation.getId().equals(hospitalisationId)) {
 				result.rejectValue("finishDate", "duplicatedHospitalisation", "There is already a current hospitalisation for this pet");
 				}
 			}
