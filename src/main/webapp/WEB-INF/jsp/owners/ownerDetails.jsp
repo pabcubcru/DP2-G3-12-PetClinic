@@ -101,6 +101,7 @@
 										pattern="yyyy-MM-dd" /></td>
 								<td><c:out value="${stay.specialCares}" /></td>
 								<td><c:out value="${stay.price}" /></td>
+								<c:if test="${!stay.pastStay()}">
 								<td><spring:url
 										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
 										var="stayUrl">
@@ -108,6 +109,7 @@
 										<spring:param name="petId" value="${pet.id}" />
 										<spring:param name="stayId" value="${stay.id}" />
 									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update</a></td>
+								</c:if>
 								<td>
 								<c:if test="${stay.activeStay()}">
            							 <spring:url
