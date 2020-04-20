@@ -148,9 +148,18 @@
 										var="hospitaliationUrl">
 										<spring:param name="ownerId" value="${owner.id}" />
 										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="hospitalisationId"
-											value="${hospitalisation.id}" />
+										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
 									</spring:url> <a href="${fn:escapeXml(hospitaliationUrl)}">Update</a></td>
+									
+									<c:if test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}">
+								<td><spring:url
+										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete"
+										var="hospitaliationDeleteUrl">
+										<spring:param name="ownerId" value="${owner.id}" />
+										<spring:param name="petId" value="${pet.id}" />
+										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
+									</spring:url> <a href="${fn:escapeXml(hospitaliationDeleteUrl)}">Remove</a></td>
+									</c:if>
 							</tr>
 						</c:forEach>
 						<tr>
