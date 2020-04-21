@@ -82,15 +82,17 @@ public class OrderController {
 	}
 
 	@GetMapping(value = "/orders/{orderId}/received")
-	public String processOrderReceived(@PathVariable("orderId") int orderId, Shop shop) {
-		Order order = this.orderService.findOrderById(orderId);
-		if (order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
-			order.orderReceived();
-			this.orderService.saveOrder(order);
-			return "redirect:/shops/" + shop.getId() + "/orders/" + orderId;
-		} else {
-			return "/exception";
-		}
+	public String processOrderReceived(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
+			Order order = this.orderService.findOrderById(orderId);
+			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
+				order.orderReceived();
+				order.getProduct().setStock(order.getProduct().getStock() + order.getProductNumber());
+				this.productService.saveProduct(order.getProduct());
+				this.orderService.saveOrder(order);
+				return "redirect:/shops/" + shopId + "/orders/" + orderId;
+			} else {
+				return "/exception";
+			}
 	}
 
 	@GetMapping(value = "/orders/{orderId}/canceled")
