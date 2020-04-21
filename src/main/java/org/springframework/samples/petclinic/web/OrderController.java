@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/shops/1")
+@RequestMapping("/shops/{shopId}")
 public class OrderController {
 
 	private final OrderService orderService;

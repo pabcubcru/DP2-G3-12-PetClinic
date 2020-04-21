@@ -71,7 +71,7 @@ public class CreateProductUITest {
 
 	public void checkProductHasBeenCreatedSuccess() throws Exception {
 		assertEquals("productUITest", driver.findElement(By.xpath("//td")).getText());
-		assertEquals("10.0 EUR", driver.findElement(By.xpath("//tr[2]/td")).getText());
+		assertEquals("10.0", driver.findElement(By.xpath("//tr[2]/td")).getText());
 		assertEquals("50", driver.findElement(By.xpath("//tr[3]/td")).getText());
 	}
 

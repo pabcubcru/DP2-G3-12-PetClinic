@@ -110,7 +110,7 @@ class ProductServiceTests {
 		int tamaño = products.size();
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
-		product.setName("product5");
+		product.setName("product15");
 		product.setPrice(50.0);
 		product.setStock(20);
 		shop1.addProduct(product);

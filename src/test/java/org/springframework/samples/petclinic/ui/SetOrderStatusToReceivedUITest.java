@@ -53,7 +53,7 @@ public class SetOrderStatusToReceivedUITest {
 	public void setOrder2ReceivedAndCheckStatusSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("order2")).click();
-		driver.findElement(By.xpath("//a[contains(text(),'Order\n			Received')]")).click();
+		driver.findElement(By.xpath("//a[contains(text(),'Received')]")).click();
 		assertEquals("RECEIVED", driver.findElement(By.xpath("//tr[6]/td")).getText());
 	}
 

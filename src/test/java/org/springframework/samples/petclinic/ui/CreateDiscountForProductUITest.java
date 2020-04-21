@@ -72,15 +72,15 @@ public class CreateDiscountForProductUITest {
 
 	public void checkDiscountForProductHasBeenCreatedSuccessAndDiscountHasBeenApplied(String priceBefore) throws Exception {
 		assertEquals("30.0", driver.findElement(By.xpath("//table[2]/tbody/tr/td")).getText());
-		assertEquals(LocalDate.now(), driver.findElement(By.xpath("//table[2]/tbody/tr[2]/td")).getText());
-		assertEquals("2020-04-30", driver.findElement(By.xpath("//table[2]/tbody/tr[3]/td")).getText());
-		assertTrue(Integer.parseInt(priceBefore) > Integer.parseInt(driver.findElement(By.xpath("//tr[2]/td")).getText()));
-		assertEquals("Price With Discount", driver.findElement(By.xpath("//tr[2]/th")).getText());
+		assertEquals(LocalDate.now().toString().replace("-", "/"), driver.findElement(By.xpath("//table[2]/tbody/tr[2]/td")).getText());
+		assertEquals("2020/09/01", driver.findElement(By.xpath("//table[2]/tbody/tr[3]/td")).getText());
+		assertTrue(Double.parseDouble(priceBefore) > Double.parseDouble(driver.findElement(By.xpath("//tr[2]/td")).getText()));
+		assertEquals("Price With Discount (EUR)", driver.findElement(By.xpath("//tr[2]/th")).getText());
 	}
 
 	public void fillCreateDiscountForProductFormNullFinishDateAndCheckErrorMessageAndPriceNoChange() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
-		driver.findElement(By.linkText("product2")).click();
+		driver.findElement(By.linkText("product4")).click();
 		String priceBefore = driver.findElement(By.xpath("//tr[2]/td")).getText();
 		driver.findElement(By.linkText("Create Discount")).click();
 		driver.findElement(By.id("percentage")).clear();
@@ -89,7 +89,7 @@ public class CreateDiscountForProductUITest {
 		assertEquals("no puede ser null",
 				driver.findElement(By.xpath("//form[@id='add-discount-form']/div/div[3]/div/span[2]")).getText());
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
-		driver.findElement(By.linkText("product2")).click();
+		driver.findElement(By.linkText("product4")).click();
 		assertEquals(priceBefore, driver.findElement(By.xpath("//tr[2]/td")).getText());
 	}
 

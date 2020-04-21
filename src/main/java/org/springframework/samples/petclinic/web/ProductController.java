@@ -47,7 +47,7 @@ public class ProductController {
 	public Shop loadShop() {
 		return this.shopService.findShops().iterator().next();
 	}
-	
+
 	@InitBinder("shop")
 	public void initOwnerBinder(final WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
@@ -132,6 +132,7 @@ public class ProductController {
 		if (result.hasErrors()) {
 			return "products/createOrUpdateProductForm";
 		} else {
+			product.setDiscount(productWithoutUpdate.getDiscount());
 			product.setId(productId);
 			product.setShop(shop);
 			this.productService.saveProduct(product);
