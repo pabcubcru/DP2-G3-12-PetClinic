@@ -37,6 +37,8 @@ public class StayControllerTest {
 	private static final int TEST_PET_ID_2 = 2;
 	private static final int TEST_STAY_ID_1 = 1;
 	private static final int TEST_STAY_ID_2 = 2;
+	private static final int TEST_STAY_ID_3 = 3;
+	private static final int TEST_STAY_ID_4 = 4;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -60,19 +62,35 @@ public class StayControllerTest {
 		stay2.setId(TEST_STAY_ID_2);
 		stay2.setStartdate(LocalDate.of(2020, 07, 20));
 		stay2.setFinishdate(LocalDate.of(2020, 07, 25));
+		
+		Stay stay3 = new Stay();
+		stay3.setId(TEST_STAY_ID_3);
+		stay3.setStartdate(LocalDate.of(2020, 01, 01));
+		stay3.setFinishdate(LocalDate.of(2020, 01, 10));
+		
+		Stay stay4 = new Stay();
+		stay4.setId(TEST_STAY_ID_4);
+		stay4.setStartdate(LocalDate.of(2020, 10, 28));
+		stay4.setFinishdate(LocalDate.of(2020, 10, 30));
 
 		Pet pet1 = new Pet();
 		pet1.setId(TEST_PET_ID_1);
 		Pet pet2 = new Pet();
 		pet2.setId(TEST_PET_ID_2);
+		
 		given(this.clinicService.findStayById(TEST_STAY_ID_1)).willReturn(this.testStay);
 		given(this.clinicService.findStayById(TEST_STAY_ID_2)).willReturn(stay2);
 		given(this.clinicService.findPetById(TEST_PET_ID_1)).willReturn(pet1);
 		given(this.clinicService.findPetById(TEST_PET_ID_2)).willReturn(pet2);
 		given(this.clinicService.findStaysByPetId(TEST_PET_ID_1)).willReturn(Lists.emptyList());
 		given(this.clinicService.findStaysByPetId(TEST_PET_ID_2)).willReturn(Lists.list(testStay, stay2));
+		given(this.clinicService.findStayById(TEST_STAY_ID_3)).willReturn(stay3);
+		given(this.clinicService.findStayById(TEST_STAY_ID_4)).willReturn(stay4);
 	}
 
+	
+	// INSERTAR ESTANCIA
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitNewStayForm() throws Exception {
@@ -108,6 +126,8 @@ public class StayControllerTest {
 				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
 	}
 
+	// EDITAR ESTANCIA
+	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitEditStayForm() throws Exception {
@@ -152,6 +172,22 @@ public class StayControllerTest {
 				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
+	}
+	
+	// DAR POR FINALIZADA ESTANCIA
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessEndStaySuccess() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/1/stays/{stayId}/end", TEST_STAY_ID_4)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessEndStayError() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/1/stays/{stayId}/end", TEST_STAY_ID_3)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}
 	
 	@WithMockUser(value = "spring")

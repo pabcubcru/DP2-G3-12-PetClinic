@@ -89,14 +89,14 @@ public class OrderServiceTests {
 	@Test
 	void shouldFindOrders() {
 		Iterable<Order> orders = orderService.findOrders();
-		assertThat(orders).asList().size().isEqualTo(3);
+		assertThat(orders).asList().size().isEqualTo(4);
 	}
 
 	// DELETE ORDER
 	@Test
 	@Transactional
 	public void shouldDeleteOrder() throws Exception {
-		Product product = productService.findProductById(2);
+		Product product = productService.findProductById(4);
 		int numOrdersBefore = this.orderService.countOrdersByProductId(product.getId());
 		Order order1 = this.orderService.findOrderById(3);
 		Shop shop1 = shopService.findShops().iterator().next();
