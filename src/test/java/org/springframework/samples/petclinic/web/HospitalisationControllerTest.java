@@ -71,9 +71,8 @@ public class HospitalisationControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewHospitalisationFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/hospitalisations/new", TEST_PET_ID).with(csrf())
-				.param("startDate", "2020/06/06")
-				.param("finishDate", "2020/06/08").param("totalPrice", "15.0")
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/hospitalisations/new", 1, TEST_PET_ID).with(csrf())
+				.param("totalPrice", "15.0")
 				.param("diagnosis", "test diagnosis").param("treatment", "test treatment")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
@@ -81,10 +80,9 @@ public class HospitalisationControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewHospitalisationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/hospitalisations/new", TEST_PET_ID).with(csrf()).param("startDate", "2020/06/06").param("finishDate", "2020/06/04")
-				.param("diagnosis", "test diagnosis").param("treatment", "test treatment").param("hospitalisationStatus.name", "HOSPITALISED"))
-				.andExpect(model().attributeHasErrors("hospitalisation")).andExpect(model().attributeHasFieldErrors("hospitalisation", "totalPrice"))
-				.andExpect(model().attributeHasFieldErrorCode("hospitalisation", "finishDate", "dateStartDateAfterDateFinishDate")).andExpect(status().isOk())
+		mockMvc.perform(post("/owners/1/pets/{petId}/hospitalisations/new", TEST_PET_ID).with(csrf())
+				.param("diagnosis", "test diagnosis").param("treatment", "test treatment").param("totalPrice", "0"))
+				.andExpect(model().attributeHasErrors("hospitalisation")).andExpect(model().attributeHasFieldErrors("hospitalisation", "totalPrice")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateHospitalisationForm"));
 	}
 

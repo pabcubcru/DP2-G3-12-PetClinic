@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.web;
 
 import java.time.LocalDate;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetService;
-import org.springframework.samples.petclinic.util.HospitalValidation;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -58,17 +58,8 @@ public class HospitalisationController {
 	}
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-
-	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model) {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(pet.getId());
-		if(hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
-			if(hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
-				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate","The finish date can not be before than start date");
-			}
-			if (HospitalValidation.validationHospital(hospitalisation, hospitalisations)) {
-				result.rejectValue("finishDate", "duplicatedHospitalisation", "There is already a current hospitalisation for this pet");
-			}
-		}
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
+			Map<String, Object> model) {
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return "pets/createOrUpdateHospitalisationForm";
@@ -91,22 +82,8 @@ public class HospitalisationController {
 	}
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
-	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet, Map<String, Object> model,
-			@PathVariable("hospitalisationId") int hospitalisationId) {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(pet.getId());
-		if (hospitalisation.getFinishDate() != null && hospitalisation.getStartDate() != null) {
-			if (hospitalisation.getFinishDate().isBefore(hospitalisation.getStartDate())) {
-				result.rejectValue("finishDate", "dateStartDateAfterDateFinishDate",
-						"The finish date must be after than start date");
-			}
-			Hospitalisation h = this.petService.findHospitalisationById(hospitalisationId);
-			hospitalisations.remove(h);
-			if(!h.getStartDate().equals(hospitalisation.getStartDate())) {
-				if (HospitalValidation.validationHospital(hospitalisation, hospitalisations) && !hospitalisation.getId().equals(hospitalisationId)) {
-				result.rejectValue("finishDate", "duplicatedHospitalisation", "There is already a current hospitalisation for this pet");
-				}
-			}
-		}
+	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
+			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
@@ -133,7 +110,8 @@ public class HospitalisationController {
 	}
 
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete")
-	public String initDeleteForm(@PathVariable("petId") int petId, @PathVariable("hospitalisationId") int hospitalisationId) {
+	public String initDeleteForm(@PathVariable("petId") int petId,
+			@PathVariable("hospitalisationId") int hospitalisationId) {
 		Pet pet = this.petService.findPetById(petId);
 		Hospitalisation hosp = this.petService.findHospitalisationById(hospitalisationId);
 

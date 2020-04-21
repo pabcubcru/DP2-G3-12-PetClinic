@@ -48,12 +48,10 @@
         
         <form:form modelAttribute="hospitalisation"	class="form-horizontal">
         	<div class="form-group has-feedback">
-       			<petclinic:inputField label="Start date" name="startDate" />
-       			<petclinic:inputField label="Finish Date" name="finishDate" />
        			<petclinic:inputField label="Treatment" name="treatment" />
        			<petclinic:inputField label="Diagnosis" name="diagnosis" />
        			<petclinic:inputField label="Total price" name="totalPrice" />
-       			<c:if test="${!hospitalisation['new']}">
+       			<c:if test="${pet.status == 'SICK'}">
        			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus" 
        			names="${hospitalisation_status}" size="2"/>
        			</c:if>
