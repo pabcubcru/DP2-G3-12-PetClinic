@@ -18,8 +18,8 @@
             <petclinic:selectField label="Product" name="product.name" size="${products.size()}" names="${products}"/>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-               <button class="btn btn-default" type="submit">Add</button>
+            <div class="col-sm-offset-2 col-sm-10" align="right">
+               <button class="btn btn-default" type="submit">Create</button>
             </div>
         </div>
     </form:form>

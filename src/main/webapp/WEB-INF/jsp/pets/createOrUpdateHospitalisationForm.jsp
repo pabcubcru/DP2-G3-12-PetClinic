@@ -59,8 +59,13 @@
         	</div>
         	
         	<div class="form-group">
-            	<div class="col-sm-offset-2 col-sm-10">
-               		<button class="btn btn-default" type="submit">Save changes</button>
+            	<div class="col-sm-offset-2 col-sm-10" align="right">
+            	<c:if test="${pet.status == 'HEALTHY'}">
+               		<button class="btn btn-default" type="submit">Create</button>
+               	</c:if>
+               	<c:if test="${pet.status == 'SICK'}">
+               		<button class="btn btn-default" type="submit">Update</button>
+               	</c:if>
             	</div>
         	</div>
    		</form:form>

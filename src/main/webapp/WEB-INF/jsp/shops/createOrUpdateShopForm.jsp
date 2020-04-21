@@ -6,7 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="orders">
+<petclinic:layout pageName="shops">
     <h2>
         <c:if test="${shop['new']}">New </c:if> Shop
     </h2>
@@ -15,13 +15,13 @@
        		<petclinic:inputField label="Name" name="name"/>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+            <div class="col-sm-offset-2 col-sm-10" align="right">
                 <c:choose>
-                    <c:when test="${shop['new']}">
-                        <button class="btn btn-default" type="submit">Add Shop</button>
+                    <c:when test="${shop['new']}" >
+                        <button class="btn btn-default" type="submit">Create</button>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update Shop</button>
+                        <button class="btn btn-default" type="submit">Update</button>
                     </c:otherwise>
                 </c:choose>
             </div>

@@ -17,13 +17,13 @@
             <petclinic:inputField label="Stock" name="stock"/>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
+            <div class="col-sm-offset-2 col-sm-10" align="right">
               <c:choose>
-                    <c:when test="${product['new']}">
-                        <button class="btn btn-default" type="submit">Add Product</button>
+                    <c:when test="${product['new']}" >
+                        <button class="btn btn-default" type="submit">Create</button>
                     </c:when>
                     <c:otherwise>
-                        <button class="btn btn-default" type="submit">Update Product</button>
+                        <button class="btn btn-default" type="submit">Update</button>
                     </c:otherwise>
               </c:choose>
             </div>

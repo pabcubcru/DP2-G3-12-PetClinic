@@ -136,7 +136,7 @@ public class ProductControllerE2ETests {
 	void testShowProductWithDiscountProduct1() throws Exception {
 		mockMvc.perform(get("/shops/1/products/{productId}", TEST_PRODUCT_ID_1))
 				.andExpect(model().attributeExists("canDeleteIt", "product"))
-				.andExpect(model().attribute("canDeleteIt", true))
+				.andExpect(model().attribute("canDeleteIt", false))
 				.andExpect(model().attribute("product", hasProperty("name", is("product1"))))
 				.andExpect(model().attribute("product", hasProperty("price", is(15.0))))
 				.andExpect(model().attribute("product", hasProperty("id", is(TEST_PRODUCT_ID_1))))
@@ -168,7 +168,7 @@ public class ProductControllerE2ETests {
 				.andExpect(model().attribute("product", hasProperty("name", is("product2"))))
 				.andExpect(model().attribute("product", hasProperty("price", is(25.0))))
 				.andExpect(model().attribute("product", hasProperty("id", is(TEST_PRODUCT_ID_2))))
-				.andExpect(model().attribute("product", hasProperty("stock", is(10)))).andExpect(status().isOk())
+				.andExpect(model().attribute("product", hasProperty("stock", is(35)))).andExpect(status().isOk())
 				.andExpect(view().name("products/productDetails"));
 	}
 

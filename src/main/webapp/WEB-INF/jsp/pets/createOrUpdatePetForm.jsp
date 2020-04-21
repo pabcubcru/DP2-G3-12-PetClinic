@@ -37,15 +37,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-2 col-sm-10" align="right">
                     <c:choose>
                         <c:when test="${pet['new']}">
                             <button class="btn btn-default"
-								type="submit">Add Pet</button>
+								type="submit">Create</button>
                         </c:when>
                         <c:otherwise>
                             <button class="btn btn-default"
-								type="submit">Update Pet</button>
+								type="submit">Update</button>
                         </c:otherwise>
                     </c:choose>
                 </div>

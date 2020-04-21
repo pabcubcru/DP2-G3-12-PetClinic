@@ -72,7 +72,6 @@ public class CreateOrderUITest {
 		assertEquals("10", driver.findElement(By.xpath("//tr[4]/td")).getText());
 		assertEquals("INPROCESS", driver.findElement(By.xpath("//tr[6]/td")).getText());
 		assertEquals("product1", driver.findElement(By.linkText("product1")).getText());
-		assertEquals("shop1", driver.findElement(By.linkText("shop1")).getText());
 	}
 	
 	public void fillCreateOrderFormProductNumberIs0AndCheckErrorMessage() throws Exception {
