@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -99,6 +98,8 @@ class OrderControllerTests {
 		given(shopService.findShops()).willReturn(shops);
 
 	}
+	
+	// INSERT ORDER
 
 	@WithMockUser(value = "spring")
 	@Test
@@ -159,6 +160,22 @@ class OrderControllerTests {
 		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_2)).andExpect(status().isOk())
 				.andExpect(view().name("/exception"));
 	}	
+	
+	// DELETE ORDER
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessDeleteOrdersFormInProcess() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_1)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
+	}
+
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessDeleteOrderFormSuccess() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_2))
+				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/shops/1"));
+	}
 
 	@WithMockUser(value = "spring")
 	@Test

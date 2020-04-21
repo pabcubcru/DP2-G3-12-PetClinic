@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -27,8 +28,6 @@ public class Hospitalisation extends BaseEntity {
 
 	@Column(name = "finish_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
-	@FutureOrPresent
 	private LocalDate	finishDate;
 
 	@ManyToOne
@@ -48,11 +47,11 @@ public class Hospitalisation extends BaseEntity {
 	private String		diagnosis;
 
 	@NotNull
-	@Range(min = 0)
+	@Range(min = 1)
 	@Column(name = "total_price")
 	private Double		totalPrice;
 
-
+	
 	public Pet getPet() {
 		return this.pet;
 	}
@@ -111,6 +110,15 @@ public class Hospitalisation extends BaseEntity {
 
 	public Hospitalisation() {
 		this.startDate = LocalDate.now();
+		HospitalisationStatus hs = new HospitalisationStatus();
+		hs.setName("HOSPITALISED");
+		hs.setId(0);
+		this.hospitalisationStatus = hs;
+	}
+	
+	@Transient
+	public Boolean pastHospitalisation() {
+		return !this.finishDate.isAfter(LocalDate.now());
 	}
 
 }
