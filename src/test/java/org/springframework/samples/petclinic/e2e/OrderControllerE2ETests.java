@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.e2e;
 import static org.hamcrest.Matchers.hasProperty;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,24 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.samples.petclinic.model.Order;
 import org.springframework.samples.petclinic.model.OrderStatus;
-import org.springframework.samples.petclinic.model.Product;
-import org.springframework.samples.petclinic.model.Shop;
-import org.springframework.samples.petclinic.service.OrderService;
-import org.springframework.samples.petclinic.service.ProductService;
-import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,9 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class OrderControllerE2ETests {
 
+	private static final int TEST_ORDER_ID_1 = 1;
 	private static final int TEST_ORDER_ID_2 = 2;
 	private static final int TEST_ORDER_ID_3 = 3;
 	private static final int TEST_ORDER_ID_4 = 4;
+	private static final int TEST_ORDER_ID_5 = 5;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -114,5 +103,19 @@ class OrderControllerE2ETests {
 				.andExpect(model().attribute("order", hasProperty("name", is("order2"))))
 				.andExpect(model().attribute("order", hasProperty("orderStatus", is(OrderStatus.INPROCESS))))
 				.andExpect(view().name("orders/orderDetails"));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testProcessDeleteOrdersFormInProcess() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_1)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
+	}
+
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testProcessDeleteOrderFormSuccess() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_5))
+				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/shops/1"));
 	}
 }
