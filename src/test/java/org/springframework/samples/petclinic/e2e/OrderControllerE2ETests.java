@@ -107,8 +107,8 @@ class OrderControllerE2ETests {
 	
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
-	void testProcessDeleteOrdersFormInProcess() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_1)).andExpect(status().isOk())
+	void testProcessDeleteOrdersFormInProcessThrowException() throws Exception {
+		mockMvc.perform(get("/shops/1/orders/{orderId}/delete", TEST_ORDER_ID_2)).andExpect(status().isOk())
 				.andExpect(view().name("/exception"));
 	}
 

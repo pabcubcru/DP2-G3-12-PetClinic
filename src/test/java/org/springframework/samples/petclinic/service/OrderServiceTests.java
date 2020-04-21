@@ -89,7 +89,7 @@ public class OrderServiceTests {
 	@Test
 	void shouldFindOrders() {
 		Iterable<Order> orders = orderService.findOrders();
-		assertThat(orders).asList().size().isEqualTo(4);
+		assertThat(orders).asList().size().isEqualTo(5);
 	}
 
 	// DELETE ORDER
