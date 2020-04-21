@@ -366,8 +366,6 @@ class PetServiceTests {
 		Pet pet7 = this.petService.findPetById(7);
 		int found = pet7.getHospitalisations().size();
 		Hospitalisation hospitalisation = new Hospitalisation();
-		hospitalisation.setFinishDate(LocalDate.now().plusDays(2));
-		hospitalisation.setStartDate(LocalDate.now());
 		hospitalisation.setTotalPrice(15.0);
 		hospitalisation.setTreatment("test treatment");
 		hospitalisation.setDiagnosis("test diagnosis");
@@ -382,9 +380,7 @@ class PetServiceTests {
 	@Transactional
 	public void shouldThrowExceptionInsertingHospitalisation() throws Exception {
 		Hospitalisation hospitalisation = new Hospitalisation();
-		hospitalisation.setFinishDate(LocalDate.now().minusDays(2)); // FECHA EN PASADO
-		hospitalisation.setStartDate(LocalDate.now());
-		hospitalisation.setTotalPrice(30.0);
+		hospitalisation.setTotalPrice(0.0);
 		hospitalisation.setTreatment("test treatment");
 		hospitalisation.setDiagnosis("test diagnosis");
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -410,10 +406,20 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	void shouldFindHospitalisationsByPetIdFinishDateNotNull() throws Exception {
+	void shouldFindHospitalisationsDischargedByPetIdFinishDateNotNull() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
+		assertThat(hospitArr[0].getHospitalisationStatus().getName().equals("DISCHARGED"));
 		assertThat(hospitArr[0].getFinishDate()).isNotNull();
+	}
+	
+	@Test
+	@Transactional
+	void shouldFindHospitalisationsHospitalisedByPetIdFinishDateNull() throws Exception {
+		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
+		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
+		assertThat(hospitArr[1].getHospitalisationStatus().getName().equals("HOSPITALISED"));
+		assertThat(hospitArr[1].getFinishDate()).isNull();
 	}
 
 	@Test

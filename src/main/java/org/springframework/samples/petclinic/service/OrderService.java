@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +36,12 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public List<Order> findOrdersByProductId(int productId) throws DataAccessException {
-		return this.orderRepository.findOrderByProductId(productId);
+	public void deleteOrder(Order order) throws DataAccessException {
+		this.orderRepository.delete(order);
+	}
+	
+	@Transactional
+	public int countOrdersByProductId(int productId) throws DataAccessException {
+		return this.orderRepository.countOrdersByProductId(productId);
 	}
 }

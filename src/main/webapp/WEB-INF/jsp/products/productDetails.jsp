@@ -67,7 +67,7 @@
 			<br>
 			<br>
 			<c:out
-				value="This product can not be deleted because it has at least one order in process"></c:out>
+				value="This product can not be deleted because it has realized at least one order with it."></c:out>
 		</c:if>
 	</sec:authorize>
 </petclinic:layout>
