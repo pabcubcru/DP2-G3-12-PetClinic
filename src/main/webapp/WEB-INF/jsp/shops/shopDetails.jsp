@@ -82,5 +82,8 @@
         </tbody>
     </table>
     <a href="/shops/1/orders/new" class="btn btn-default">Add Order</a>
+    <br>
+    <br>
+    <a href="/shops/1/edit" class="btn btn-default">Edit shop</a>
     </sec:authorize>
 </petclinic:layout>
