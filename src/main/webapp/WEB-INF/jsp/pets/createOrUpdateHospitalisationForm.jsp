@@ -53,11 +53,16 @@
        			<petclinic:inputField label="Treatment" name="treatment" />
        			<petclinic:inputField label="Diagnosis" name="diagnosis" />
        			<petclinic:inputField label="Total price" name="totalPrice" />
+       			<c:if test="${!hospitalisation['new']}">
+       			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus" 
+       			names="${hospitalisation_status}" size="2"/>
+       			</c:if>
+       			
         	</div>
         	
         	<div class="form-group">
             	<div class="col-sm-offset-2 col-sm-10">
-               		<button class="btn btn-default" type="submit">Hospitalise</button>
+               		<button class="btn btn-default" type="submit">Save changes</button>
             	</div>
         	</div>
    		</form:form>

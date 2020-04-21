@@ -47,6 +47,12 @@ public class Shop extends NamedEntity {
 		this.getProductsInternal().remove(product);
 	}
 
+	
+	public void deleteOrder(Order order) {
+		getOrdersInternal().remove(order);
+	}
+	
+
 	public Set<Order> getOrdersInternal() {
 		if (this.orders == null) {
 			this.orders = new HashSet<>();

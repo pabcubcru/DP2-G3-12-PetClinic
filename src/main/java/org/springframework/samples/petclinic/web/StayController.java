@@ -15,14 +15,17 @@
  */
 package org.springframework.samples.petclinic.web;
 
-import java.util.Map;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.service.PetService;
+import org.springframework.samples.petclinic.util.Validaciones;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -66,10 +69,18 @@ public class StayController {
 	// called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid Stay stay, BindingResult result, Pet pet) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if(stay.getStartdate().isBefore(LocalDate.now())) {
+				result.rejectValue("startdate", "dateStartDateIsPast",
+						"The start date must be present or future");
+			}
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
-						"The finish date must be after than start date");
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+			
+			if (Validaciones.validacionReserva(stay, stays)) {
+				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
 			}
 		}
 		if (result.hasErrors()) {
@@ -90,11 +101,18 @@ public class StayController {
 
 	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
-	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model,
-			@PathVariable("stayId") int stayId) {
+	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model, @PathVariable("stayId") int stayId) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			}
+			Stay s = this.petService.findStayById(stayId);
+			stays.remove(s);
+			if(!s.getStartdate().equals(stay.getStartdate()) || !s.getFinishdate().equals(stay.getFinishdate())) {
+				if (Validaciones.validacionReserva(stay, stays)) {
+				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
+				}
 			}
 		}
 		if (result.hasErrors()) {
@@ -105,6 +123,14 @@ public class StayController {
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
+	}
+	
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/end")
+	public String initEndStayForm(@PathVariable("stayId") int stayId) {
+		Stay stay = petService.findStayById(stayId);
+		stay.setFinishdate(LocalDate.now());
+		this.petService.saveStay(stay);
+		return "redirect:/owners/{ownerId}";
 	}
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")

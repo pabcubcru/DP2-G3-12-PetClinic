@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.model;
 
+import java.beans.Transient;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -26,7 +27,6 @@ public class Stay extends BaseEntity {
 	@Column(name = "start_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
-	@FutureOrPresent
 	private LocalDate	startdate;
 
 	@Column(name = "finish_date")
@@ -87,6 +87,16 @@ public class Stay extends BaseEntity {
 
 	public void setSpecialCares(final String specialCares) {
 		this.specialCares = specialCares;
+	}
+	
+	@Transient
+	public Boolean activeStay() {
+		return !this.startdate.isAfter(LocalDate.now()) && this.finishdate.isAfter(LocalDate.now());
+	}
+	
+	@Transient
+	public Boolean pastStay() {
+		return !this.finishdate.isAfter(LocalDate.now());
 	}
 
 }
