@@ -78,6 +78,8 @@ public class OrderController {
 			Order order = this.orderService.findOrderById(orderId);
 			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
 				order.orderReceived();
+				order.getProduct().setStock(order.getProduct().getStock() + order.getProductNumber());
+				this.productService.saveProduct(order.getProduct());
 				this.orderService.saveOrder(order);
 				return "redirect:/shops/" + shopId + "/orders/" + orderId;
 			} else {

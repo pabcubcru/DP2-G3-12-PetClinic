@@ -115,5 +115,4 @@ class OrderControllerE2ETests {
 				.andExpect(model().attribute("order", hasProperty("orderStatus", is(OrderStatus.INPROCESS))))
 				.andExpect(view().name("orders/orderDetails"));
 	}
-
 }

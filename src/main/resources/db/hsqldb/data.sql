@@ -71,6 +71,7 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04',
 INSERT INTO shops(id,name) VALUES (1, 'shop1');
 
 INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (1, 30, '2020-09-01', '2020-10-01');
+INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (2, 50, '2020-04-21', '2020-08-01');
 
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (1, 30.0, '2020-09-01', '2020-10-01','special',1);
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (2, 30.0, '2020-09-01', '2020-10-01','special',3);
@@ -83,9 +84,12 @@ INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total
 
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);
+INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (3, 'product3', 18, 15,1,2);
+INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (4, 'product4', 35, 10,1,null);
+INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (5, 'product5', 15, 10,1,null);
 
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, '2020-03-12 12:30', 0, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-03-10 13:30', 0, 1, 2);
-INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (3, 'order3', 'supplier3', 10, '2020-03-12 12:30', 1, 1, 2);
-INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (4, 'order4', 'supplier4', 25, '2020-04-20 13:30', 0, 1, 2);
+INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (3, 'order3', 'supplier3', 10, '2020-03-12 12:30', 1, 1, 4);
+INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (4, 'order4', 'supplier4', 25, '2020-04-20 13:30', 0, 1, 4);
 

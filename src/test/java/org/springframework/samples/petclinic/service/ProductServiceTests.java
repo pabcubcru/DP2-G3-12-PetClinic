@@ -100,7 +100,7 @@ class ProductServiceTests {
 	void shoudFindProductsNames() throws Exception {
 		List<String> products = this.productService.findProductsNames();
 		assertThat(products.contains("product1")).isTrue();
-		assertThat(products.contains("product4")).isFalse();
+		assertThat(products.contains("product15")).isFalse();
 	}
 
 //	 INSERT PRODUCT
@@ -111,7 +111,7 @@ class ProductServiceTests {
 		int tamaño = products.size();
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
-		product.setName("product3");
+		product.setName("product5");
 		product.setPrice(50.0);
 		product.setStock(20);
 		shop1.addProduct(product);
