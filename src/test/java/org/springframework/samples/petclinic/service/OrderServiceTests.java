@@ -2,7 +2,6 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
@@ -25,7 +24,10 @@ public class OrderServiceTests {
 
 	@Autowired
 	protected ProductService productService;
-	
+
+	@Autowired
+	protected ShopService shopService;
+
 	@Test
 	@Transactional
 	public void shouldMakeOrder() {
@@ -46,7 +48,7 @@ public class OrderServiceTests {
 		int numOrdersAfter = this.orderService.countOrdersByProductId(product.getId());
 		assertThat(numOrdersAfter).isEqualTo(numOrdersBefore + 1);
 	}
-	
+
 	@Test
 	@Transactional
 	public void shouldThrowExceptionMakingOrder() {
@@ -60,7 +62,7 @@ public class OrderServiceTests {
 		order.setShop(shop);
 		order.setSupplier("");
 		shop.addOrder(order);
-		
+
 		Assertions.assertThrows(ConstraintViolationException.class, () -> {
 			shop.addOrder(order);
 			orderService.saveOrder(order);
@@ -72,22 +74,38 @@ public class OrderServiceTests {
 		Order order = this.orderService.findOrderById(1);
 		assertThat(order.getName().equals("order1"));
 		assertThat(order.getShop().getId().equals(1));
-		
+
 	}
-	
+
 	@Test
 	void shouldFindOrdersByProductId() {
 		int numOrders = orderService.countOrdersByProductId(1);
 		assertThat(numOrders == 0);
-		
+
 		numOrders = orderService.countOrdersByProductId(2);
 		assertThat(numOrders == 0);
 	}
-	
+
 	@Test
 	void shouldFindOrders() {
 		Iterable<Order> orders = orderService.findOrders();
 		assertThat(orders).asList().size().isEqualTo(3);
 	}
 
+	// DELETE ORDER
+	@Test
+	@Transactional
+	public void shouldDeleteOrder() throws Exception {
+		Product product = productService.findProductById(2);
+		int numOrdersBefore = this.orderService.countOrdersByProductId(product.getId());
+		Order order1 = this.orderService.findOrderById(3);
+		Shop shop1 = shopService.findShops().iterator().next();
+		shop1.deleteOrder(order1);
+
+		this.orderService.deleteOrder(order1);
+
+		int numOrdersAfter = this.orderService.countOrdersByProductId(product.getId());
+		assertThat(numOrdersAfter).isEqualTo(numOrdersBefore - 1);
+
+	}
 }
