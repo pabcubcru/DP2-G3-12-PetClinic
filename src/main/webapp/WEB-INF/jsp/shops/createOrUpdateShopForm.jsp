@@ -10,13 +10,20 @@
     <h2>
         <c:if test="${shop['new']}">New </c:if> Shop
     </h2>
-    <form:form modelAttribute="product" class="form-horizontal" id="add-product-form">
+    <form:form modelAttribute="shop" class="form-horizontal" id="update-shop-form">
         <div class="form-group has-feedback">
        		<petclinic:inputField label="Name" name="name"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-               <button class="btn btn-default" type="submit">Add Shop</button>
+                <c:choose>
+                    <c:when test="${shop['new']}">
+                        <button class="btn btn-default" type="submit">Add Shop</button>
+                    </c:when>
+                    <c:otherwise>
+                        <button class="btn btn-default" type="submit">Update Shop</button>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </form:form>
