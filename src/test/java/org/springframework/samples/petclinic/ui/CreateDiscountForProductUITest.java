@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
@@ -71,7 +72,7 @@ public class CreateDiscountForProductUITest {
 
 	public void checkDiscountForProductHasBeenCreatedSuccessAndDiscountHasBeenApplied(String priceBefore) throws Exception {
 		assertEquals("30.0", driver.findElement(By.xpath("//table[2]/tbody/tr/td")).getText());
-		assertEquals("2020-04-20", driver.findElement(By.xpath("//table[2]/tbody/tr[2]/td")).getText());
+		assertEquals(LocalDate.now(), driver.findElement(By.xpath("//table[2]/tbody/tr[2]/td")).getText());
 		assertEquals("2020-04-30", driver.findElement(By.xpath("//table[2]/tbody/tr[3]/td")).getText());
 		assertTrue(Integer.parseInt(priceBefore) > Integer.parseInt(driver.findElement(By.xpath("//tr[2]/td")).getText()));
 		assertEquals("Price With Discount", driver.findElement(By.xpath("//tr[2]/th")).getText());
