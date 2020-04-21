@@ -92,4 +92,5 @@ INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-03-10 13:30', 0, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (3, 'order3', 'supplier3', 10, '2020-03-12 12:30', 1, 1, 4);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (4, 'order4', 'supplier4', 25, '2020-04-20 13:30', 0, 1, 4);
+INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (5, 'order5', 'supplier5', 30, '2020-04-20 13:30', 1, 1, 4);
 
