@@ -23,8 +23,7 @@ public class SetOrderStatusToReceivedUITest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		String pathToGeckoDriver = "C:\\Users\\Pablo\\WebDriver";
-		System.setProperty("webdriver.gecko.driver", pathToGeckoDriver + "\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", System.getenv("webdriver.gecko.driver"));
 		driver = new FirefoxDriver();
 		driver.get("http://localhost:" + port);
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
