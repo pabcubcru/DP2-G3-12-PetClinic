@@ -82,13 +82,14 @@ INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,1);
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-03-28', null, 'treatment3','diagnosis3',70,7,0);
 
+
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (3, 'product3', 18, 15,1,2);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (4, 'product4', 35, 10,1,null);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (5, 'product5', 15, 10,1,null);
 
-INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, '2020-03-12 12:30', 0, 1, 2);
+INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, '2020-03-12 12:30', 1, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-03-10 13:30', 0, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (3, 'order3', 'supplier3', 10, '2020-03-12 12:30', 1, 1, 4);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (4, 'order4', 'supplier4', 25, '2020-04-20 13:30', 0, 1, 4);

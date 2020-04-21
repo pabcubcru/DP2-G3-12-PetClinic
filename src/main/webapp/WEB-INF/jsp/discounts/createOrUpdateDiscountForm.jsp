@@ -52,12 +52,12 @@
 			<petclinic:inputField label="Finish Date" name="finishDate" />
 		</div>
 		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
+			<div class="col-sm-offset-2 col-sm-10" align="right">
 			<c:if test="${discount['new']}">
-                        <button class="btn btn-default" type="submit">Add Discount</button>
+                        <button class="btn btn-default" type="submit" >Create</button>
                    </c:if>
                     <c:if test="${!discount['new']}">
-                        <button class="btn btn-default" type="submit">Update Discount</button>
+                        <button class="btn btn-default" type="submit">Update</button>
                    </c:if>
 			</div>
 		</div>
