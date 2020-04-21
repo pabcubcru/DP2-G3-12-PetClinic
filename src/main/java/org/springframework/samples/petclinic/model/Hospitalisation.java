@@ -28,8 +28,6 @@ public class Hospitalisation extends BaseEntity {
 
 	@Column(name = "finish_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
-	@FutureOrPresent
 	private LocalDate	finishDate;
 
 	@ManyToOne
@@ -49,7 +47,7 @@ public class Hospitalisation extends BaseEntity {
 	private String		diagnosis;
 
 	@NotNull
-	@Range(min = 0)
+	@Range(min = 1)
 	@Column(name = "total_price")
 	private Double		totalPrice;
 

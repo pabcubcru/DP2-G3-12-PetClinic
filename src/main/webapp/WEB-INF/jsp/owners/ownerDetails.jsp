@@ -139,13 +139,13 @@
 								<td></td>
 								<td><petclinic:localDate
 										date="${hospitalisation.startDate}" pattern="yyyy-MM-dd" /></td>
-								<td><petclinic:localDate
-										date="${hospitalisation.finishDate}" pattern="yyyy-MM-dd" /></td>
+								<td><c:if test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}"><petclinic:localDate
+										date="${hospitalisation.finishDate}" pattern="yyyy-MM-dd" /></c:if></td>
 								<td><c:out value="${hospitalisation.diagnosis}" /></td>
 								<td><c:out value="${hospitalisation.treatment}" /></td>
 								<td><c:out value="${hospitalisation.hospitalisationStatus}" /></td>
 								<td><c:out value="${hospitalisation.totalPrice}" /></td>
-								<c:if test="${!hospitalisation.pastHospitalisation()}">
+								<c:if test="${hospitalisation.hospitalisationStatus == 'HOSPITALISED'}">
 								<td><spring:url
 										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
 										var="hospitaliationUrl">
