@@ -257,7 +257,6 @@ class ProductServiceTests {
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		discount.setPercentage(50.0);
 		this.discountService.saveDiscount(discount);
 		product2.setDiscount(discount);
@@ -271,7 +270,6 @@ class ProductServiceTests {
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		assertThrows(Exception.class, () -> {
 			discount.setPercentage(null);
 			this.discountService.saveDiscount(discount);
@@ -297,7 +295,6 @@ class ProductServiceTests {
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		try {
 			this.discountService.saveDiscount(discount);
 		} catch (Exception ex) {

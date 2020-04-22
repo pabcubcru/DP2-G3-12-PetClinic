@@ -93,7 +93,6 @@ class DiscountServiceTests {
 
 		Product producto2 = this.productService.findProductById(2);
 		Discount discount2 = new Discount();
-		discount2.setName("discount2");
 		discount2.setPercentage(20.0);
 		discount2.setStartDate(LocalDate.now());
 		discount2.setFinishDate(LocalDate.of(2020, 5, 20));
@@ -107,7 +106,6 @@ class DiscountServiceTests {
 		producto2.setDiscount(discount2);
 		productService.saveProduct(producto2);
 		assertThat(producto2.getDiscount().getPercentage()).isEqualTo(20.0);
-		assertThat(producto2.getDiscount().getName().equals("discount2"));
 		assertThat(discount2.getId()).isNotNull();
 
 	}
