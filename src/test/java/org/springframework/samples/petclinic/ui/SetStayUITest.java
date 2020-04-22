@@ -30,14 +30,14 @@ public class SetStayUITest {
 	}
 
 	@Test
-	public void testSetOrderStatusToReceivedSuccess() throws Exception {
+	public void testSetStaySuccess() throws Exception {
 		loginAsAdmin();
 		fillEditStayFormSuccess();
 		checkStayHasBeenEditedSuccess();
 	}
 
 	@Test
-	public void testSetOrderStatusError() throws Exception {
+	public void testSetStayError() throws Exception {
 		loginAsAdmin();
 		setStayDateAndCheckDateError();
 	}
