@@ -40,7 +40,18 @@ public class ShopServiceTests {
 		
 		this.shopService.saveShop(shop1);
 		assertThat(shops.spliterator().estimateSize()).isEqualTo(found);
-		
+	}
+	
+	@Test
+	void shouldReturnCorrectNumberOfProducts() throws Exception {
+		Shop shop1 = this.shopService.findShopById(1);
+		assertThat(shop1.getNumberOfProducts()).isEqualTo(5);
+	}
+	
+	@Test
+	void shouldReturnCorrectNumberOfOrders() throws Exception {
+		Shop shop1 = this.shopService.findShopById(1);
+		assertThat(shop1.getNumberOfOrders()).isEqualTo(5);
 	}
 
 

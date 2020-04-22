@@ -76,8 +76,8 @@ class OrderControllerE2ETests {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessOrderCanceledSuccess() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_4)).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_4));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_1));
 	}
 	
 	@WithMockUser(username = "admin1", authorities = "admin")
