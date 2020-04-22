@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class ProductControllerE2ETests {
+public class ProductControllerE2ETest {
 
 	private static final int TEST_PRODUCT_ID_1 = 1;
 	private static final int TEST_PRODUCT_ID_2 = 2;
@@ -131,20 +132,7 @@ public class ProductControllerE2ETests {
 
 //	SHOW PRODUCT
 
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testShowProductWithDiscountProduct1() throws Exception {
-		mockMvc.perform(get("/shops/1/products/{productId}", TEST_PRODUCT_ID_1))
-				.andExpect(model().attributeExists("canDeleteIt", "product"))
-				.andExpect(model().attribute("canDeleteIt", false))
-				.andExpect(model().attribute("product", hasProperty("name", is("product1"))))
-				.andExpect(model().attribute("product", hasProperty("price", is(15.0))))
-				.andExpect(model().attribute("product", hasProperty("id", is(TEST_PRODUCT_ID_1))))
-				.andExpect(model().attribute("product", hasProperty("stock", is(5)))).andExpect(status().isOk())
-				.andExpect(view().name("products/productDetails"));
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
+	@WithAnonymousUser
 	@Test
 	void testShowProductWithDiscountProduct3() throws Exception {
 		mockMvc.perform(get("/shops/1/products/{productId}", TEST_PRODUCT_ID_3))
@@ -156,19 +144,6 @@ public class ProductControllerE2ETests {
 				.andExpect(model().attribute("product", hasProperty("price", is(18.0))))
 				.andExpect(model().attribute("product", hasProperty("id", is(TEST_PRODUCT_ID_3))))
 				.andExpect(model().attribute("product", hasProperty("stock", is(15)))).andExpect(status().isOk())
-				.andExpect(view().name("products/productDetails"));
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testShowProductWithOutDiscount() throws Exception {
-		mockMvc.perform(get("/shops/1/products/{productId}", TEST_PRODUCT_ID_2))
-				.andExpect(model().attributeExists("canDeleteIt", "product"))
-				.andExpect(model().attribute("canDeleteIt", false))
-				.andExpect(model().attribute("product", hasProperty("name", is("product2"))))
-				.andExpect(model().attribute("product", hasProperty("price", is(25.0))))
-				.andExpect(model().attribute("product", hasProperty("id", is(TEST_PRODUCT_ID_2))))
-				.andExpect(model().attribute("product", hasProperty("stock", is(35)))).andExpect(status().isOk())
 				.andExpect(view().name("products/productDetails"));
 	}
 

@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-class OrderControllerE2ETests {
+class OrderControllerE2ETest {
 
 	private static final int TEST_ORDER_ID_1 = 1;
 	private static final int TEST_ORDER_ID_2 = 2;
