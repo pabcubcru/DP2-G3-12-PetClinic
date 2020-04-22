@@ -541,14 +541,4 @@ class PetServiceTests {
 		Collection<HospitalisationStatus> hospStatus = petService.findHospitalisationStatus();
 		assertThat(hospStatus.size()).isEqualTo(2);
 	}
-	
-	@Test
-	@Transactional
-	void shouldDeletePet() throws Exception {
-		Pet pet = this.petService.findPetById(2);
-		Owner owner = pet.getOwner();
-		Integer numPets = owner.getPets().size();
-		this.petService.deletePet(pet);
-		assertThat(owner.getPets().size() == numPets-1);
-	}
 }
