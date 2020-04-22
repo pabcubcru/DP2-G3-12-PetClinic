@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.ui;
 
 import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -14,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SetStayUITest {
+public class CreateHospitalisationUITest {
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
 
@@ -30,16 +29,16 @@ public class SetStayUITest {
 	}
 
 	@Test
-	public void testSetOrderStatusToReceivedSuccess() throws Exception {
+	public void testCreateNewHospitalisationSuccess() throws Exception {
 		loginAsAdmin();
-		fillEditStayFormSuccess();
-		checkStayHasBeenEditedSuccess();
+		fillCreateHospitalisationFormSuccess();
+		checkHospitalisationHasBeenCreatedSuccess();
 	}
 
 	@Test
-	public void testSetOrderStatusError() throws Exception {
+	public void testCreateNewHospitalisationEmptyField() throws Exception {
 		loginAsAdmin();
-		setStayDateAndCheckDateError();
+		fillCreateHospitalisationFormEmptyField();
 	}
 
 	public void loginAsAdmin() throws Exception {
@@ -51,38 +50,39 @@ public class SetStayUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
-	public void fillEditStayFormSuccess() throws Exception {
+	public void fillCreateHospitalisationFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		driver.findElement(By.linkText("George Franklin")).click();
-		driver.findElement(By.linkText("Update")).click();
-		driver.findElement(By.id("finishdate")).clear();
-		driver.findElement(By.id("finishdate")).sendKeys("2020/10/15");
-		driver.findElement(By.id("specialCares")).clear();
-		driver.findElement(By.id("specialCares")).sendKeys("specialPrueba");
-		driver.findElement(By.id("price")).clear();
-		driver.findElement(By.id("price")).sendKeys("100");
+		driver.findElement(By.linkText("Hospitalise")).click();
+		driver.findElement(By.id("treatment")).clear();
+		driver.findElement(By.id("treatment")).sendKeys("NONE");
+		driver.findElement(By.id("diagnosis")).clear();
+		driver.findElement(By.id("diagnosis")).sendKeys("NONE");
+		driver.findElement(By.id("totalPrice")).clear();
+		driver.findElement(By.id("totalPrice")).sendKeys("100");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
-	public void checkStayHasBeenEditedSuccess() throws Exception {
-		assertEquals("2020-10-15", driver.findElement(By.xpath("//td[3]")).getText());
-		assertEquals("specialPrueba", driver.findElement(By.xpath("//td[4]")).getText());
-		assertEquals("100.0", driver.findElement(By.xpath("//td[5]")).getText());
+	public void checkHospitalisationHasBeenCreatedSuccess() throws Exception {
+		assertEquals("2020-04-22", driver.findElement(By.xpath("//tr[2]/td[2]")).getText());
+		assertEquals("NONE", driver.findElement(By.xpath("//tr[2]/td[4]")).getText());
+		assertEquals("NONE", driver.findElement(By.xpath("//tr[2]/td[5]")).getText());
+		assertEquals("HOSPITALISED", driver.findElement(By.xpath("//tr[2]/td[6]")).getText());
+		assertEquals("100.0", driver.findElement(By.xpath("//tr[2]/td[7]")).getText());
 	}
-
-	public void setStayDateAndCheckDateError() throws Exception {
+	
+	private void fillCreateHospitalisationFormEmptyField() {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("George Franklin")).click();
-		driver.findElement(By.linkText("Update")).click();
-		driver.findElement(By.id("startdate")).clear();
-		driver.findElement(By.id("startdate")).sendKeys("2020/10/01");
-		driver.findElement(By.id("finishdate")).clear();
-		driver.findElement(By.id("finishdate")).sendKeys("2020/09/01");
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		assertEquals("The finish date must be after than start date",
-				driver.findElement(By.xpath("//form[@id='stay']/div/div[2]/div/span[2]")).getText());
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    driver.findElement(By.linkText("George Franklin")).click();
+	    driver.findElement(By.linkText("Hospitalise")).click();
+	    driver.findElement(By.id("treatment")).clear();
+	    driver.findElement(By.id("treatment")).sendKeys("NONE");
+	    driver.findElement(By.id("diagnosis")).clear();
+	    driver.findElement(By.id("diagnosis")).sendKeys("NONE");
+	    driver.findElement(By.xpath("//button[@type='submit']")).click();
+	    assertEquals("no puede ser null", driver.findElement(By.xpath("//form[@id='hospitalisation']/div/div[3]/div/span[2]")).getText());
 	}
 
 	@AfterEach
