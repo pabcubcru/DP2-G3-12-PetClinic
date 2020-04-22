@@ -461,4 +461,14 @@ class PetServiceTests {
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
 	}
+	
+	@Test
+	@Transactional
+	void shouldDeleteHospitalisation() throws Exception {
+		Hospitalisation hospitalisation = this.petService.findHospitalisationById(1);
+		Pet pet = hospitalisation.getPet();
+		Integer numHosp = pet.getHospitalisations().size();
+		this.petService.deleteHospitalisation(hospitalisation);
+		assertThat(pet.getHospitalisations().size() == numHosp -1);
+	}
 }

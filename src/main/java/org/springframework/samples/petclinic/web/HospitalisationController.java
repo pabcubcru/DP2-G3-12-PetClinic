@@ -38,7 +38,7 @@ public class HospitalisationController {
 
 	@ModelAttribute("hospitalisation_status")
 	public Collection<HospitalisationStatus> populateHospitalisationStatus() {
-		return this.petService.findhHospitalisationStatus();
+		return this.petService.findHospitalisationStatus();
 	}
 
 	@ModelAttribute("pet")
