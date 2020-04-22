@@ -17,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.samples.petclinic.model.Hospitalisation;
+import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.service.PetService;
@@ -31,6 +33,7 @@ public class HospitalisationControllerTest {
 
 
 	private static final int TEST_PET_ID = 1;
+	private static final int TEST_HOSP_ID = 1;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -44,13 +47,28 @@ public class HospitalisationControllerTest {
 		PetStatus s1 = new PetStatus();
 		s1.setName("SICK");
 		p1.setStatus(s1);
+		Hospitalisation h1 = new Hospitalisation();
+		HospitalisationStatus hs1 = new HospitalisationStatus();
+		hs1.setName("HOSPITALISED");
+		h1.setHospitalisationStatus(hs1);
+		p1.addHospitalisation(h1);
+		
 		Pet p2 = new Pet();
 		PetStatus s2 = new PetStatus();
 		s2.setName("HEALTHY");
-		p2.setStatus(s2);
+		p2.setStatus(s2);		
+		Hospitalisation h2 = new Hospitalisation();
+		HospitalisationStatus hs2 = new HospitalisationStatus();
+		hs2.setName("DISCHARGED");	
+		h2.setHospitalisationStatus(hs2);
+		p2.addHospitalisation(h2);
+		
 		given(this.clinicService.findPetById(TEST_PET_ID)).willReturn(p2);
 		given(this.clinicService.findPetById(2)).willReturn(p1);
+		given(this.clinicService.findHospitalisationById(TEST_HOSP_ID)).willReturn(h2);
+		given(this.clinicService.findHospitalisationById(2)).willReturn(h1);
 		given(this.clinicService.findPetStatus()).willReturn(Lists.list(s1,s2));
+		given(this.clinicService.findHospitalisationStatus()).willReturn(Lists.list(hs1,hs2));
 	}
 
 	@WithMockUser(value = "spring")
@@ -91,5 +109,19 @@ public class HospitalisationControllerTest {
 	void testShowHospitalisations() throws Exception {
 		mockMvc.perform(get("/owners/*/pets/{petId}/hospitalisations", TEST_PET_ID)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("hospitalisations")).andExpect(view().name("hospitalisationList"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitDeleteFormSuccess() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete", 2, TEST_PET_ID, TEST_HOSP_ID))
+		.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitThrowExceptionDeleteForm() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete", 1, 2, 2))
+		.andExpect(status().isOk()).andExpect(view().name("/exception"));
 	}
 }

@@ -144,7 +144,7 @@ public class PetService {
 	}
   
 	@Transactional(readOnly = true)
-	public Collection<HospitalisationStatus> findhHospitalisationStatus() throws DataAccessException {
+	public Collection<HospitalisationStatus> findHospitalisationStatus() throws DataAccessException {
 		return hospitalisationRepository.findHospitalisationStatus();
 	}
 

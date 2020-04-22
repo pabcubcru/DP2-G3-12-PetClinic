@@ -61,7 +61,7 @@ public class HospitalisationStatusFormatter implements Formatter<Hospitalisation
 
 	@Override
 	public HospitalisationStatus parse(String text, Locale locale) throws ParseException {
-		Collection<HospitalisationStatus> findHospitalisationStatus = this.peService.findhHospitalisationStatus();
+		Collection<HospitalisationStatus> findHospitalisationStatus = this.peService.findHospitalisationStatus();
 		for (HospitalisationStatus status : findHospitalisationStatus) {
 			if (status.getName().equals(text)) {
 				return status;
