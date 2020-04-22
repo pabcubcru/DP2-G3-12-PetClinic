@@ -30,16 +30,16 @@ public class SetStayUITest {
 	}
 
 	@Test
-	public void testSetOrderStatusToReceivedSuccess() throws Exception {
+	public void testSetStaySuccess() throws Exception {
 		loginAsAdmin();
 		fillEditStayFormSuccess();
 		checkStayHasBeenEditedSuccess();
 	}
 
 	@Test
-	public void testSetOrderStatusToReceivedRedirectToExceptionView() throws Exception {
+	public void testSetStayError() throws Exception {
 		loginAsAdmin();
-		setStayDateAndCheckDateRedirectToExceptionView();
+		setStayDateAndCheckDateError();
 	}
 
 	public void loginAsAdmin() throws Exception {
@@ -71,7 +71,7 @@ public class SetStayUITest {
 		assertEquals("100.0", driver.findElement(By.xpath("//td[5]")).getText());
 	}
 
-	public void setStayDateAndCheckDateRedirectToExceptionView() throws Exception {
+	public void setStayDateAndCheckDateError() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 		driver.findElement(By.linkText("George Franklin")).click();
