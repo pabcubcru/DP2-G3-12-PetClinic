@@ -8,7 +8,7 @@
 
 <petclinic:layout pageName="shops">
 
-    <h2>Shop Information</h2>
+   <h2>${shop.name} Information</h2>
 
     <table id="productsTable" class="table table-striped">
         <thead>
