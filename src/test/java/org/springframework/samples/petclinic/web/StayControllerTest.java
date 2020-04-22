@@ -101,7 +101,7 @@ public class StayControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewStayFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf())
+		mockMvc.perform(post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf())
 				.param("startdate", "2020/06/06").param("finishdate", "2020/06/08").param("price", "15.0")
 				.param("specialCares", "A lot of special cares")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
@@ -109,13 +109,24 @@ public class StayControllerTest {
 
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessNewStayFormHasErrors() throws Exception {
+	void testProcessNewStayFormHasErrorsFinishDateBeforeStartDateAndPriceNull() throws Exception {
 		mockMvc.perform(
-				post("/owners/*/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/06/06")
+				post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/06/06")
 						.param("finishdate", "2020/06/04").param("specialCares", "A lot of special cares"))
 				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrors("stay", "price"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate"))
+				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessNewStayFormHasErrorsStartDateInPast() throws Exception {
+		mockMvc.perform(
+				post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/03/06").param("price", "15.0")
+						.param("finishdate", "2020/06/04").param("specialCares", "A lot of special cares"))
+				.andExpect(model().attributeHasErrors("stay"))
+				.andExpect(model().attributeHasFieldErrorCode("stay", "startdate", "dateStartDateIsPast"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 
@@ -171,6 +182,16 @@ public class StayControllerTest {
 				.param("price", "50.0").param("specialCares", "A lot of special cares"))
 				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
+				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessEditStayFormHasErrorsDatesNull() throws Exception {
+		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID_2, TEST_STAY_ID_2).with(csrf())
+				.param("id", "2")
+				.param("price", "50.0").param("specialCares", "A lot of special cares"))
+				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 	

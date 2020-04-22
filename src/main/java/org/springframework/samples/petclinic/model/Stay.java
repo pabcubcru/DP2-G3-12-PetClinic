@@ -91,7 +91,7 @@ public class Stay extends BaseEntity {
 	
 	@Transient
 	public Boolean activeStay() {
-		return !this.startdate.isAfter(LocalDate.now()) && this.finishdate.isAfter(LocalDate.now());
+		return !this.startdate.isAfter(LocalDate.now()) && !this.finishdate.isBefore(LocalDate.now());
 	}
 	
 	@Transient

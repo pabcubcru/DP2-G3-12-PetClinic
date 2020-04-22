@@ -115,10 +115,5 @@ public class Hospitalisation extends BaseEntity {
 		hs.setId(0);
 		this.hospitalisationStatus = hs;
 	}
-	
-	@Transient
-	public Boolean pastHospitalisation() {
-		return !this.finishDate.isAfter(LocalDate.now());
-	}
 
 }
