@@ -69,7 +69,7 @@ public class HospitalisationController {
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
-			return "redirect:/owners/{ownerId}";
+			return "redirect:/owners/" + pet.getOwner().getId();
 		}
 	}
 
@@ -95,7 +95,7 @@ public class HospitalisationController {
 			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
-			return "redirect:/owners/{ownerId}";
+			return "redirect:/owners/" + pet.getOwner().getId();
 		}
 	}
 
@@ -114,7 +114,7 @@ public class HospitalisationController {
 		if (hosp.getHospitalisationStatus().getName().equals("DISCHARGED")) {
 			pet.deleteHospitalisation(hosp);
 			this.petService.deleteHospitalisation(hosp);
-			return "redirect:/owners/{ownerId}";
+			return "redirect:/owners/" + pet.getOwner().getId();
 		} else {
 			return "/exception";
 		}
