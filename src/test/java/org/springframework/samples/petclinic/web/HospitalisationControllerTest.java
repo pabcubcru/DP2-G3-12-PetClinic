@@ -96,8 +96,8 @@ public class HospitalisationControllerTest {
 	@WithMockUser(value = "spring")
 	@Test
 	void testProcessNewHospitalisationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/1/pets/{petId}/hospitalisations/new", TEST_PET_ID).with(csrf())
-				.param("diagnosis", "test diagnosis").param("treatment", "test treatment").param("totalPrice", "0"))
+		mockMvc.perform(post("/owners/1/pets/{petId}/hospitalisations/new", 2).with(csrf())
+				.param("diagnosis", "test diagnosis").param("treatment", "test treatment").param("totalPrice", "-25.0"))
 				.andExpect(model().attributeHasErrors("hospitalisation"))
 				.andExpect(model().attributeHasFieldErrors("hospitalisation", "totalPrice")).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdateHospitalisationForm"));

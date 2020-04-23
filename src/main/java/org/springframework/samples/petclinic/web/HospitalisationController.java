@@ -63,15 +63,14 @@ public class HospitalisationController {
 	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
 			Map<String, Object> model) throws Exception {
 		if (result.hasErrors()) {
-			model.put("pet", pet);
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
 			pet.setStatus(
 					petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
+			this.petService.savePet(pet);
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
-			this.petService.savePet(pet);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
@@ -95,10 +94,10 @@ public class HospitalisationController {
 				hospitalisation.setFinishDate(LocalDate.now());
 				pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst()
 						.get());
+				this.petService.savePet(pet);
 			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
-			this.petService.savePet(pet);
 			return "redirect:/owners/{ownerId}";
 		}
 	}

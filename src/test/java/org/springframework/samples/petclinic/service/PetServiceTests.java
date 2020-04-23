@@ -442,11 +442,11 @@ class PetServiceTests {
 	@Transactional
 	public void shouldThrowExceptionInsertingHospitalisation() throws Exception {
 		Hospitalisation hospitalisation = new Hospitalisation();
-		hospitalisation.setTotalPrice(0.0);
+		hospitalisation.setTotalPrice(-25.0);
 		hospitalisation.setTreatment("test treatment");
 		hospitalisation.setDiagnosis("test diagnosis");
 		assertThrows(ConstraintViolationException.class, () -> {
-			this.petService.findPetById(7).addHospitalisation(hospitalisation);
+			this.petService.findPetById(2).addHospitalisation(hospitalisation);
 			this.petService.saveHospitalisation(hospitalisation);
 		});
 	}
