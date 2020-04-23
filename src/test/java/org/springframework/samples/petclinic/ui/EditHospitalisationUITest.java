@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.ui;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,23 +24,23 @@ public class EditHospitalisationUITest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		driver = new FirefoxDriver();
 		System.setProperty("webdriver.gecko.driver", System.getenv("webdriver.gecko.driver"));
+		driver = new FirefoxDriver();
 		driver.get("http://localhost:" + port);
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
 	@Test
-	public void testUpdateHospitalisationSuccess() throws Exception {
+	public void testEditHospitalisationSuccess() throws Exception {
 		loginAsAdmin();
 		fillEditHospitalisationFormSuccess();
 		checkHospitalisationHasBeenEditedSuccess();
 	}
 
 	@Test
-	public void testUpdateHospitalisation() throws Exception {
+	public void testEditHospitalisation() throws Exception {
 		loginAsAdmin();
-		setHospitalisationError();
+		editHospitalisationError();
 	}
 
 	public void loginAsAdmin() throws Exception {
@@ -54,37 +56,37 @@ public class EditHospitalisationUITest {
 	    driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
 	    driver.findElement(By.linkText("Jean Coleman")).click();
-	    driver.findElement(By.xpath("(//a[contains(text(),'Update')])[3]")).click();
+	    driver.findElement(By.xpath("//a[contains(@href, '/owners/6/pets/7/hospitalisations/3/edit')]")).click();
 	    driver.findElement(By.id("treatment")).clear();
-	    driver.findElement(By.id("treatment")).sendKeys("test1");
+	    driver.findElement(By.id("treatment")).sendKeys("testTreatment");
 	    driver.findElement(By.id("diagnosis")).clear();
-	    driver.findElement(By.id("diagnosis")).sendKeys("test1");
+	    driver.findElement(By.id("diagnosis")).sendKeys("testDiagnosis");
 	    driver.findElement(By.id("totalPrice")).clear();
 	    driver.findElement(By.id("totalPrice")).sendKeys("50.5");
+	    new Select(driver.findElement(By.id("hospitalisationStatus.name"))).selectByVisibleText("DISCHARGED");
+	    driver.findElement(By.xpath("//option[@value='DISCHARGED']")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
 	  }
 	
 	public void checkHospitalisationHasBeenEditedSuccess() throws Exception {
-		assertEquals("test1", driver.findElement(By.xpath("//tbody[3]/tr[2]/td[4]")).getText());
-	    assertEquals("test1", driver.findElement(By.xpath("//tbody[3]/tr[2]/td[5]")).getText());
-	    assertEquals("HOSPITALISED", driver.findElement(By.xpath("//tbody[3]/tr[2]/td[6]")).getText());
-	    assertEquals("50.5", driver.findElement(By.xpath("//tbody[3]/tr[2]/td[7]")).getText());
-	    assertEquals("2020-04-22", driver.findElement(By.xpath("//tbody[3]/tr[2]/td[2]")).getText());
+		assertEquals("HEALTHY", driver.findElement(By.xpath("//tr[2]/td/dl/dd[4]")).getText());
 	}
 
-	  public void setHospitalisationError() throws Exception {
+	  public void editHospitalisationError() throws Exception {
 	    driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
-	    driver.findElement(By.linkText("Jean Coleman")).click();
-	    driver.findElement(By.xpath("(//a[contains(text(),'Update')])[3]")).click();
+	    driver.findElement(By.linkText("George Franklin")).click();
+	    driver.findElement(By.xpath("//a[contains(@href, '/owners/1/pets/1/hospitalisations/4/edit')]")).click();
 	    driver.findElement(By.id("treatment")).clear();
-	    driver.findElement(By.id("treatment")).sendKeys("test2");
+	    driver.findElement(By.id("treatment")).sendKeys("testTreatment");
 	    driver.findElement(By.id("diagnosis")).clear();
-	    driver.findElement(By.id("diagnosis")).sendKeys("test2");
+	    driver.findElement(By.id("diagnosis")).sendKeys("testDiagnosis");
 	    driver.findElement(By.id("totalPrice")).clear();
 	    driver.findElement(By.id("totalPrice")).sendKeys("-25.0");
+	    new Select(driver.findElement(By.id("hospitalisationStatus.name"))).selectByVisibleText("DISCHARGED");
+	    driver.findElement(By.xpath("//option[@value='DISCHARGED']")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
-	    assertEquals("tiene que estar entre 1 y 9223372036854775807", driver.findElement(By.xpath("//form[@id='hospitalisation']/div/div[3]/div/span[2]")).getText());
+	    assertEquals("tiene que estar entre 0 y 9223372036854775807", driver.findElement(By.xpath("//form[@id='hospitalisation']/div/div[3]/div/span[2]")).getText());
 	  }
 	
 

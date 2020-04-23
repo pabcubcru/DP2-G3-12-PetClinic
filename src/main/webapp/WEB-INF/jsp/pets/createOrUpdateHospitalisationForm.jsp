@@ -52,7 +52,7 @@
        			<petclinic:inputField label="Diagnosis" name="diagnosis" />
        			<petclinic:inputField label="Total price" name="totalPrice" />
        			<c:if test="${pet.status == 'SICK'}">
-       			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus" 
+       			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus.name" 
        			names="${hospitalisation_status}" size="2"/>
        			</c:if>
        			

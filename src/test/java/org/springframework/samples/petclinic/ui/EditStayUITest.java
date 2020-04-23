@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SetStayUITest {
+public class EditStayUITest {
 	private WebDriver driver;
 	private StringBuffer verificationErrors = new StringBuffer();
 

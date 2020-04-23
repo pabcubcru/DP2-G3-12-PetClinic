@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.PetService;
+import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -59,7 +61,7 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
 	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model) {
+			Map<String, Object> model) throws Exception {
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return "pets/createOrUpdateHospitalisationForm";
@@ -69,6 +71,7 @@ public class HospitalisationController {
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
+			this.petService.savePet(pet);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
@@ -83,7 +86,7 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
 	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
+			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) throws Exception {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
@@ -95,6 +98,7 @@ public class HospitalisationController {
 			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
+			this.petService.savePet(pet);
 			return "redirect:/owners/{ownerId}";
 		}
 	}

@@ -49,13 +49,13 @@ INSERT INTO owners VALUES (8, 'Maria', 'Escobito', '345 Maple St.', 'Madison', '
 INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435', 'owner1');
 INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'owner1');
 
-INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (1, 'Leo', '2010-09-07', 1, 1, 1);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (1, 'Leo', '2010-09-07', 1, 1, 0);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (2, 'Basil', '2012-08-06', 6, 2, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (3, 'Rosy', '2011-04-17', 2, 3, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (4, 'Jewel', '2010-03-07', 2, 3, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (5, 'Iggy', '2010-11-30', 3, 4, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (6, 'George', '2010-01-20', 4, 5, 1);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (7, 'Samantha', '2012-09-04', 1, 6, 1);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (7, 'Samantha', '2012-09-04', 1, 6, 0);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (8, 'Max', '2012-09-04', 1, 6, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (9, 'Lucky', '2011-08-06', 5, 7, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (10, 'Mulligan', '2007-02-24', 2, 8, 1);
@@ -82,6 +82,7 @@ INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-02-12', '2020-02-20','treatment1','diagnosis1',30,1,1);
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,1);
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-03-28', null, 'treatment3','diagnosis3',70,7,0);
+INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (4, '2020-03-28', null, 'treatment4','diagnosis4',50,1,0);
 
 
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);

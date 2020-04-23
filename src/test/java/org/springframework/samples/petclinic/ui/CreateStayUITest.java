@@ -29,14 +29,14 @@ public class CreateStayUITest {
 	}
 
 	@Test
-	public void testCreateNewOrderSuccess() throws Exception {
+	public void testCreateNewStaySuccess() throws Exception {
 		loginAsAdmin();
 		fillCreateStayFormSuccess();
 		checkStayHasBeenCreatedSuccess();
 	}
 
 	@Test
-	public void testCreateNewOrderProductNumberIs0() throws Exception {
+	public void testCreateNewStayHasError() throws Exception {
 		loginAsAdmin();
 		fillCreateStayFormFinishDateNullAndCheckErrorMessage();
 	}

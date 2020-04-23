@@ -47,7 +47,7 @@ public class Hospitalisation extends BaseEntity {
 	private String		diagnosis;
 
 	@NotNull
-	@Range(min = 1)
+	@Range(min = 0)
 	@Column(name = "total_price")
 	private Double		totalPrice;
 
