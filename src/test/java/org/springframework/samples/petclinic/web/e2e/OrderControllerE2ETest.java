@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.e2e;
+package org.springframework.samples.petclinic.web.e2e;
 
 import static org.hamcrest.Matchers.hasProperty;
 

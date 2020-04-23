@@ -89,6 +89,7 @@ INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'produc
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (3, 'product3', 18, 15,1,2);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (4, 'product4', 35, 10,1,null);
 INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (5, 'product5', 15, 10,1,3);
+INSERT INTO products(id,name,price,stock,shop_id,discount_id) VALUES (6, 'product6', 15, 10,1,null);
 
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (1, 'order1', 'supplier1', 10, CURRENT_TIMESTAMP, 0, 1, 2);
 INSERT INTO orders(id,name,supplier,product_number,order_date,order_status,shop_id,product_id) VALUES (2, 'order2', 'supplier2', 25, '2020-03-10 13:30', 0, 1, 2);

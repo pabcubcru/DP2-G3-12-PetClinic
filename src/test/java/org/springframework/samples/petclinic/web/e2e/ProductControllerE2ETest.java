@@ -1,5 +1,5 @@
 
-package org.springframework.samples.petclinic.e2e;
+package org.springframework.samples.petclinic.web.e2e;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +31,7 @@ public class ProductControllerE2ETest {
 	private static final int TEST_PRODUCT_ID_3 = 3;
 	private static final int TEST_PRODUCT_ID_4 = 4;
 	private static final int TEST_PRODUCT_ID_5 = 5;
+	private static final int TEST_PRODUCT_ID_6 = 6;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -88,10 +89,10 @@ public class ProductControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessUpdateProductFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/1/products/{productId}/edit", TEST_PRODUCT_ID_1).with(csrf())
-				.param("name", "product6").param("price", "18.0").param("stock", "6").param("id", "1"))
+		mockMvc.perform(post("/shops/1/products/{productId}/edit", TEST_PRODUCT_ID_6).with(csrf())
+				.param("name", "product6").param("price", "18.0").param("stock", "6"))
 				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_1));
+				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_6));
 	}
 
 	@WithMockUser(username = "admin1", authorities = "admin")
