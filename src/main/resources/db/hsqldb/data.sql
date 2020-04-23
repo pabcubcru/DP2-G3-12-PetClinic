@@ -74,10 +74,13 @@ INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (1,30, '2020-
 INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (2,50, '2020-04-21', '2020-08-01');
 INSERT INTO discounts(id,percentage,start_date,finish_date) VALUES (3,30, '2020-08-01', '2020-09-01');
 
-INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (1, 30.0, '2020-09-01', '2020-10-01','special',1);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (1, 30.0, '2020-07-15', '2020-07-19','test special cares',1);
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (2, 30.0, '2020-09-01', '2020-10-01','special',3);
-INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (3, 30.0, '2020-04-01', '2020-07-01','special',7);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (3, 30.0, '2020-04-01', '2021-07-01','special',7);
 INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (4, 30.0, '2020-01-01', '2020-03-01','special',7);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (5, 30.0, '2020-11-01', '2020-11-11','special',2);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (6, 30.0, '2020-05-20', '2020-05-25','special',2);
+INSERT INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (7, 30.0, '2020-02-02', '2020-02-05','special',13);
 
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-02-12', '2020-02-20','treatment1','diagnosis1',30,1,1);
 INSERT INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,1);
