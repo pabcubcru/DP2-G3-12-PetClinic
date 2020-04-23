@@ -45,7 +45,7 @@ public class ShopServiceTests {
 	@Test
 	void shouldReturnCorrectNumberOfProducts() throws Exception {
 		Shop shop1 = this.shopService.findShopById(1);
-		assertThat(shop1.getNumberOfProducts()).isEqualTo(5);
+		assertThat(shop1.getNumberOfProducts()).isEqualTo(6);
 	}
 	
 	@Test

@@ -115,9 +115,9 @@ public class ProductController {
 	}
 
 	@GetMapping(value = "/products/{productId}/edit")
-	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Model model) {
+	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Map<String, Object> model) {
 		Product product = this.productService.findProductById(productId);
-		model.addAttribute(product);
+		model.put("product", product);
 		return "products/createOrUpdateProductForm";
 	}
 
