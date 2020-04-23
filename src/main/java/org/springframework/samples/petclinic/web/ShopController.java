@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.ShopService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,9 +63,9 @@ public class ShopController {
 	}
 
 	@GetMapping(value = "/{shopId}/edit")
-	public String initUpdateShopForm(@PathVariable("shopId") final int shopId, final Model model) {
+	public String initUpdateShopForm(@PathVariable("shopId") final int shopId, final Map<String, Object> model) {
 		Shop shop = this.shopService.findShopById(shopId);
-		model.addAttribute(shop);
+		model.put("shop", shop);
 		return "shops/createOrUpdateShopForm";
 	}
 
