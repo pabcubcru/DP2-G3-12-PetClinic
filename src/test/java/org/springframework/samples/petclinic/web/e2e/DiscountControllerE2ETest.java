@@ -94,7 +94,7 @@ public class DiscountControllerE2ETest {
 	void testProcessEditDiscountFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID_3, TEST_DISCOUNT_ID_2).with(csrf())
 				.param("startDate", "2020/05/06")
-				.param("finishDate", "2020/05/01").param("id", "2"))
+				.param("finishDate", "2020/05/01"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));

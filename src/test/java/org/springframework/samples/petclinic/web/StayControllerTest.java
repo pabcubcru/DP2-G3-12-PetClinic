@@ -130,13 +130,6 @@ public class StayControllerTest {
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 
-	@WithMockUser(value = "spring")
-	@Test
-	void testShowStays() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/stays", TEST_PET_ID_1)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
-	}
-
 	// EDITAR ESTANCIA
 	
 	@WithMockUser(value = "spring")

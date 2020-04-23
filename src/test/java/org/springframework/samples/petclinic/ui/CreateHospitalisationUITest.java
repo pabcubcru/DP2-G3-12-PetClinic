@@ -53,7 +53,7 @@ public class CreateHospitalisationUITest {
 	public void fillCreateHospitalisationFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		driver.findElement(By.linkText("George Franklin")).click();
+		driver.findElement(By.linkText("Betty Davis")).click();
 		driver.findElement(By.linkText("Hospitalise")).click();
 		driver.findElement(By.id("treatment")).clear();
 		driver.findElement(By.id("treatment")).sendKeys("NONE");
@@ -65,17 +65,13 @@ public class CreateHospitalisationUITest {
 	}
 
 	public void checkHospitalisationHasBeenCreatedSuccess() throws Exception {
-		assertEquals("2020-04-22", driver.findElement(By.xpath("//tr[2]/td[2]")).getText());
-		assertEquals("NONE", driver.findElement(By.xpath("//tr[2]/td[4]")).getText());
-		assertEquals("NONE", driver.findElement(By.xpath("//tr[2]/td[5]")).getText());
-		assertEquals("HOSPITALISED", driver.findElement(By.xpath("//tr[2]/td[6]")).getText());
-		assertEquals("100.0", driver.findElement(By.xpath("//tr[2]/td[7]")).getText());
+		assertEquals("SICK", driver.findElement(By.xpath("//dd[4]")).getText());
 	}
 	
 	private void fillCreateHospitalisationFormEmptyField() {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();
-	    driver.findElement(By.linkText("George Franklin")).click();
+	    driver.findElement(By.linkText("Betty Davis")).click();
 	    driver.findElement(By.linkText("Hospitalise")).click();
 	    driver.findElement(By.id("treatment")).clear();
 	    driver.findElement(By.id("treatment")).sendKeys("NONE");

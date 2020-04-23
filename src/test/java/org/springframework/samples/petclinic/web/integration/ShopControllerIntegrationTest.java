@@ -20,8 +20,7 @@ import org.springframework.validation.MapBindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ShopControllerIntegrationTest {
 	
 	@Autowired
@@ -34,8 +33,6 @@ public class ShopControllerIntegrationTest {
 	@Test
 	void testInitCreationShopForm() throws Exception {
 		ModelMap model = new ModelMap();
-		Shop shop = new Shop();
-		model.put("shop", shop);
 		
 		String view = shopController.initNewShopForm(model);
 		assertEquals(view, "shops/createOrUpdateShopForm");
@@ -44,8 +41,7 @@ public class ShopControllerIntegrationTest {
 	
 	@Test
 	void testProcessCreationShopFormSuccess() throws Exception {
-		Shop shop = new Shop();
-		shop.setName("shop1");
+		Shop shop = shopService.findShopById(1);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		
 		String view = shopController.processNewShopForm(shop, result);

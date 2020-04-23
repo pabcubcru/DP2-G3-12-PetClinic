@@ -14,6 +14,7 @@ import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.web.HospitalisationController;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,8 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HospitalisationControllerIntegrationTest {
 	
 	@Autowired
@@ -31,11 +31,14 @@ public class HospitalisationControllerIntegrationTest {
 	
 	@Autowired
 	private PetService petService;
+	
+	@Autowired
+	private OwnerService ownerService;
 
 	@Test
 	void testInitNewHospitalisationForm() throws Exception {
 		ModelMap model = new ModelMap();
-		Pet pet = this.petService.findPetById(1);
+		Pet pet = this.petService.findPetById(3);
 		model.put("hospitalisation", new Hospitalisation());
 		String view = hospitalisationController.initNewHospitalisationForm(pet, model);
 		
@@ -50,13 +53,11 @@ public class HospitalisationControllerIntegrationTest {
 		hospitalisation.setDiagnosis("NONE");
 		hospitalisation.setTotalPrice(100.);
 		hospitalisation.setTreatment("NONE");
-		Pet pet = this.petService.findPetById(1);
-		Owner owner = pet.getOwner();
+		Pet pet = this.petService.findPetById(2);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		model.put("hospitalisation", hospitalisation);
 		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet, model);
 		
-		assertEquals(view, "redirect:/owners/" + owner.getId());
+		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
 	
 	@Test
@@ -102,7 +103,7 @@ public class HospitalisationControllerIntegrationTest {
 		model.put("hospitalisation", hospitalisation);
 		String view = hospitalisationController.processEditHospitalisationForm(hospitalisation, result, pet, model, hospitalisationId);
 		
-		assertEquals(view, "redirect:/owners/" + owner.getId());
+		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
 	
 	@Test
@@ -136,11 +137,10 @@ public class HospitalisationControllerIntegrationTest {
 	@Test
 	void testInitDeleteHospitalisationFormSuccess() throws Exception {
 		Pet pet = this.petService.findPetById(1);
-		Owner owner = pet.getOwner();
 		Hospitalisation hospitalisation = this.petService.findHospitalisationById(1);
 		String view = hospitalisationController.initDeleteForm(pet.getId(), hospitalisation.getId());
 		
-		assertEquals(view, "redirect:/owners/" + owner.getId());
+		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
 	
 	@Test

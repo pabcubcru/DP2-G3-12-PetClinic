@@ -35,7 +35,7 @@ public class CreateProductUITest {
 	}
 
 	@Test
-	public void testCreateNewOrderSuccess() throws Exception {
+	public void testCreateNewProductSuccess() throws Exception {
 		loginAsAdmin();
 		fillCreateProductFormSuccess();
 		checkProductHasBeenCreatedSuccess();

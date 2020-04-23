@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-
 public class StayControllerE2ETest {
 
 	private static final int TEST_PET_ID_1 = 1;
@@ -40,7 +39,6 @@ public class StayControllerE2ETest {
 
 	// INSERTAR ESTANCIA
 
-	
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testInitNewStayForm() throws Exception {
@@ -87,13 +85,6 @@ public class StayControllerE2ETest {
 				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testShowStays() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/stays", TEST_PET_ID_1)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
 	}
 
 	// EDITAR ESTANCIA

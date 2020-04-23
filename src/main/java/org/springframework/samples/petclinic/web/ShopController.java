@@ -55,7 +55,7 @@ public class ShopController {
 	@GetMapping("/*")
 	public ModelAndView showShop() {
 		ModelAndView mav = new ModelAndView("shops/shopDetails");
-		Shop shop = this.shopService.findShops().iterator().next();
+		Shop shop = this.shopService.findShopById(1);
 		mav.addObject("shop", shop);
 		mav.addObject("products", shop.getProductsInternal());
 		mav.addObject("orders", shop.getOrdersInternal());

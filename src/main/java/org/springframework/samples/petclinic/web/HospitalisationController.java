@@ -61,17 +61,16 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
 	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model) throws Exception {
+			Map<String, Object> model){
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
 			pet.setStatus(
 					petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
-			this.petService.savePet(pet);
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
-			return "redirect:/owners/" + pet.getOwner().getId();
+			return "redirect:/owners/{ownerId}";
 		}
 	}
 
@@ -85,7 +84,7 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
 	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) throws Exception {
+			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
@@ -94,11 +93,10 @@ public class HospitalisationController {
 				hospitalisation.setFinishDate(LocalDate.now());
 				pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst()
 						.get());
-				this.petService.savePet(pet);
 			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
-			return "redirect:/owners/" + pet.getOwner().getId();
+			return "redirect:/owners/{ownerId}";
 		}
 	}
 
@@ -117,7 +115,7 @@ public class HospitalisationController {
 		if (hosp.getHospitalisationStatus().getName().equals("DISCHARGED")) {
 			pet.deleteHospitalisation(hosp);
 			this.petService.deleteHospitalisation(hosp);
-			return "redirect:/owners/" + pet.getOwner().getId();
+			return "redirect:/owners/{ownerId}";
 		} else {
 			return "/exception";
 		}

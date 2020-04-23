@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.ui;
 
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,7 +66,7 @@ public class CreateStayUITest {
 	}
 
 	public void checkStayHasBeenCreatedSuccess() throws Exception {
-		assertEquals("2020-04-22", driver.findElement(By.xpath("//td[2]/table/tbody/tr/td[2]")).getText());
+		assertEquals(LocalDate.now().toString(), driver.findElement(By.xpath("//td[2]/table/tbody/tr/td[2]")).getText());
 		assertEquals("2020-04-30", driver.findElement(By.xpath("//td[3]")).getText());
 		assertEquals("hairdressing", driver.findElement(By.xpath("//td[4]")).getText());
 		assertEquals("25.0", driver.findElement(By.xpath("//td[5]")).getText());
