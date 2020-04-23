@@ -76,7 +76,6 @@ public class ProductControllerTests {
 
 		Discount discount1 = new Discount();
 		discount1.setFinishDate(LocalDate.now().plusDays(2));
-		discount1.setName("test discount 1");
 		discount1.setPercentage(30.0);
 		discount1.setStartDate(LocalDate.now());
 		discount1.setId(1);
@@ -96,7 +95,6 @@ public class ProductControllerTests {
 
 		Discount discount2 = new Discount();
 		discount2.setFinishDate(LocalDate.now());
-		discount2.setName("test discount 2");
 		discount2.setPercentage(30.0);
 		discount2.setStartDate(LocalDate.now().minusDays(2));
 		discount2.setId(2);

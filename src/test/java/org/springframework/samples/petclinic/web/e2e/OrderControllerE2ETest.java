@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.e2e;
+package org.springframework.samples.petclinic.web.e2e;
 
 import static org.hamcrest.Matchers.hasProperty;
 
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-class OrderControllerE2ETests {
+class OrderControllerE2ETest {
 
 	private static final int TEST_ORDER_ID_1 = 1;
 	private static final int TEST_ORDER_ID_2 = 2;
@@ -76,8 +76,8 @@ class OrderControllerE2ETests {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessOrderCanceledSuccess() throws Exception {
-		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_4)).andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_4));
+		mockMvc.perform(get("/shops/1/orders/{orderId}/canceled", TEST_ORDER_ID_1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/orders/" + TEST_ORDER_ID_1));
 	}
 	
 	@WithMockUser(username = "admin1", authorities = "admin")

@@ -38,7 +38,7 @@ public class HospitalisationController {
 
 	@ModelAttribute("hospitalisation_status")
 	public Collection<HospitalisationStatus> populateHospitalisationStatus() {
-		return this.petService.findhHospitalisationStatus();
+		return this.petService.findHospitalisationStatus();
 	}
 
 	@ModelAttribute("pet")
@@ -87,13 +87,9 @@ public class HospitalisationController {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
-			HospitalisationStatus hs = new HospitalisationStatus();
-			hs.setName("DISCHARGED");
-			if (hospitalisation.getHospitalisationStatus().getName().equals(hs.getName())) {
-				hospitalisation.setFinishDate(LocalDate.now());
-			}
 			hospitalisation.setId(hospitalisationId);
 			if (hospitalisation.getHospitalisationStatus().getName().equals("DISCHARGED")) {
+				hospitalisation.setFinishDate(LocalDate.now());
 				pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst()
 						.get());
 			}

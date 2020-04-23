@@ -37,6 +37,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.samples.petclinic.model.Hospitalisation;
+import org.springframework.samples.petclinic.model.HospitalisationStatus;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
@@ -97,7 +98,7 @@ class PetServiceTests {
 		assertThat(pet7.getOwner().getFirstName()).isEqualTo("Jean");
 
 	}
-	
+
 	@Test
 	void shouldFindPetStatus() {
 		Collection<PetStatus> status = this.petService.findPetStatus();
@@ -185,6 +186,15 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
+	public void shouldDeletePet() throws Exception {
+		Pet pet7 = this.petService.findPetById(7);
+		petService.deletePet(pet7);
+		pet7 = this.petService.findPetById(7);
+		assertThat(pet7).isNull();
+	}
+
+	@Test
+	@Transactional
 	public void shouldThrowExceptionUpdatingPetsWithTheSameName() {
 		Owner owner6 = this.ownerService.findOwnerById(6);
 		Pet pet = new Pet();
@@ -245,6 +255,18 @@ class PetServiceTests {
 		assertThat(visitArr[0].getPet().getId()).isEqualTo(7);
 	}
 
+	@Test
+	@Transactional
+	public void shouldDeleteVisitForPet() {
+		Pet pet7 = this.petService.findPetById(7);
+		int found = pet7.getVisits().size();
+		Visit visit = petService.findVisitsByPetId(7).iterator().next();
+		pet7.deleteVisit(visit);
+		petService.deleteVisit(visit);
+		pet7 = this.petService.findPetById(7);
+		assertThat(pet7.getVisits().size()).isEqualTo(found - 1);
+	}
+
 	// ADD STAY
 
 	@Test
@@ -266,6 +288,18 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
+	public void shouldDeleteStayForPet() {
+		Pet pet7 = this.petService.findPetById(7);
+		int found = pet7.getStays().size();
+		Stay stay = petService.findStayById(3);
+		pet7.deleteStay(stay);
+		petService.deleteStay(stay);
+		pet7 = this.petService.findPetById(7);
+		assertThat(pet7.getStays().size()).isEqualTo(found - 1);
+	}
+
+	@Test
+	@Transactional
 	public void shouldThrowExceptionInsertingStay() {
 		Stay stay = new Stay();
 		stay.setFinishdate(LocalDate.now().plusDays(2));
@@ -276,6 +310,34 @@ class PetServiceTests {
 			this.petService.findPetById(7).addStay(stay);
 			this.petService.saveStay(stay);
 		});
+	}
+
+	@Test
+	@Transactional
+	void shouldReturnTrueToActiveStay() throws Exception {
+		Stay stay = this.petService.findStayById(3);
+		assertThat(stay.activeStay()).isTrue();
+	}
+
+	@Test
+	@Transactional
+	void shouldReturnFalseToActiveStay() throws Exception {
+		Stay stay = this.petService.findStayById(1);
+		assertThat(stay.activeStay()).isFalse();
+	}
+
+	@Test
+	@Transactional
+	void shouldReturnTrueToPastStay() throws Exception {
+		Stay stay = this.petService.findStayById(4);
+		assertThat(stay.pastStay()).isTrue();
+	}
+
+	@Test
+	@Transactional
+	void shouldReturnFalseToPastStay() throws Exception {
+		Stay stay = this.petService.findStayById(2);
+		assertThat(stay.pastStay()).isFalse();
 	}
 
 	@Test
@@ -412,7 +474,7 @@ class PetServiceTests {
 		assertThat(hospitArr[0].getHospitalisationStatus().getName().equals("DISCHARGED"));
 		assertThat(hospitArr[0].getFinishDate()).isNotNull();
 	}
-	
+
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsHospitalisedByPetIdFinishDateNull() throws Exception {
@@ -460,5 +522,23 @@ class PetServiceTests {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
+	}
+
+	@Test
+	@Transactional
+	void shouldDeleteHospitalisation() throws Exception {
+		Hospitalisation hospitalisation = this.petService.findHospitalisationById(1);
+		Pet pet = hospitalisation.getPet();
+		Integer numHosp = pet.getHospitalisations().size();
+		pet.deleteHospitalisation(hospitalisation);
+		this.petService.deleteHospitalisation(hospitalisation);
+		assertThat(pet.getHospitalisations().size()).isEqualTo(numHosp - 1);
+	}
+
+	@Test
+	@Transactional
+	void shouldFindHospitalisationStatus() throws Exception {
+		Collection<HospitalisationStatus> hospStatus = petService.findHospitalisationStatus();
+		assertThat(hospStatus.size()).isEqualTo(2);
 	}
 }

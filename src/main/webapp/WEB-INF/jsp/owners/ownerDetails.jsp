@@ -3,6 +3,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <petclinic:layout pageName="owners">
 
@@ -101,6 +103,7 @@
 										pattern="yyyy-MM-dd" /></td>
 								<td><c:out value="${stay.specialCares}" /></td>
 								<td><c:out value="${stay.price}" /></td>
+								<sec:authorize access="hasAuthority('admin')">
 								<c:if test="${!stay.pastStay()}">
 								<td><spring:url
 										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
@@ -120,6 +123,7 @@
 										<spring:param name="stayId" value="${stay.id}" />
                       				</spring:url> <a href="${fn:escapeXml(stayUrl)}">End Stay</a>
            						</c:if>
+           						</sec:authorize>
            						</td>
 							</tr>
 						</c:forEach>
@@ -145,6 +149,7 @@
 								<td><c:out value="${hospitalisation.treatment}" /></td>
 								<td><c:out value="${hospitalisation.hospitalisationStatus}" /></td>
 								<td><c:out value="${hospitalisation.totalPrice}" /></td>
+								<sec:authorize access="hasAuthority('admin')">
 								<c:if test="${hospitalisation.hospitalisationStatus == 'HOSPITALISED'}">
 								<td><spring:url
 										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
@@ -164,9 +169,11 @@
 										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
 									</spring:url> <a href="${fn:escapeXml(hospitaliationDeleteUrl)}">Remove</a></td>
 									</c:if>
+								</sec:authorize>
 							</tr>
 						</c:forEach>
 						<tr>
+						<sec:authorize access="hasAuthority('admin')">
 						<td><spring:url value="/owners/{ownerId}/pets/{petId}/edit"
 									var="petUrl">
 									<spring:param name="ownerId" value="${owner.id}" />
@@ -198,13 +205,15 @@
 										<spring:param name="petId" value="${pet.id}" />
 									</spring:url> <a href="${fn:escapeXml(hospitalisationsUrl)}">Hospitalise</a></td>
 							</c:if>
-							
+							</sec:authorize>
 							</tr>
 					</table>
+						<sec:authorize access="hasAuthority('admin')">
 							<c:if test="${pet.status == 'SICK'}">
 							<br />
 								<spring:message text="This pet can not be deleted because it is sick."></spring:message>
 							</c:if>
+						</sec:authorize>
 				</td>
 			</tr>
 		</c:forEach>

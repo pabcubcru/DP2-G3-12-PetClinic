@@ -124,6 +124,10 @@ public class Pet extends NamedEntity {
 		getVisitsInternal().add(visit);
 		visit.setPet(this);
 	}
+	
+	public void deleteVisit(Visit visit) {
+		getVisitsInternal().remove(visit);
+	}
 
 	protected Set<Hospitalisation> getHospitalisationsInternal() {
 		if (this.hospitalisations == null) {
@@ -171,6 +175,10 @@ public class Pet extends NamedEntity {
 	public void addStay(Stay stay) {
 		getStaysInternal().add(stay);
 		stay.setPet(this);
+	}
+	
+	public void deleteStay(Stay stay) {
+		getStaysInternal().remove(stay);
 	}
 
 }
