@@ -46,7 +46,7 @@ public class DiscountController {
 	}
 
 	@GetMapping(value = "/discounts/new")
-	public String initNewDiscountForm(Map<String, Object> model, Product product) {
+	public String initNewDiscountForm(Map<String, Object> model) {
 		Discount discount = new Discount();
 		model.put("discount", discount);
 		return "discounts/createOrUpdateDiscountForm";
