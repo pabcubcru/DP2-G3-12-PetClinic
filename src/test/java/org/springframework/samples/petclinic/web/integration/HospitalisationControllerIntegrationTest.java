@@ -116,19 +116,10 @@ public class HospitalisationControllerIntegrationTest {
 	}
 	
 	@Test
-	void testShowHospitalisations() throws Exception {
-		ModelMap model = new ModelMap();
-		Pet pet = this.petService.findPetById(1);
-		String view = hospitalisationController.showHospitalisations(pet, model);
-		
-		assertEquals(view, "hospitalisationList");
-	}
-	
-	@Test
 	void testInitDeleteHospitalisationFormSuccess() throws Exception {
 		Pet pet = this.petService.findPetById(1);
 		Hospitalisation hospitalisation = this.petService.findHospitalisationById(1);
-		String view = hospitalisationController.initDeleteForm(pet.getId(), hospitalisation.getId());
+		String view = hospitalisationController.initDeleteForm(pet, hospitalisation.getId());
 		
 		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
@@ -137,7 +128,7 @@ public class HospitalisationControllerIntegrationTest {
 	void testInitDeleteHospitalisationFormHasErrors() throws Exception {
 		Pet pet = this.petService.findPetById(7);
 		Hospitalisation hospitalisation = this.petService.findHospitalisationById(3);
-		String view = hospitalisationController.initDeleteForm(pet.getId(), hospitalisation.getId());
+		String view = hospitalisationController.initDeleteForm(pet, hospitalisation.getId());
 		
 		assertEquals(view, "/exception");
 		

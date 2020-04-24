@@ -138,13 +138,6 @@ public class HospitalisationControllerTest {
 
 	@WithMockUser(value = "spring")
 	@Test
-	void testShowHospitalisations() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/hospitalisations", TEST_PET_ID)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("hospitalisations")).andExpect(view().name("hospitalisationList"));
-	}
-
-	@WithMockUser(value = "spring")
-	@Test
 	void testInitDeleteFormSuccess() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete", 2,
 				TEST_PET_ID, TEST_HOSP_ID)).andExpect(status().is3xxRedirection())

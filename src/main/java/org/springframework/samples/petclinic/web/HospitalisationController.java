@@ -60,15 +60,14 @@ public class HospitalisationController {
 	}
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet){
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
 			pet.setStatus(
 					petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
-			hospitalisation.setPet(pet);
-			this.petService.saveHospitalisation(hospitalisation);
 			pet.addHospitalisation(hospitalisation);
+			this.petService.saveHospitalisation(hospitalisation);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
@@ -83,15 +82,17 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
 	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
+			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId)
+			throws DataAccessException, DuplicatedPetNameException {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
 			hospitalisation.setId(hospitalisationId);
 			if (hospitalisation.getHospitalisationStatus().getName().equals("DISCHARGED")) {
+				hospitalisation.getHospitalisationStatus().setId(1);
 				hospitalisation.setFinishDate(LocalDate.now());
-				pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY")).findFirst()
-						.get());
+				pet.setStatus(this.petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY"))
+						.findFirst().get());
 			}
 			hospitalisation.setPet(pet);
 			this.petService.saveHospitalisation(hospitalisation);
@@ -99,16 +100,8 @@ public class HospitalisationController {
 		}
 	}
 
-	@GetMapping(value = "/owners/*/pets/{petId}/hospitalisations")
-	public String showHospitalisations(Pet pet, Map<String, Object> model) {
-		model.put("hospitalisations", pet.getHospitalisations());
-		return "hospitalisationList";
-	}
-
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete")
-	public String initDeleteForm(@PathVariable("petId") int petId,
-			@PathVariable("hospitalisationId") int hospitalisationId) {
-		Pet pet = this.petService.findPetById(petId);
+	public String initDeleteForm(Pet pet, @PathVariable("hospitalisationId") int hospitalisationId) {
 		Hospitalisation hosp = this.petService.findHospitalisationById(hospitalisationId);
 
 		if (hosp.getHospitalisationStatus().getName().equals("DISCHARGED")) {
