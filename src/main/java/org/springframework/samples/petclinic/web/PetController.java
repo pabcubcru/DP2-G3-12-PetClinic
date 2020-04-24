@@ -105,7 +105,7 @@ public class PetController {
 	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
 			final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
+			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
@@ -143,7 +143,7 @@ public class PetController {
 	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner,
 			@PathVariable("petId") final int petId, final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
+			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
