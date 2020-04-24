@@ -149,7 +149,7 @@ public class StayControllerIntegrationTest {
 		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
 
 		assertEquals(view, "pets/createOrUpdateStayForm");
-		assertEquals(result.getFieldErrorCount("finishdate"), 2);
+		assertEquals(result.getFieldErrorCount("finishdate"), 1);
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public class StayControllerIntegrationTest {
 		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
 
 		assertEquals(view, "pets/createOrUpdateStayForm");
-		assertEquals(result.getFieldErrorCount("finishdate"), 2);
+		assertEquals(result.getFieldErrorCount("finishdate"), 1);
 	}
 
 	@Test
@@ -200,9 +200,9 @@ public class StayControllerIntegrationTest {
 
 	@Test
 	void testProcessEndStayError() throws Exception {
-		Stay stay4 = petService.findStayById(4);
+		Stay stay7 = petService.findStayById(7);
 
-		String view = stayController.initEndStayForm(stay4.getId());
+		String view = stayController.initEndStayForm(stay7.getId());
 		assertEquals(view, "/exception");
 
 	}
