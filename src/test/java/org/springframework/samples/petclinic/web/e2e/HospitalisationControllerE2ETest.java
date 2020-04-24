@@ -92,13 +92,6 @@ public class HospitalisationControllerE2ETest {
 
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
-	void testShowHospitalisations() throws Exception {
-		mockMvc.perform(get("/owners/*/pets/{petId}/hospitalisations", TEST_PET_ID)).andExpect(status().isOk())
-				.andExpect(model().attributeExists("hospitalisations")).andExpect(view().name("hospitalisationList"));
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
 	void testInitDeleteFormSuccess() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete", 2,
 				TEST_PET_ID, TEST_HOSP_ID)).andExpect(status().is3xxRedirection())
