@@ -8,13 +8,10 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.HospitalisationStatus;
-import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.service.OwnerService;
 import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.samples.petclinic.web.HospitalisationController;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,9 +29,6 @@ public class HospitalisationControllerIntegrationTest {
 	@Autowired
 	private PetService petService;
 	
-	@Autowired
-	private OwnerService ownerService;
-
 	@Test
 	void testInitNewHospitalisationForm() throws Exception {
 		ModelMap model = new ModelMap();
@@ -94,7 +88,6 @@ public class HospitalisationControllerIntegrationTest {
 		ModelMap model = new ModelMap();
 		Hospitalisation hospitalisation = new Hospitalisation();
 		Pet pet = petService.findPetById(1);
-		Owner owner = pet.getOwner();
 		hospitalisation.setDiagnosis("NONE");
 		hospitalisation.setTotalPrice(150.);
 		hospitalisation.setTreatment("NONE");
