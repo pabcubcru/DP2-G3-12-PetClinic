@@ -30,35 +30,6 @@ public class ShopControllerIntegrationTest {
 	private ShopService shopService;
 	
 
-	@Test
-	void testInitCreationShopForm() throws Exception {
-		ModelMap model = new ModelMap();
-		
-		String view = shopController.initNewShopForm(model);
-		assertEquals(view, "shops/createOrUpdateShopForm");
-	}
-	
-	
-	@Test
-	void testProcessCreationShopFormSuccess() throws Exception {
-		Shop shop = shopService.findShopById(1);
-		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		
-		String view = shopController.processNewShopForm(shop, result);
-		
-		assertEquals(view, "redirect:/shops/1");
-	}
-	
-	@Test
-	void testProcessCreationShopFormHasErrors() throws Exception {
-		Shop shop = new Shop();
-		shop.setName(null);
-		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		result.rejectValue("name", "nullName");
-		String view = shopController.processNewShopForm(shop, result);
-		
-		assertEquals(view, "shops/createOrUpdateShopForm");
-	}
 	
 	@Test
 	void testInitUpdateShopForm() throws Exception {
@@ -77,7 +48,7 @@ public class ShopControllerIntegrationTest {
 		shop.setName("shop1");
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		
-		String view = shopController.processUpdateShopForm(shop, result, shop.getId());
+		String view = shopController.processUpdateShopForm(shop, result);
 		
 		assertEquals(view, "redirect:/shops/1");
 	}
@@ -88,7 +59,7 @@ public class ShopControllerIntegrationTest {
 		shop.setName(null);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		result.rejectValue("name", "nullName");
-		String view = shopController.processUpdateShopForm(shop, result, shop.getId());
+		String view = shopController.processUpdateShopForm(shop, result);
 		
 		assertEquals(view, "shops/createOrUpdateShopForm");
 		

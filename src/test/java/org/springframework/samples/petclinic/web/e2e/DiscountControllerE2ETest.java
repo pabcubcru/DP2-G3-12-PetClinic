@@ -92,7 +92,7 @@ public class DiscountControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessEditDiscountFormHasErrors() throws Exception {
-		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID_3, TEST_DISCOUNT_ID_2).with(csrf())
+		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", 5, 3).with(csrf())
 				.param("startDate", "2020/05/06")
 				.param("finishDate", "2020/05/01"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))

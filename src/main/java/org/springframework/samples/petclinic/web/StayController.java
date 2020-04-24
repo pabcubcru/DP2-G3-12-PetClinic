@@ -87,7 +87,7 @@ public class StayController {
 		}
 	}
 
-	@GetMapping(value = "/owners/*/pets/{petId}/stays/{stayId}/edit")
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
 	public String initEditStayForm(Pet pet, Map<String, Object> model, @PathVariable("stayId") int stayId) {
 		Stay stay = petService.findStayById(stayId);
 		model.put("stay", stay);
@@ -98,7 +98,7 @@ public class StayController {
 	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model,
 			@PathVariable("stayId") int stayId) {
 		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
-		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+		if (!result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate")) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
 						"The finish date must be after than start date");

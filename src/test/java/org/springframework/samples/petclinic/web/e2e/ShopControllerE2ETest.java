@@ -29,28 +29,6 @@ public class ShopControllerE2ETest {
 
 	private static final int TEST_SHOP_ID_1 = 1;
 
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testInitCreationShopForm() throws Exception {
-		mockMvc.perform(get("/shops/new")).andExpect(status().isOk()).andExpect(model().attributeExists("shop"))
-				.andExpect(view().name("shops/createOrUpdateShopForm"));
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testProcessCreationShopFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/new").param("name", "shop2").with(csrf())).andExpect(status().is3xxRedirection());
-	}
-
-	@WithMockUser(username = "admin1", authorities = "admin")
-	@Test
-	void testProcessCreationShopFormHasErrors() throws Exception {
-		mockMvc.perform(post("/shops/new").param("name", "").with(csrf())).andExpect(status().isOk())
-				.andExpect(model().attributeHasErrors("shop"))
-				.andExpect(model().attributeHasFieldErrors("shop", "name"))
-				.andExpect(view().name("shops/createOrUpdateShopForm"));
-	}
-
 	// update shop
 
 	@WithMockUser(username = "admin1", authorities = "admin")
@@ -58,7 +36,6 @@ public class ShopControllerE2ETest {
 	void testInitUpdateShopForm() throws Exception {
 		mockMvc.perform(get("/shops/{shopId}/edit", TEST_SHOP_ID_1)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("shop"))
-				.andExpect(model().attribute("shop", hasProperty("name", is("shop1"))))
 				.andExpect(view().name("shops/createOrUpdateShopForm"));
 	}
 
@@ -83,8 +60,7 @@ public class ShopControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testShowShopDetails() throws Exception {
-		mockMvc.perform(get("/shops/*")).andExpect(status().isOk())
-				.andExpect(model().attribute("shop", hasProperty("name", is("shop1"))))
+		mockMvc.perform(get("/shops/1")).andExpect(status().isOk())
 				.andExpect(view().name("shops/shopDetails"));
 	}
 }

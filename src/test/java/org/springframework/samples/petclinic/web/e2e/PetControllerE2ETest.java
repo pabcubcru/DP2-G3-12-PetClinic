@@ -19,14 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-
 public class PetControllerE2ETest {
 
 	private static final int TEST_OWNER_ID = 1;
 	private static final int TEST_OWNER_ID_2 = 2;
-
+	private static final int TEST_OWNER_ID_3 = 3;
+	
 	private static final int TEST_PET_ID = 1;
 	private static final int TEST_PET_ID_2 = 2;
+	private static final int TEST_PET_ID_3 = 3;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -34,7 +35,7 @@ public class PetControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID)).andExpect(status().isOk())
+		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID_2)).andExpect(status().isOk())
 				.andExpect(view().name("pets/createOrUpdatePetForm")).andExpect(model().attributeExists("pet"))
 				.andExpect(model().attributeExists("owner"));
 	}
@@ -43,7 +44,7 @@ public class PetControllerE2ETest {
 	@Test
 	void testProcessCreationFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).with(csrf()).param("name", "pet2")
-				.param("type.name", "cat").param("birthDate", "2015/02/12"))
+				.param("type", "cat").param("birthDate", "2015/02/12"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 
@@ -67,8 +68,8 @@ public class PetControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessUpdateFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID_2, TEST_PET_ID_2).with(csrf())
-				.param("name", "Hamstersito").param("type.name", "hamster").param("birthDate", "2015/02/12")).andExpect(status().is3xxRedirection())
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID_3, TEST_PET_ID_3).with(csrf())
+				.param("name", "Hamstersito").param("type", "hamster").param("birthDate", "2015/02/12")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 
@@ -84,7 +85,7 @@ public class PetControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testInitDeleteFormSuccess() throws Exception {
-		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, 2))
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, TEST_PET_ID_2))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 
