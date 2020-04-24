@@ -315,7 +315,7 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	void shouldReturnTrueToActiveStay() throws Exception {
-		Stay stay = this.petService.findStayById(3);
+		Stay stay = this.petService.findStayById(4);
 		assertThat(stay.activeStay()).isTrue();
 	}
 
@@ -329,7 +329,7 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	void shouldReturnTrueToPastStay() throws Exception {
-		Stay stay = this.petService.findStayById(4);
+		Stay stay = this.petService.findStayById(7);
 		assertThat(stay.pastStay()).isTrue();
 	}
 

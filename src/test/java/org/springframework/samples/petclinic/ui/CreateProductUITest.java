@@ -85,8 +85,11 @@ public class CreateProductUITest {
 		driver.findElement(By.id("stock")).clear();
 		driver.findElement(By.id("stock")).sendKeys("50");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		assertEquals("This name already exist",
-				driver.findElement(By.xpath("//form[@id='add-product-form']/div/div/div/span[2]")).getText());
+		try {
+		      assertEquals("This name already exist", driver.findElement(By.xpath("//form[@id='add-product-form']/div/div/div/span[2]")).getText());
+		    } catch (Error e) {
+		      verificationErrors.append(e.toString());
+		    }
 	}
 
 	@AfterEach

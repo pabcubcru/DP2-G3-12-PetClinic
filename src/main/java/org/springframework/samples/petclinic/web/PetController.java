@@ -150,7 +150,7 @@ public class PetController {
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
 			Pet petToUpdate = this.petService.findPetById(petId);
-			BeanUtils.copyProperties(pet, petToUpdate, "id", "owner", "visits", "stays");
+			BeanUtils.copyProperties(pet, petToUpdate, "id", "owner", "visits", "stays", "status");
 			try {
 				this.petService.savePet(petToUpdate);
 			} catch (DuplicatedPetNameException ex) {

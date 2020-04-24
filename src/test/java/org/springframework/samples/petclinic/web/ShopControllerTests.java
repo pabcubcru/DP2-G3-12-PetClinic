@@ -35,32 +35,31 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ShopControllerTests {
 
 	@MockBean
-	private ShopService			clinicService;
+	private ShopService clinicService;
 
 	@Autowired
-	private MockMvc				mockMvc;
+	private MockMvc mockMvc;
 
 	@MockBean
-	private AuthoritiesService	authoritiesService;
+	private AuthoritiesService authoritiesService;
 
-	private static final int	TEST_SHOP_ID	= 1;
-	private static final int	TEST_PRODUCT_ID	= 1;
-	private Shop				shop1;
+	private static final int TEST_SHOP_ID = 1;
+	private static final int TEST_PRODUCT_ID = 1;
+	private Shop shop1;
 	private Product product1;
-
 
 	@BeforeEach
 	void setup() {
 		shop1 = new Shop();
 		shop1.setId(TEST_SHOP_ID);
 		shop1.setName("shop1");
-		
+
 		product1 = new Product();
 		product1.setName("product1");
 		product1.setId(TEST_PRODUCT_ID);
 		product1.setPrice(18.0);
 		product1.setStock(6);
-		
+
 		Order order1 = new Order();
 		order1.setId(1);
 		order1.setProduct(product1);
@@ -70,7 +69,7 @@ public class ShopControllerTests {
 
 		shop1.addOrder(order1);
 		shop1.addProduct(product1);
-		
+
 		List<Shop> shops = new ArrayList<Shop>();
 		shops.add(shop1);
 
@@ -78,37 +77,8 @@ public class ShopControllerTests {
 		given(this.clinicService.findShopById(TEST_SHOP_ID)).willReturn(shop1);
 	}
 
-	//new shop
-	
-	@WithMockUser(value = "spring")
-	@Test
-	void testInitCreationShopForm() throws Exception {
-		mockMvc.perform(get("/shops/new")).andExpect(status().isOk()).andExpect(model().attributeExists("shop")).andExpect(view().name("shops/createOrUpdateShopForm"));
-	}
+	// update shop
 
-	@WithMockUser(value = "spring")
-	@Test
-	void testProcessCreationShopFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/new")
-			.param("name", "shop1")
-			.with(csrf()))
-		.andExpect(status().is3xxRedirection());
-	}
-
-	@WithMockUser(value = "spring")
-	@Test
-	void testProcessCreationShopFormHasErrors() throws Exception {
-		mockMvc.perform(post("/shops/new")
-			.param("name", "")
-			.with(csrf()))
-		.andExpect(status().isOk())
-		.andExpect(model().attributeHasErrors("shop"))
-		.andExpect(model().attributeHasFieldErrors("shop", "name"))
-		.andExpect(view().name("shops/createOrUpdateShopForm"));
-	}
-	
-	//update shop
-	
 	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateShopForm() throws Exception {
@@ -117,36 +87,30 @@ public class ShopControllerTests {
 				.andExpect(model().attribute("shop", hasProperty("name", is("shop1"))))
 				.andExpect(view().name("shops/createOrUpdateShopForm"));
 	}
-	
-    @WithMockUser(value = "spring")
+
+	@WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateShopFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/{shopId}/edit", TEST_SHOP_ID)
-							.with(csrf())
-							.param("name", "shop2"))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/shops/1"));
+		mockMvc.perform(post("/shops/{shopId}/edit", TEST_SHOP_ID).with(csrf()).param("name", "shop2"))
+				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/shops/1"));
 	}
-    
-    @WithMockUser(value = "spring")
-   	@Test
-   	void testProcessUpdateShopFormHasErrors() throws Exception {
-   		mockMvc.perform(post("/shops/{shopId}/edit", TEST_SHOP_ID)
-   							.with(csrf())
-   							.param("name", ""))
-   				.andExpect(status().isOk())
-   				.andExpect(model().attributeHasErrors("shop"))
-   				.andExpect(model().attributeHasFieldErrors("shop", "name"))
-   				.andExpect(view().name("shops/createOrUpdateShopForm"));
-   	}
-    
-    //shop details
-    
-    @WithMockUser(value = "spring")
-   	@Test
-   	void testShowShopDetails() throws Exception {
-   		mockMvc.perform(get("/shops/*")).andExpect(status().isOk())
-   				.andExpect(model().attribute("shop", hasProperty("name", is("shop1"))))
-   				.andExpect(view().name("shops/shopDetails"));
-   	}
+
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessUpdateShopFormHasErrors() throws Exception {
+		mockMvc.perform(post("/shops/{shopId}/edit", TEST_SHOP_ID).with(csrf()).param("name", ""))
+				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("shop"))
+				.andExpect(model().attributeHasFieldErrors("shop", "name"))
+				.andExpect(view().name("shops/createOrUpdateShopForm"));
+	}
+
+	// shop details
+
+	@WithMockUser(value = "spring")
+	@Test
+	void testShowShopDetails() throws Exception {
+		mockMvc.perform(get("/shops/1")).andExpect(status().isOk())
+				.andExpect(model().attribute("shop", hasProperty("name", is("shop1"))))
+				.andExpect(view().name("shops/shopDetails"));
+	}
 }
