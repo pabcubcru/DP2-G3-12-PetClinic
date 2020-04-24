@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ import org.springframework.samples.petclinic.service.PetService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @WebMvcTest(controllers = StayController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 public class StayControllerTest {
@@ -121,6 +123,17 @@ public class StayControllerTest {
 	
 	@WithMockUser(value = "spring")
 	@Test
+	void testProcessNewStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
+		mockMvc.perform(post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_2).with(csrf())
+				.param("startdate", "2020/07/21").param("finishdate", "2020/07/24")
+				.param("price", "50.0").param("specialCares", "A lot of special cares"))
+				.andExpect(model().attributeHasErrors("stay"))
+				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
+				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
 	void testProcessNewStayFormHasErrorsStartDateInPast() throws Exception {
 		mockMvc.perform(
 				post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/03/06").param("price", "15.0")
@@ -204,14 +217,13 @@ public class StayControllerTest {
 				.andExpect(view().name("/exception"));
 	}
 	
+	
+	// SHOW
+	
 	@WithMockUser(value = "spring")
 	@Test
-	void testProcessNewStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
-		mockMvc.perform(post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_2).with(csrf())
-				.param("startdate", "2020/07/21").param("finishdate", "2020/07/24")
-				.param("price", "50.0").param("specialCares", "A lot of special cares"))
-				.andExpect(model().attributeHasErrors("stay"))
-				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
-				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
+	void testShowStays() throws Exception {
+		mockMvc.perform(get("/owners/*/pets/{petId}/stays", TEST_PET_ID_1)).andExpect(status().isOk())
+				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
 	}
 }
