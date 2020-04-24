@@ -43,7 +43,7 @@ public class SetOrderStatusToReceivedUITest {
 	@Test
 	public void testSetOrderStatusToReceivedRedirectToExceptionView() throws Exception {
 		loginAsAdmin();
-		setOrder1ReceivedAndCheckStatusRedirectToExceptionView();
+		setOrder3ReceivedAndCheckStatusRedirectToExceptionView();
 	}
 
 	@Given("Un administrador que quiere modificar el estado del pedido con id = 1")
@@ -68,7 +68,7 @@ public class SetOrderStatusToReceivedUITest {
 	@When("El estado del pedido ya está en RECEIVED")
 	@And("Realiza la llamada para cambiarlo")
 	@Then("Se redirige a la vista de error.")
-	public void setOrder1ReceivedAndCheckStatusRedirectToExceptionView() throws Exception {
+	public void setOrder3ReceivedAndCheckStatusRedirectToExceptionView() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("order3")).click();
 		driver.get("http://localhost:" + port + "/shops/1/orders/3/received");
