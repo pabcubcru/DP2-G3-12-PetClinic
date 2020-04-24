@@ -60,8 +60,7 @@ public class HospitalisationController {
 	}
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/new")
-	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model){
+	public String processNewHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet){
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {

@@ -42,30 +42,27 @@ public class HospitalisationControllerIntegrationTest {
 	
 	@Test
 	void testProcessNewHospitalisationFormSuccess() throws Exception {
-		ModelMap model = new ModelMap();
 		Hospitalisation hospitalisation = new Hospitalisation();
 		hospitalisation.setDiagnosis("NONE");
 		hospitalisation.setTotalPrice(100.);
 		hospitalisation.setTreatment("NONE");
 		Pet pet = this.petService.findPetById(2);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet, model);
+		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet);
 		
 		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
 	
 	@Test
 	void testProcessNewHospitalisationFormHasErrors() throws Exception {
-		ModelMap model = new ModelMap();
 		Hospitalisation hospitalisation = new Hospitalisation();
 		Pet pet = this.petService.findPetById(1);
 		hospitalisation.setDiagnosis("NONE");
 		hospitalisation.setTotalPrice(null);
 		hospitalisation.setTreatment("NONE");
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		model.put("pet", pet);
 		result.rejectValue("price", "nullPrice");
-		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet, model);
+		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet);
 		
 		assertEquals(view, "pets/createOrUpdateHospitalisationForm");
 		assertEquals(result.getFieldErrorCount("price"), 1); // Price is null
