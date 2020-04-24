@@ -18,6 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateDiscountForProductUITest {
@@ -48,6 +53,7 @@ public class CreateDiscountForProductUITest {
 		fillCreateDiscountForProductFormNullFinishDateAndCheckErrorMessageAndPriceNoChange();
 	}
 
+	@Given("Un administrador que quiere aplicar un descuento a un producto con id=1")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -57,6 +63,9 @@ public class CreateDiscountForProductUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Entra en la vista del producto, pulsa el botón de crear descuento, rellena correctamente los campos de porcentaje, nombre, fecha inicio y fecha fin")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista del producto con id=1 con el descuento creado y el precio con el descuento aplicado si el descuento está activo.")
 	public void fillCreateDiscountForProductFormSuccessAndCheckPriceBeforeCreateDiscount() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("product2")).click();
@@ -78,6 +87,9 @@ public class CreateDiscountForProductUITest {
 		assertEquals("Price With Discount (EUR)", driver.findElement(By.xpath("//tr[2]/th")).getText());
 	}
 
+	@When("Entra en la vista del producto, pulsa el botón de crear descuento, rellena correctamente los campos de porcentaje, nombre y fecha inicio pero deja en blanco fecha fin")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista de creación del descuento con el error de que no puede ser nulo el campo de fecha fin.")
 	public void fillCreateDiscountForProductFormNullFinishDateAndCheckErrorMessageAndPriceNoChange() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("product4")).click();

@@ -12,6 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EditShopUITest {
@@ -44,6 +49,7 @@ public class EditShopUITest {
 		setShopError();
 	}
 
+	@Given("Un administrador que quiere modificar una tienda con id=1")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -53,6 +59,9 @@ public class EditShopUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Pulsa el botón de modificar tienda en la vista de detalle y rellena el campo nombre correctamente")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista detalles de la tienda con id=1.")
 	public void fillEditShopFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Edit shop")).click();
@@ -66,6 +75,9 @@ public class EditShopUITest {
 		assertEquals("testShop Information", driver.findElement(By.xpath("//h2")).getText());
 	}
 
+	@When("Pulsa el botón de modificar tienda en la vista de detalle y deja en blanco el campo nombre")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista de modificación de la tienda mostrando el error de que no puede dejar en blanco el campo nombre.")
 	public void setShopError() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Edit shop")).click();

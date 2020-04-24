@@ -12,6 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SetOrderStatusToReceivedUITest {
@@ -41,6 +46,7 @@ public class SetOrderStatusToReceivedUITest {
 		setOrder1ReceivedAndCheckStatusRedirectToExceptionView();
 	}
 
+	@Given("Un administrador que quiere modificar el estado del pedido con id = 1")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -50,6 +56,8 @@ public class SetOrderStatusToReceivedUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Pulsa el botón de Order Received desde la vista de detalles del pedido")
+	@Then("Se le muestra los detalles del pedido con id = 1 con el estado a RECEIVED.")
 	public void setOrder2ReceivedAndCheckStatusSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("order2")).click();
@@ -57,6 +65,9 @@ public class SetOrderStatusToReceivedUITest {
 		assertEquals("RECEIVED", driver.findElement(By.xpath("//tr[6]/td")).getText());
 	}
 
+	@When("El estado del pedido ya está en RECEIVED")
+	@And("Realiza la llamada para cambiarlo")
+	@Then("Se redirige a la vista de error.")
 	public void setOrder1ReceivedAndCheckStatusRedirectToExceptionView() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("order3")).click();

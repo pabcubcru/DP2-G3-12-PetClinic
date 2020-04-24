@@ -11,6 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateHospitalisationUITest {
@@ -41,6 +46,7 @@ public class CreateHospitalisationUITest {
 		fillCreateHospitalisationFormEmptyField();
 	}
 
+	@Given("Un administrador con id=1 que quiere registrar a una mascota con id=1 en una hospitalización")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -50,6 +56,8 @@ public class CreateHospitalisationUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Rellena los campos de diagnóstico, tratamiento y precio total")
+	@And("Pulsa el botón de confirmación")
 	public void fillCreateHospitalisationFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
@@ -64,10 +72,16 @@ public class CreateHospitalisationUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@Then("Se registra correctamente la hospitalización")
+	@And("Queda reflejada en el historial de la mascota")
+	@And("El estado de la mascota cambia a SICK.")
 	public void checkHospitalisationHasBeenCreatedSuccess() throws Exception {
 		assertEquals("SICK", driver.findElement(By.xpath("//dd[4]")).getText());
 	}
 	
+	@When("Rellena los campos de tratamiento y diagnóstico pero no el precio total")
+	@And("Pulsa el botón de confirmación")
+	@Then("Salta un error que indica que no puede dejar el campo precio total vacío.")
 	private void fillCreateHospitalisationFormEmptyField() {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 	    driver.findElement(By.xpath("//button[@type='submit']")).click();

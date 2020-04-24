@@ -16,6 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateProductUITest {
@@ -47,6 +52,7 @@ public class CreateProductUITest {
 		fillCreateProductFormProductNameDuplicatedAndCheckErrorMessage();
 	}
 
+	@Given("Un administrador con id=1 que quiere añadir un producto nuevo")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -56,6 +62,9 @@ public class CreateProductUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Rellena los campos de nombre, precio y stock correctamente")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista de detalles de la tienda con el producto añadido.")
 	public void fillCreateProductFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Add Product")).click();
@@ -75,6 +84,9 @@ public class CreateProductUITest {
 		assertEquals("50", driver.findElement(By.xpath("//tr[3]/td")).getText());
 	}
 
+	@When("rellena los campos de stock y precio correctamente pero el nombre es duplicado")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le muestra la vista del formulario de ese producto con un error en el campo nombre diciendo que ese nombre ya existe.")
 	public void fillCreateProductFormProductNameDuplicatedAndCheckErrorMessage() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Add Product")).click();

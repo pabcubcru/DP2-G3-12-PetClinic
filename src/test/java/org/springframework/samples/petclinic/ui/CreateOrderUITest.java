@@ -12,6 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateOrderUITest {
@@ -42,6 +47,7 @@ public class CreateOrderUITest {
 		fillCreateOrderFormProductNumberIs0AndCheckErrorMessage();
 	}
 
+	@Given("Un administrador con id=1 que quiere hacer un pedido")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -51,6 +57,9 @@ public class CreateOrderUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Rellena los campos de proveedor y número de productos, selecciona el producto")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se le redirige a la vista de detalles de la tienda con el pedido añadido.")
 	public void fillCreateOrderFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Add Order")).click();
@@ -74,6 +83,9 @@ public class CreateOrderUITest {
 		assertEquals("product1", driver.findElement(By.linkText("product1")).getText());
 	}
 	
+	@When("Rellena los campos de proveedor, pero el número de productos es 0, selecciona el producto")
+	@And("Pulsa el botón de confirmación")
+	@Then("Salta un mensaje de error indicando que el número de productos tiene que ser como mínimo 1.")
 	public void fillCreateOrderFormProductNumberIs0AndCheckErrorMessage() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/shops/1')]")).click();
 		driver.findElement(By.linkText("Add Order")).click();

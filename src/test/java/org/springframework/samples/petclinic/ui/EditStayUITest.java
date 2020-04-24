@@ -12,6 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EditStayUITest {
@@ -42,6 +47,7 @@ public class EditStayUITest {
 		setStayDateAndCheckDateError();
 	}
 
+	@Given("Un administrador que quiere editar una estancia con id=1")
 	public void loginAsAdmin() throws Exception {
 		driver.findElement(By.xpath("//a[contains(text(),'Login')]")).click();
 		driver.findElement(By.id("username")).clear();
@@ -51,6 +57,10 @@ public class EditStayUITest {
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
 	}
 
+	@When("Pulsa el botón de actualizar estancia, modifica el campo deseado sin dejar ninguno en blanco y correctamente las fechas")
+	@And("Pulsa el botón de confirmación")
+	@Then("Se actualiza correctamente la estancia con id=1")
+	@And("Se redirige a la vista de detalles del dueño de la mascota con id=1, dónde se muestra la estancia actualizada.")
 	public void fillEditStayFormSuccess() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
@@ -71,6 +81,9 @@ public class EditStayUITest {
 		assertEquals("100.0", driver.findElement(By.xpath("//td[5]")).getText());
 	}
 
+	@When("Pulsa el botón de actualizar estancia, modifica el campo deseado sin dejar ninguno en blanco pero la fecha final es anterior a la fecha inicio")
+	@And("Pulsa el botón de confirmación")
+	@Then("Le salta un error que la fecha final no puede ser anterior a la fecha inicio.")
 	public void setStayDateAndCheckDateError() throws Exception {
 		driver.findElement(By.xpath("//a[contains(@href, '/owners/find')]")).click();
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
