@@ -367,6 +367,15 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>mysql</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>mysql</spring.profiles.active>
+			</properties>
+		</profile>
 	</profiles>
 
 </project>
