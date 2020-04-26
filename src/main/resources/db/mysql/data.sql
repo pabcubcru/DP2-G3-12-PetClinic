@@ -19,11 +19,11 @@ INSERT IGNORE INTO specialties(id,name) VALUES (1, 'radiology');
 INSERT IGNORE INTO specialties(id,name) VALUES (2, 'surgery');
 INSERT IGNORE INTO specialties(id,name) VALUES (3, 'dentistry');
 
-INSERT IGNORE INTO vet_specialties VALUES (2, 1);
-INSERT IGNORE INTO vet_specialties VALUES (3, 2);
-INSERT IGNORE INTO vet_specialties VALUES (3, 3);
-INSERT IGNORE INTO vet_specialties VALUES (4, 2);
-INSERT IGNORE INTO vet_specialties VALUES (5, 1);
+INSERT IGNORE INTO vet_specialties(vet_id,specialty_id) VALUES (2, 1);
+INSERT IGNORE INTO vet_specialties(vet_id,specialty_id) VALUES (3, 2);
+INSERT IGNORE INTO vet_specialties(vet_id,specialty_id) VALUES (3, 3);
+INSERT IGNORE INTO vet_specialties(vet_id,specialty_id) VALUES (4, 2);
+INSERT IGNORE INTO vet_specialties(vet_id,specialty_id) VALUES (5, 1);
 
 INSERT IGNORE INTO types(id,name) VALUES (1, 'cat');
 INSERT IGNORE INTO types(id,name) VALUES (2, 'dog');
@@ -86,7 +86,6 @@ INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosi
 INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,1);
 INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-03-28', null, 'treatment3','diagnosis3',70,7,0);
 INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (4, '2020-03-28', null, 'treatment4','diagnosis4',50,1,0);
-
 
 INSERT IGNORE INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT IGNORE INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);

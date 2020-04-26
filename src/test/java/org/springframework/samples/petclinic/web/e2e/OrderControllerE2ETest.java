@@ -19,10 +19,12 @@ import org.springframework.samples.petclinic.model.OrderStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Transactional
 class OrderControllerE2ETest {
 
 	private static final int TEST_ORDER_ID_1 = 1;
