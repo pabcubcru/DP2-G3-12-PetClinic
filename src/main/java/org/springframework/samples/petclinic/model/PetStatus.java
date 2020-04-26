@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "status")
+@Table(name = "pet_status")
 public class PetStatus extends NamedEntity {
 
 }

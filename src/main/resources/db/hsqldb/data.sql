@@ -32,8 +32,8 @@ INSERT INTO types VALUES (4, 'snake');
 INSERT INTO types VALUES (5, 'bird');
 INSERT INTO types VALUES (6, 'hamster');
 
-INSERT INTO status VALUES (0, 'SICK');
-INSERT INTO status VALUES (1, 'HEALTHY');
+INSERT INTO pet_status VALUES (0, 'SICK');
+INSERT INTO pet_status VALUES (1, 'HEALTHY');
 
 INSERT INTO hospitalisation_status VALUES (0, 'HOSPITALISED');
 INSERT INTO hospitalisation_status VALUES (1, 'DISCHARGED');
