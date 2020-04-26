@@ -1,12 +1,12 @@
 -- One admin user, named admin1 with passwor 4dm1n and authority admin
-INSERT IGNORE INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
-INSERT IGNORE INTO authorities VALUES ('admin1','admin');
+INSERT INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
+INSERT INTO authorities VALUES ('admin1','admin');
 -- One owner user, named owner1 with passwor 0wn3r
-INSERT IGNORE INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
-INSERT IGNORE INTO authorities VALUES ('owner1','owner');
+INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
+INSERT INTO authorities VALUES ('owner1','owner');
 -- One vet user, named vet1 with passwor v3t
-INSERT IGNORE INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
-INSERT IGNORE INTO authorities VALUES ('vet1','veterinarian');
+INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
+INSERT INTO authorities VALUES ('vet1','veterinarian');
 
 INSERT IGNORE INTO vets(id,first_name,last_name) VALUES (1, 'James', 'Carter');
 INSERT IGNORE INTO vets(id,first_name,last_name) VALUES (2, 'Helen', 'Leary');
