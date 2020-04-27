@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.util.HashSet;
+
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,10 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@NotNull
 @Table(name = "shops")
 public class Shop extends NamedEntity {
 

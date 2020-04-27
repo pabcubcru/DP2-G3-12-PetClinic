@@ -84,7 +84,7 @@ public class ProductController {
 			final Shop shop) {
 		Product product = this.productService.findProductById(productId);
 		if (this.orderService.countOrdersByProductId(productId) == 0) {
-			this.shopService.findShops().iterator().next().deleteProduct(product);
+			shop.deleteProduct(product);
 			this.productService.deleteProduct(product);
 			if (product.getDiscount() != null) {
 				this.discountService.deleteDiscount(product.getDiscount().getId());

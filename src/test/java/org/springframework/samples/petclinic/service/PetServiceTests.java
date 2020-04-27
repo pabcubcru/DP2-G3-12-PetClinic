@@ -228,25 +228,24 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	public void shouldAddNewVisitForPet() {
-		Pet pet7 = this.petService.findPetById(7);
-		int found = pet7.getVisits().size();
+		Pet pet5 = this.petService.findPetById(5);
+		int found = pet5.getVisits().size();
 		Visit visit = new Visit();
-		pet7.addVisit(visit);
+		pet5.addVisit(visit);
 		visit.setDescription("test");
 		this.petService.saveVisit(visit);
 		try {
-			this.petService.savePet(pet7);
+			this.petService.savePet(pet5);
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
-		pet7 = this.petService.findPetById(7);
-		assertThat(pet7.getVisits().size()).isEqualTo(found + 1);
+		pet5 = this.petService.findPetById(5);
+		assertThat(pet5.getVisits().size()).isEqualTo(found + 1);
 		assertThat(visit.getId()).isNotNull();
 	}
 
 	@Test
-	@Transactional
 	void shouldFindVisitsByPetId() throws Exception {
 		Collection<Visit> visits = this.petService.findVisitsByPetId(7);
 		assertThat(visits.size()).isEqualTo(2);

@@ -29,7 +29,6 @@ public class ShopService {
 		this.shopRepository.save(shop);
 	}
 
-	@Transactional(readOnly = true)
 	public Shop findShopById(final int id) throws DataAccessException {
 		return this.shopRepository.findById(id);
 	}

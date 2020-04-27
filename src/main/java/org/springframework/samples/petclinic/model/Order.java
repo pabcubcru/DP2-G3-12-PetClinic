@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -42,7 +43,7 @@ public class Order extends NamedEntity {
 	@JoinColumn(name = "shop_id")
 	private Shop			shop;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch=FetchType.EAGER)
 	@JoinColumn(name = "product_id")
 	private Product			product;
 

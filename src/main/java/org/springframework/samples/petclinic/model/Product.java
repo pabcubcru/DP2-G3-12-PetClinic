@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -37,7 +38,7 @@ public class Product extends BaseEntity {
 	@JoinColumn(name = "discount_id")
 	private Discount	discount;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch=FetchType.LAZY)
 	@JoinColumn(name = "shop_id")
 	private Shop		shop;
 

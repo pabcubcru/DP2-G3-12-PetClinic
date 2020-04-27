@@ -64,7 +64,6 @@ public class OrderController {
 		model.put("order", order);
 		return "orders/createOrUpdateOrderForm";
 	}
-	LocalDateTime t;
 
 	@PostMapping(value = "/orders/new")
 	public String processNewOrderForm(@Valid Order order, BindingResult result, Shop shop, Map<String, Object> model) {

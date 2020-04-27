@@ -112,7 +112,7 @@ public class Hospitalisation extends BaseEntity {
 		this.startDate = LocalDate.now();
 		HospitalisationStatus hs = new HospitalisationStatus();
 		hs.setName("HOSPITALISED");
-		hs.setId(0);
+		hs.setId(1);
 		this.hospitalisationStatus = hs;
 	}
 

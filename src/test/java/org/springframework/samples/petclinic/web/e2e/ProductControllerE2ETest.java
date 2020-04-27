@@ -50,7 +50,7 @@ public class ProductControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessNewProductFormSuccess() throws Exception {
-		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product3").param("price", "18.0")
+		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product15").param("price", "18.0")
 				.param("stock", "6")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1"));
 	}
@@ -58,7 +58,7 @@ public class ProductControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessNewProductFormHasErrors() throws Exception {
-		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product3").param("stock", "6"))
+		mockMvc.perform(post("/shops/1/products/new").with(csrf()).param("name", "product20").param("stock", "6"))
 				.andExpect(status().isOk()).andExpect(model().attributeHasErrors("product"))
 				.andExpect(model().attributeHasFieldErrors("product", "price"))
 				.andExpect(view().name("products/createOrUpdateProductForm"));
