@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +42,13 @@ public class HospitalisationControllerIntegrationTest {
 	}
 	
 	@Test
+	@Disabled
 	void testProcessNewHospitalisationFormSuccess() throws Exception {
 		Hospitalisation hospitalisation = new Hospitalisation();
 		hospitalisation.setDiagnosis("NONE");
 		hospitalisation.setTotalPrice(100.);
 		hospitalisation.setTreatment("NONE");
-		Pet pet = this.petService.findPetById(2);
+		Pet pet = this.petService.findPetById(4);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		String view = hospitalisationController.processNewHospitalisationForm(hospitalisation, result, pet);
 		
