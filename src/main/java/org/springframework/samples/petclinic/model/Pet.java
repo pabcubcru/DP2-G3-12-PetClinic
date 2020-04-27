@@ -55,7 +55,7 @@ public class Pet extends NamedEntity {
 	private PetType type;
 
 	@ManyToOne
-	@JoinColumn(name = "status_id")
+	@JoinColumn(name = "pet_status_id")
 	private PetStatus status;
 
 	@ManyToOne

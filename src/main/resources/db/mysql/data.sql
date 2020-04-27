@@ -1,12 +1,12 @@
 -- One admin user, named admin1 with passwor 4dm1n and authority admin
-INSERT INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
-INSERT INTO authorities VALUES ('admin1','admin');
+INSERT IGNORE INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
+INSERT IGNORE INTO authorities VALUES ('admin1','admin');
 -- One owner user, named owner1 with passwor 0wn3r
-INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
-INSERT INTO authorities VALUES ('owner1','owner');
+INSERT IGNORE INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
+INSERT IGNORE INTO authorities VALUES ('owner1','owner');
 -- One vet user, named vet1 with passwor v3t
-INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
-INSERT INTO authorities VALUES ('vet1','veterinarian');
+INSERT IGNORE INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
+INSERT IGNORE INTO authorities VALUES ('vet1','veterinarian');
 
 INSERT IGNORE INTO vets(id,first_name,last_name) VALUES (1, 'James', 'Carter');
 INSERT IGNORE INTO vets(id,first_name,last_name) VALUES (2, 'Helen', 'Leary');
@@ -32,11 +32,11 @@ INSERT IGNORE INTO types(id,name) VALUES (4, 'snake');
 INSERT IGNORE INTO types(id,name) VALUES (5, 'bird');
 INSERT IGNORE INTO types(id,name) VALUES (6, 'hamster');
 
-INSERT IGNORE INTO pet_status(id,name) VALUES (0, 'SICK');
-INSERT IGNORE INTO pet_status(id,name) VALUES (1, 'HEALTHY');
+INSERT IGNORE INTO pet_status(id,name) VALUES (1, 'SICK');
+INSERT IGNORE INTO pet_status(id,name) VALUES (2, 'HEALTHY');
 
-INSERT IGNORE INTO hospitalisation_status(id,name) VALUES (0, 'HOSPITALISED');
-INSERT IGNORE INTO hospitalisation_status(id,name) VALUES (1, 'DISCHARGED');
+INSERT IGNORE INTO hospitalisation_status(id,name) VALUES (1, 'HOSPITALISED');
+INSERT IGNORE INTO hospitalisation_status(id,name) VALUES (2, 'DISCHARGED');
 
 INSERT IGNORE INTO owners(id,first_name,last_name,address,city,telephone,username) VALUES (1, 'George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023','owner1');
 INSERT IGNORE INTO owners(id,first_name,last_name,address,city,telephone,username) VALUES (2, 'Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749','owner1');
@@ -49,19 +49,19 @@ INSERT IGNORE INTO owners(id,first_name,last_name,address,city,telephone,usernam
 INSERT IGNORE INTO owners(id,first_name,last_name,address,city,telephone,username) VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435','owner1');
 INSERT IGNORE INTO owners(id,first_name,last_name,address,city,telephone,username) VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487','owner1');
 
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (1, 'Leo', '2010-09-07', 1, 1, 0);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (2, 'Basil', '2012-08-06', 6, 2, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (3, 'Rosy', '2011-04-17', 2, 3, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (4, 'Jewel', '2010-03-07', 2, 3, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (5, 'Iggy', '2010-11-30', 3, 4, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (6, 'George', '2010-01-20', 4, 5, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (7, 'Samantha', '2012-09-04', 1, 6, 0);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (8, 'Max', '2012-09-04', 1, 6, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (9, 'Lucky', '2011-08-06', 5, 7, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (10, 'Mulligan', '2007-02-24', 2, 8, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (11, 'Freddy', '2010-03-09', 5, 9, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10, 1);
-INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,status_id) VALUES (13, 'Sly', '2012-06-08', 1, 10, 1);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (1, 'Leo', '2010-09-07', 1, 1, 1);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (2, 'Basil', '2012-08-06', 6, 2, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (3, 'Rosy', '2011-04-17', 2, 3, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (4, 'Jewel', '2010-03-07', 2, 3, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (5, 'Iggy', '2010-11-30', 3, 4, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (6, 'George', '2010-01-20', 4, 5, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (7, 'Samantha', '2012-09-04', 1, 6, 1);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (8, 'Max', '2012-09-04', 1, 6, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (9, 'Lucky', '2011-08-06', 5, 7, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (10, 'Mulligan', '2007-02-24', 2, 8, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (11, 'Freddy', '2010-03-09', 5, 9, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10, 2);
+INSERT IGNORE INTO pets(id,name,birth_date,type_id,owner_id,pet_status_id) VALUES (13, 'Sly', '2012-06-08', 1, 10, 2);
 
 INSERT IGNORE INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT IGNORE INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
@@ -82,10 +82,10 @@ INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) V
 INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (6, 30.0, '2020-05-20', '2020-05-25','special',2);
 INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (7, 30.0, '2020-02-02', '2020-02-05','special',13);
 
-INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-02-12', '2020-02-20','treatment1','diagnosis1',30,1,1);
-INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,1);
-INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-03-28', null, 'treatment3','diagnosis3',70,7,0);
-INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (4, '2020-03-28', null, 'treatment4','diagnosis4',50,1,0);
+INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-02-12', '2020-02-20','treatment1','diagnosis1',30,1,2);
+INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,2);
+INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (3, '2020-03-28', null, 'treatment3','diagnosis3',70,7,1);
+INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (4, '2020-03-28', null, 'treatment4','diagnosis4',50,1,1);
 
 INSERT IGNORE INTO products(id,name,price,stock,shop_id,discount_id) VALUES (1, 'product1', 15, 5,1,1);
 INSERT IGNORE INTO products(id,name,price,stock,shop_id,discount_id) VALUES (2, 'product2', 25, 10,1,null);

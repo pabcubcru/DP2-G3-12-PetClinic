@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS owners
    INDEX (last_name),
    FOREIGN KEY (username) REFERENCES users(username)
 )
-
+engine= InnoDB;
 CREATE TABLE IF NOT EXISTS pet_status
 (
    id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS pets
    birth_date DATE,
    type_id INT (4) UNSIGNED NOT NULL,
    owner_id INT (4) UNSIGNED NOT NULL,
-   pet_status_id INT (4),
+   pet_status_id INT (4) UNSIGNED NOT NULL,
    INDEX (name),
    FOREIGN KEY (owner_id) REFERENCES owners (id),
    FOREIGN KEY (type_id) REFERENCES types (id),
@@ -114,57 +114,5 @@ CREATE TABLE IF NOT EXISTS hospitalisations
    hospitalisation_status VARCHAR (12),
    total_price DOUBLE,
    FOREIGN KEY (pet_id) REFERENCES pets (id)
-)
-engine= InnoDB;
-CREATE TABLE IF NOT EXISTS hospitalisation_status
-(
-   id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR (80)
-)
-engine= InnoDB;
-CREATE TABLE IF NOT EXISTS shops
-(
-   id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR (80)
-)engine= InnoDB;
-CREATE TABLE IF NOT EXISTS discounts
-(
-   id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   start_date DATE,
-   finish_date DATE,
-   percentage DOUBLE
-)
-engine= InnoDB;
-CREATE TABLE IF NOT EXISTS products
-(
-   id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR (30),
-   price DOUBLE,
-   stock INT (10),
-   shop_id INT (4) UNSIGNED NOT NULL,
-   discount_id INT (4) UNSIGNED NOT NULL,
-   UNIQUE (name),
-   FOREIGN KEY (shop_id) REFERENCES shops (id),
-   FOREIGN KEY (discount_id) REFERENCES discounts (id)
-)
-engine= InnoDB;
-
-CREATE TABLE IF NOT EXISTS orders
-(
-   id INT (4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   name VARCHAR (30),
-   supplier VARCHAR (30),
-   order_date DATETIME,
-   product_number INT (10),
-   order_status ENUM
-   (
-      'INPROCESS',
-      'RECEIVED',
-      'CANCELED'
-   ),
-   shop_id INT (4) UNSIGNED NOT NULL,
-   product_id INT (4) UNSIGNED NOT NULL,
-   FOREIGN KEY (shop_id) REFERENCES shops (id),
-   FOREIGN KEY (product_id) REFERENCES products(id)
 )
 engine= InnoDB;

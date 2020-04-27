@@ -89,7 +89,7 @@ public class HospitalisationController {
 		} else {
 			hospitalisation.setId(hospitalisationId);
 			if (hospitalisation.getHospitalisationStatus().getName().equals("DISCHARGED")) {
-				hospitalisation.getHospitalisationStatus().setId(1);
+				hospitalisation.getHospitalisationStatus().setId(2);
 				hospitalisation.setFinishDate(LocalDate.now());
 				pet.setStatus(this.petService.findPetStatus().stream().filter(s -> s.getName().equals("HEALTHY"))
 						.findFirst().get());
