@@ -42,7 +42,6 @@ public class HospitalisationControllerIntegrationTest {
 	}
 	
 	@Test
-	@Disabled
 	void testProcessNewHospitalisationFormSuccess() throws Exception {
 		Hospitalisation hospitalisation = new Hospitalisation();
 		hospitalisation.setDiagnosis("NONE");
