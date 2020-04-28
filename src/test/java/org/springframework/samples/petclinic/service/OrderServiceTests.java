@@ -102,18 +102,22 @@ public class OrderServiceTests {
 	}
 
 	// DELETE ORDER
-
 	@Test
-	@Disabled
 	public void shouldDeleteOrder() throws Exception {
 		Order order5 = this.orderService.findOrderById(5);
 		Shop shop1 = shopService.findShopById(1);
 		Set<Order> orders = shop1.getOrdersInternal();
+		
+		int tamBeforeDelete = orders.size();
 
 		shop1.deleteOrder(order5);
 		this.orderService.deleteOrder(order5);
-
-		assertThat(orders.size() - 1).isEqualTo(shop1.getNumberOfOrders());
+		
+		int tamAfterDelete = orders.size();
+		
+		assertThat(tamBeforeDelete == (tamAfterDelete + 1));
+		
+		assertThat(orders.size()).isEqualTo(shop1.getNumberOfOrders());
 
 	}
 }
