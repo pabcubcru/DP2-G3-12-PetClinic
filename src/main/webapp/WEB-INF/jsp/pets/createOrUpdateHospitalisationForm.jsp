@@ -48,16 +48,24 @@
         
         <form:form modelAttribute="hospitalisation"	class="form-horizontal">
         	<div class="form-group has-feedback">
-       			<petclinic:inputField label="Start date" name="startDate" />
-       			<petclinic:inputField label="Finish Date" name="finishDate" />
        			<petclinic:inputField label="Treatment" name="treatment" />
        			<petclinic:inputField label="Diagnosis" name="diagnosis" />
        			<petclinic:inputField label="Total price" name="totalPrice" />
+       			<c:if test="${pet.status == 'SICK'}">
+       			<petclinic:selectField label="Hospitalisation status" name="hospitalisationStatus.name" 
+       			names="${hospitalisation_status}" size="2"/>
+       			</c:if>
+       			
         	</div>
         	
         	<div class="form-group">
-            	<div class="col-sm-offset-2 col-sm-10">
-               		<button class="btn btn-default" type="submit">Hospitalise</button>
+            	<div class="col-sm-offset-2 col-sm-10" align="right">
+            	<c:if test="${pet.status == 'HEALTHY'}">
+               		<button class="btn btn-default" type="submit">Create</button>
+               	</c:if>
+               	<c:if test="${pet.status == 'SICK'}">
+               		<button class="btn btn-default" type="submit">Update</button>
+               	</c:if>
             	</div>
         	</div>
    		</form:form>

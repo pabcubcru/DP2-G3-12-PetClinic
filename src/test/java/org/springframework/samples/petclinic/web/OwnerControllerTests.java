@@ -34,9 +34,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
  * @author Colin But
  */
 
-@WebMvcTest(controllers=OwnerController.class,
-		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
-		excludeAutoConfiguration= SecurityConfiguration.class)
+@WebMvcTest(controllers = OwnerController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 class OwnerControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
@@ -46,12 +44,12 @@ class OwnerControllerTests {
 
 	@MockBean
 	private OwnerService clinicService;
-        
-    @MockBean
+
+	@MockBean
 	private UserService userService;
-        
-    @MockBean
-    private AuthoritiesService authoritiesService; 
+
+	@MockBean
+	private AuthoritiesService authoritiesService;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -73,47 +71,39 @@ class OwnerControllerTests {
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testInitCreationForm() throws Exception {
 		mockMvc.perform(get("/owners/new")).andExpect(status().isOk()).andExpect(model().attributeExists("owner"))
 				.andExpect(view().name("owners/createOrUpdateOwnerForm"));
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/new").param("firstName", "Joe").param("lastName", "Bloggs")
-							.with(csrf())
-							.param("address", "123 Caramel Street")
-							.param("city", "London")
-							.param("telephone", "01316761638"))
+		mockMvc.perform(post("/owners/new").param("firstName", "Joe").param("lastName", "Bloggs").with(csrf())
+				.param("address", "123 Caramel Street").param("city", "London").param("telephone", "01316761638"))
 				.andExpect(status().is3xxRedirection());
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testProcessCreationFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/new")
-							.with(csrf())
-							.param("firstName", "Joe")
-							.param("lastName", "Bloggs")
-							.param("city", "London"))
-				.andExpect(status().isOk())
-				.andExpect(model().attributeHasErrors("owner"))
+		mockMvc.perform(post("/owners/new").with(csrf()).param("firstName", "Joe").param("lastName", "Bloggs")
+				.param("city", "London")).andExpect(status().isOk()).andExpect(model().attributeHasErrors("owner"))
 				.andExpect(model().attributeHasFieldErrors("owner", "address"))
 				.andExpect(model().attributeHasFieldErrors("owner", "telephone"))
 				.andExpect(view().name("owners/createOrUpdateOwnerForm"));
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testInitFindForm() throws Exception {
 		mockMvc.perform(get("/owners/find")).andExpect(status().isOk()).andExpect(model().attributeExists("owner"))
 				.andExpect(view().name("owners/findOwners"));
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testProcessFindFormSuccess() throws Exception {
 		given(this.clinicService.findOwnerByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
 
@@ -121,7 +111,7 @@ class OwnerControllerTests {
 	}
 
 	@WithMockUser(value = "spring")
-        @Test
+	@Test
 	void testProcessFindFormByLastName() throws Exception {
 		given(this.clinicService.findOwnerByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
 
@@ -129,7 +119,7 @@ class OwnerControllerTests {
 				.andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
 	}
 
-        @WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testProcessFindFormNoOwnersFound() throws Exception {
 		mockMvc.perform(get("/owners").param("lastName", "Unknown Surname")).andExpect(status().isOk())
@@ -138,7 +128,7 @@ class OwnerControllerTests {
 				.andExpect(view().name("owners/findOwners"));
 	}
 
-        @WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testInitUpdateOwnerForm() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}/edit", TEST_OWNER_ID)).andExpect(status().isOk())
@@ -151,36 +141,27 @@ class OwnerControllerTests {
 				.andExpect(view().name("owners/createOrUpdateOwnerForm"));
 	}
 
-        @WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateOwnerFormSuccess() throws Exception {
-		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
-							.with(csrf())
-							.param("firstName", "Joe")
-							.param("lastName", "Bloggs")
-							.param("address", "123 Caramel Street")
-							.param("city", "London")
-							.param("telephone", "01616291589"))
-				.andExpect(status().is3xxRedirection())
+		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).with(csrf()).param("firstName", "Joe")
+				.param("lastName", "Bloggs").param("address", "123 Caramel Street").param("city", "London")
+				.param("telephone", "01616291589")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 
-        @WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testProcessUpdateOwnerFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
-							.with(csrf())
-							.param("firstName", "Joe")
-							.param("lastName", "Bloggs")
-							.param("city", "London"))
-				.andExpect(status().isOk())
+		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).with(csrf()).param("firstName", "Joe")
+				.param("lastName", "Bloggs").param("city", "London")).andExpect(status().isOk())
 				.andExpect(model().attributeHasErrors("owner"))
 				.andExpect(model().attributeHasFieldErrors("owner", "address"))
 				.andExpect(model().attributeHasFieldErrors("owner", "telephone"))
 				.andExpect(view().name("owners/createOrUpdateOwnerForm"));
 	}
 
-        @WithMockUser(value = "spring")
+	@WithMockUser(value = "spring")
 	@Test
 	void testShowOwner() throws Exception {
 		mockMvc.perform(get("/owners/{ownerId}", TEST_OWNER_ID)).andExpect(status().isOk())

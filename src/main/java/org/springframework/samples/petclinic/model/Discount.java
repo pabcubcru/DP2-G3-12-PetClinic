@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "discounts")
-public class Discount extends NamedEntity {
+public class Discount extends BaseEntity {
 
 	@NotNull
 	@Range(min = 0)

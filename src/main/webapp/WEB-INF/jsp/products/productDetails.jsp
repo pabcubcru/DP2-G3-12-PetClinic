@@ -17,13 +17,13 @@
 			<td><c:out value="${product.name}" /></td>
 		</tr>
 		<tr>
-			<th>Price <c:if test="${activeDiscount}">With Discount</c:if></th>
+			<th>Price <c:if test="${activeDiscount}">With Discount</c:if> (EUR)</th>
 			<td><c:if test="${activeDiscount}">
 					<c:out value="${priceWithDiscount}" />
 				</c:if>
 				<c:if test="${!activeDiscount}">
 					<c:out value="${product.price}" />
-				</c:if> EUR</td>
+				</c:if></td>
 		</tr>
 		<tr>
 			<th>Stock</th>
@@ -39,11 +39,13 @@
 			</tr>
 			<tr>
 				<th>Start Date</th>
-				<td><c:out value="${product.discount.startDate}" /></td>
+				<td><petclinic:localDate
+						date="${product.discount.startDate}" pattern="yyyy/MM/dd" /></td>
 			</tr>
 			<tr>
 				<th>Finish Date</th>
-				<td><c:out value="${product.discount.finishDate}" /></td>
+				<td><petclinic:localDate
+						date="${product.discount.finishDate}" pattern="yyyy/MM/dd" /></td>
 			</tr>
 		</table>
 	</c:if>
@@ -67,7 +69,7 @@
 			<br>
 			<br>
 			<c:out
-				value="This product can not be deleted because it has at least one order in process"></c:out>
+				value="This product can not be deleted because it has realized at least one order with it."></c:out>
 		</c:if>
 	</sec:authorize>
 </petclinic:layout>

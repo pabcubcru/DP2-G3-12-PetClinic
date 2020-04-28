@@ -8,7 +8,7 @@
 
 <petclinic:layout pageName="shops">
 
-    <h2>Shop Information</h2>
+    <h2>${shop.name} Information</h2>
 
     <table id="productsTable" class="table table-striped">
         <thead>
@@ -72,8 +72,8 @@
                     <c:out value="${order.productNumber}"/>
                 </td>
                 <td>
-                    <c:out value="${order.orderDate}"/>
-                </td>
+                    <petclinic:localDate date="${order.orderDate.toLocalDate()}" pattern="yyyy/MM/dd" /><c:out value=" ${order.orderDate.toLocalTime()}" />
+				</td>
                 <td>
                     <c:out value="${order.orderStatus}"/>
                 </td>
@@ -82,5 +82,8 @@
         </tbody>
     </table>
     <a href="/shops/1/orders/new" class="btn btn-default">Add Order</a>
+    <br>
+    <br>
+    <a href="/shops/1/edit" class="btn btn-default">Edit shop</a>
     </sec:authorize>
 </petclinic:layout>

@@ -3,10 +3,7 @@ package org.springframework.samples.petclinic.web;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
-import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -17,40 +14,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.security.AccessControlContext;
-import java.security.Principal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.Subject;
-import javax.security.auth.SubjectDomainCombiner;
-
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.collections.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.model.Discount;
 import org.springframework.samples.petclinic.model.Order;
-import org.springframework.samples.petclinic.model.OrderStatus;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.samples.petclinic.service.DiscountService;
 import org.springframework.samples.petclinic.service.OrderService;
 import org.springframework.samples.petclinic.service.ProductService;
 import org.springframework.samples.petclinic.service.ShopService;
-import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContext;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = ProductController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class), excludeAutoConfiguration = SecurityConfiguration.class)
 public class ProductControllerTests {
@@ -93,7 +76,6 @@ public class ProductControllerTests {
 
 		Discount discount1 = new Discount();
 		discount1.setFinishDate(LocalDate.now().plusDays(2));
-		discount1.setName("test discount 1");
 		discount1.setPercentage(30.0);
 		discount1.setStartDate(LocalDate.now());
 		discount1.setId(1);
@@ -113,7 +95,6 @@ public class ProductControllerTests {
 
 		Discount discount2 = new Discount();
 		discount2.setFinishDate(LocalDate.now());
-		discount2.setName("test discount 2");
 		discount2.setPercentage(30.0);
 		discount2.setStartDate(LocalDate.now().minusDays(2));
 		discount2.setId(2);
@@ -141,9 +122,9 @@ public class ProductControllerTests {
 		List<Shop> shops = new ArrayList<Shop>();
 		shops.add(shop1);
 
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(ordersP1);
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_2)).willReturn(new ArrayList<Order>());
-		given(this.orderService.findOrdersByProductId(TEST_PRODUCT_ID_3)).willReturn(new ArrayList<Order>());
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_1)).willReturn(1);
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_2)).willReturn(0);
+		given(this.orderService.countOrdersByProductId(TEST_PRODUCT_ID_3)).willReturn(0);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_1)).willReturn(this.testProduct1);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_2)).willReturn(this.testProduct2);
 		given(this.clinicService.findProductById(TEST_PRODUCT_ID_3)).willReturn(this.testProduct3);

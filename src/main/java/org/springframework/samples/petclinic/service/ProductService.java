@@ -21,8 +21,9 @@ public class ProductService {
 		this.productRepository = productRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public Product findProductById(final int id) throws DataAccessException {
-		return this.productRepository.findById(id).get();
+		return this.productRepository.findById(id);
 	}
 
 	@Transactional(readOnly = true)
@@ -40,7 +41,7 @@ public class ProductService {
 		this.productRepository.delete(product);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Product findByName(final String name) throws DataAccessException {
 		return this.productRepository.findByName(name);
 	}

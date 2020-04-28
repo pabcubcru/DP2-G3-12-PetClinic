@@ -50,11 +50,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 
-	private static final String	VIEWS_PETS_CREATE_OR_UPDATE_FORM	= "pets/createOrUpdatePetForm";
+	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-	private final PetService	petService;
-	private final OwnerService	ownerService;
-
+	private final PetService petService;
+	private final OwnerService ownerService;
 
 	@Autowired
 	public PetController(final PetService petService, final OwnerService ownerService) {
@@ -78,15 +77,10 @@ public class PetController {
 	}
 
 	/*
-	 * @ModelAttribute("pet")
-	 * public Pet findPet(@PathVariable("petId") Integer petId) {
-	 * Pet result=null;
-	 * if(petId!=null)
-	 * result=this.clinicService.findPetById(petId);
-	 * else
-	 * result=new Pet();
-	 * return result;
-	 * }
+	 * @ModelAttribute("pet") public Pet findPet(@PathVariable("petId") Integer
+	 * petId) { Pet result=null; if(petId!=null)
+	 * result=this.clinicService.findPetById(petId); else result=new Pet(); return
+	 * result; }
 	 */
 
 	@InitBinder("owner")
@@ -108,9 +102,10 @@ public class PetController {
 	}
 
 	@PostMapping(value = "/pets/new")
-	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result, final ModelMap model) {
+	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
+			final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
+			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
@@ -145,16 +140,17 @@ public class PetController {
 	 * @return
 	 */
 	@PostMapping(value = "/pets/{petId}/edit")
-	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner, @PathVariable("petId") final int petId, final ModelMap model) {
+	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner,
+			@PathVariable("petId") final int petId, final ModelMap model) {
 		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect bithdate", "The bithdate date must be in the past");
+			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
 			Pet petToUpdate = this.petService.findPetById(petId);
-			BeanUtils.copyProperties(pet, petToUpdate, "id", "owner", "visits", "stays");
+			BeanUtils.copyProperties(pet, petToUpdate, "id", "owner", "visits", "stays", "status");
 			try {
 				this.petService.savePet(petToUpdate);
 			} catch (DuplicatedPetNameException ex) {
@@ -162,6 +158,19 @@ public class PetController {
 				return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 			}
 			return "redirect:/owners/{ownerId}";
+		}
+	}
+
+	@GetMapping(value = "/pets/{petId}/delete")
+	public String initDeleteForm(@PathVariable("petId") int petId, Owner owner) {
+		Pet pet = this.petService.findPetById(petId);
+
+		if (pet.getStatus().getName().equals("HEALTHY")) {
+			owner.removePet(pet);
+			this.petService.deletePet(pet);
+			return "redirect:/owners/{ownerId}";
+		}else {
+			return "/exception";
 		}
 	}
 

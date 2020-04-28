@@ -46,7 +46,7 @@ public class DiscountController {
 	}
 
 	@GetMapping(value = "/discounts/new")
-	public String initNewDiscountForm(Map<String, Object> model, Product product) {
+	public String initNewDiscountForm(Map<String, Object> model) {
 		Discount discount = new Discount();
 		model.put("discount", discount);
 		return "discounts/createOrUpdateDiscountForm";
@@ -79,7 +79,7 @@ public class DiscountController {
 
 	@PostMapping(value = "/discounts/{discountId}/edit")
 	public String processEditDiscountForm(@Valid Discount discount, BindingResult result, Product product,
-			@PathVariable("shopId") int shopId, @PathVariable("discountId") int discountId, Map<String, Object> model) {
+			@PathVariable("shopId") int shopId, @PathVariable("discountId") int discountId) {
 		if (discount.getFinishDate() != null && discount.getStartDate() != null) {
 			if (discount.getFinishDate().isBefore(discount.getStartDate())) {
 				result.rejectValue("finishDate", "wrongDate", "Finish date must be after than start date");

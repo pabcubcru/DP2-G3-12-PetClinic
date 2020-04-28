@@ -15,14 +15,16 @@
  */
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Stay;
 import org.springframework.samples.petclinic.service.PetService;
+import org.springframework.samples.petclinic.util.Validaciones;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -43,7 +45,7 @@ public class StayController {
 	public StayController(PetService petService) {
 		this.petService = petService;
 	}
-	
+
 	@ModelAttribute("pet")
 	public Pet loadPetWithVisit(@PathVariable("petId") int petId) {
 		Pet pet = this.petService.findPetById(petId);
@@ -62,14 +64,18 @@ public class StayController {
 		return "pets/createOrUpdateStayForm";
 	}
 
-	// Spring MVC calls method loadPetWithStay(...) before processNewStayForm is
-	// called
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid Stay stay, BindingResult result, Pet pet) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
 		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			if (stay.getStartdate().isBefore(LocalDate.now())) {
+				result.rejectValue("startdate", "dateStartDateIsPast", "The start date must be present or future");
+			}
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
 				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
 						"The finish date must be after than start date");
+			} else if (Validaciones.validacionReserva(stay, stays)) {
+				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
 			}
 		}
 		if (result.hasErrors()) {
@@ -80,21 +86,31 @@ public class StayController {
 			return "redirect:/owners/{ownerId}";
 		}
 	}
-	
-	@GetMapping(value = "/owners/*/pets/{petId}/stays/{stayId}/edit")
+
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
 	public String initEditStayForm(Pet pet, Map<String, Object> model, @PathVariable("stayId") int stayId) {
 		Stay stay = petService.findStayById(stayId);
 		model.put("stay", stay);
 		return "pets/createOrUpdateStayForm";
 	}
 
-	
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
 	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model,
 			@PathVariable("stayId") int stayId) {
-		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
+		if (!result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate")) {
 			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
+						"The finish date must be after than start date");
+			} else {
+				Stay s = this.petService.findStayById(stayId);
+				stays.remove(s);
+				if (!s.getStartdate().equals(stay.getStartdate()) || !s.getFinishdate().equals(stay.getFinishdate())) {
+					if (Validaciones.validacionReserva(stay, stays)) {
+						result.rejectValue("finishdate", "duplicatedStay",
+								"There is already a current booking for this pet");
+					}
+				}
 			}
 		}
 		if (result.hasErrors()) {
@@ -105,6 +121,19 @@ public class StayController {
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
+	}
+
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/end")
+	public String initEndStayForm(@PathVariable("stayId") int stayId) {
+		Stay stay = petService.findStayById(stayId);
+		if (stay.getFinishdate().isAfter(LocalDate.now())) {
+			stay.setFinishdate(LocalDate.now());
+			this.petService.saveStay(stay);
+			return "redirect:/owners/{ownerId}";
+		} else {
+			return "/exception";
+		}
+
 	}
 
 	@GetMapping(value = "/owners/*/pets/{petId}/stays")

@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -27,20 +28,15 @@ public class Hospitalisation extends BaseEntity {
 
 	@Column(name = "finish_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	@NotNull
-	@FutureOrPresent
 	private LocalDate	finishDate;
 
 	@ManyToOne
 	@JoinColumn(name = "pet_id")
 	private Pet			pet;
 
-	//	@ManyToMany(fetch = FetchType.EAGER)
-	//	private Set<Vet> vets;
-
-	//	@ManyToOne
-	//	@JoinColumn(name = "hospitalisation_status")
-	//	private HospitalisationStatus hospitalisationStatus;
+	@ManyToOne
+	@JoinColumn(name = "hospitalisation_status")
+	private HospitalisationStatus hospitalisationStatus;
 
 	@NotEmpty
 	@Column(name = "treatment")
@@ -55,7 +51,7 @@ public class Hospitalisation extends BaseEntity {
 	@Column(name = "total_price")
 	private Double		totalPrice;
 
-
+	
 	public Pet getPet() {
 		return this.pet;
 	}
@@ -80,21 +76,13 @@ public class Hospitalisation extends BaseEntity {
 		this.finishDate = finishDate;
 	}
 
-	//	public Set<Vet> getVets() {
-	//		return vets;
-	//	}
-	//
-	//	public void setVets(Set<Vet> vets) {
-	//		this.vets = vets;
-	//	}
+	public HospitalisationStatus getHospitalisationStatus() {
+		return hospitalisationStatus;
+	}
 
-	//	public HospitalisationStatus getHospitalisationStatus() {
-	//		return hospitalisationStatus;
-	//	}
-	//
-	//	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
-	//		this.hospitalisationStatus = hospitalisationStatus;
-	//	}
+	public void setHospitalisationStatus(HospitalisationStatus hospitalisationStatus) {
+		this.hospitalisationStatus = hospitalisationStatus;
+	}
 
 	public String getTreatment() {
 		return this.treatment;
@@ -122,6 +110,10 @@ public class Hospitalisation extends BaseEntity {
 
 	public Hospitalisation() {
 		this.startDate = LocalDate.now();
+		HospitalisationStatus hs = new HospitalisationStatus();
+		hs.setName("HOSPITALISED");
+		hs.setId(1);
+		this.hospitalisationStatus = hs;
 	}
 
 }

@@ -28,9 +28,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Discount;
@@ -71,6 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace=Replace.NONE)
 class ProductServiceTests {
 
 	@Autowired
@@ -99,19 +101,20 @@ class ProductServiceTests {
 	@Test
 	void shoudFindProductsNames() throws Exception {
 		List<String> products = this.productService.findProductsNames();
-		assertThat(products.contains("product1")).isTrue();
-		assertThat(products.contains("product4")).isFalse();
+		assertThat(products.contains("product5")).isTrue();
+		assertThat(products.contains("product15")).isFalse();
 	}
 
 //	 INSERT PRODUCT
 
 	@Test
+	@Transactional
 	void shouldInsertNewProduct() throws Exception {
 		List<String> products = this.productService.findProductsNames();
 		int tamaño = products.size();
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
-		product.setName("product3");
+		product.setName("productTest");
 		product.setPrice(50.0);
 		product.setStock(20);
 		shop1.addProduct(product);
@@ -126,6 +129,7 @@ class ProductServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldThrowExceptionInsertingNewProductNullParameter() throws Exception {
 		Shop shop1 = shopService.findShops().iterator().next();
 		Product product = new Product();
@@ -139,8 +143,9 @@ class ProductServiceTests {
 	}
 
 	@Test
+	@Transactional
 	void shouldThrowExceptionInsertingNewProductDuplicatedName() throws Exception {
-		Shop shop1 = shopService.findShops().iterator().next();
+		Shop shop1 = shopService.findShopById(1 );
 		Product product = new Product();
 		product.setName("product1");
 		product.setPrice(50.0);
@@ -167,14 +172,15 @@ class ProductServiceTests {
 	@Transactional
 	public void shouldDeleteProduct() throws Exception {
 		List<String> products = this.productService.findProductsNames();
-		Product product1 = this.productService.findProductById(1);
+		Product product3 = this.productService.findProductById(3);
 		int tamaño = products.size();
-		Shop shop1 = shopService.findShops().iterator().next();
-		shop1.deleteProduct(product1);
-		if (product1.getDiscount() != null) {
-			discountService.deleteDiscount(product1.getDiscount().getId());
+		Shop shop1 = shopService.findShopById(1);
+		shop1.deleteProduct(product3);
+		productService.deleteProduct(product3);
+		if (product3.getDiscount() != null) {
+			discountService.deleteDiscount(product3.getDiscount().getId());
 		}
-		productService.deleteProduct(product1);
+		entityManager.flush();
 		products = this.productService.findProductsNames();
 		assertThat(products.size()).isEqualTo(tamaño - 1);
 	}
@@ -245,7 +251,7 @@ class ProductServiceTests {
 
 	@Test
 	void shouldFindProductByName() throws Exception {
-		Product product1 = this.productService.findByName("product1");
+		Product product1 = this.productService.findProductById(1);
 		assertThat(product1.getStock()).isEqualTo(5);
 		assertThat(product1.getPrice()).isEqualTo(15.0);
 	}
@@ -253,26 +259,26 @@ class ProductServiceTests {
 //	INSERT DISCOUNT
 
 	@Test
+	@Transactional
 	void shouldInsertDiscountForProduct() throws Exception {
-		Product product2 = this.productService.findByName("product2");
+		Product product2 = this.productService.findProductById(2);
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		discount.setPercentage(50.0);
 		this.discountService.saveDiscount(discount);
 		product2.setDiscount(discount);
-		product2 = this.productService.findByName("product2");
+		product2 = this.productService.findProductById(2);
 		assertThat(discount.getId()).isNotNull();
 		assertThat(product2.getDiscount()).isNotNull();
 	}
 
 	@Test
+	@Transactional
 	void shouldThowsExceptionInsertingDiscountNullParameter() throws Exception {
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		assertThrows(Exception.class, () -> {
 			discount.setPercentage(null);
 			this.discountService.saveDiscount(discount);
@@ -282,23 +288,23 @@ class ProductServiceTests {
 //	EDIT DISCOUNT
 
 	@Test
+	@Transactional
 	void shouldEditDiscountForProduct() throws Exception {
-		Product product1 = this.productService.findByName("product1");
+		Product product1 = this.productService.findProductById(1);
 		Discount discount = this.discountService.findDiscountById(1);
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		this.discountService.saveDiscount(discount);
 		product1.setDiscount(discount);
-		product1 = this.productService.findByName("product1");
 		assertThat(product1.getDiscount()).isNotNull();
 		assertThat(product1.getDiscount().getFinishDate()).isEqualTo(LocalDate.now().plusDays(2));
 	}
 
 	@Test
+	@Transactional
 	void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
 		Discount discount = new Discount();
 		discount.setFinishDate(LocalDate.now().plusDays(2));
 		discount.setStartDate(LocalDate.now());
-		discount.setName("test discount");
 		try {
 			this.discountService.saveDiscount(discount);
 		} catch (Exception ex) {

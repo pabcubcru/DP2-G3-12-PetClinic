@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class OrderController {
 
 	private final OrderService orderService;
-	
+
 	private final ProductService productService;
 	private final ShopService shopService;
 
@@ -37,6 +38,16 @@ public class OrderController {
 		this.orderService = orderService;
 		this.productService = productService;
 		this.shopService = shopService;
+	}
+
+	@ModelAttribute("shop")
+	public Shop loadShop() {
+		return this.shopService.findShops().iterator().next();
+	}
+	
+	@InitBinder("shop")
+	public void initOwnerBinder(final WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
 	}
 
 	@InitBinder
@@ -55,41 +66,27 @@ public class OrderController {
 	}
 
 	@PostMapping(value = "/orders/new")
-	public String processNewOrderForm(@Valid Order order, BindingResult result, @PathVariable("shopId") int shopId, Map<String, Object> model) {
+	public String processNewOrderForm(@Valid Order order, BindingResult result, Shop shop, Map<String, Object> model) {
 		if (result.hasErrors()) {
 			model.put("products", productService.findProductsNames());
-			model.put("productsSize", productService.findProductsNames().size());
-			model.put("productName", "");
 			model.put("order", order);
 			return "orders/createOrUpdateOrderForm";
-		}
-		else {
-			Shop shop = this.shopService.findShops().iterator().next();
+		} else {
 			Product product = productService.findByName(order.getProduct().getName());
 			order.setProduct(product);
 			shop.addOrder(order);
 			this.orderService.saveOrder(order);
-			return "redirect:/shops/" + shopId;
+			return "redirect:/shops/" + shop.getId();
 		}
 	}
-	
+
 	@GetMapping(value = "/orders/{orderId}/received")
 	public String processOrderReceived(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
 			Order order = this.orderService.findOrderById(orderId);
 			if(order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
 				order.orderReceived();
-				this.orderService.saveOrder(order);
-				return "redirect:/shops/" + shopId + "/orders/" + orderId;
-			} else {
-				return "/exception";
-			}
-	}
-	
-	@GetMapping(value = "/orders/{orderId}/canceled")
-	public String processOrderCanceled(@PathVariable("orderId") int orderId, @PathVariable("shopId") int shopId) {
-			Order order = this.orderService.findOrderById(orderId);
-			if(order.getOrderStatus().equals(OrderStatus.INPROCESS) && order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
-				order.orderCanceled();
+				order.getProduct().setStock(order.getProduct().getStock() + order.getProductNumber());
+				this.productService.saveProduct(order.getProduct());
 				this.orderService.saveOrder(order);
 				return "redirect:/shops/" + shopId + "/orders/" + orderId;
 			} else {
@@ -97,11 +94,36 @@ public class OrderController {
 			}
 	}
 
+	@GetMapping(value = "/orders/{orderId}/canceled")
+	public String processOrderCanceled(@PathVariable("orderId") int orderId, Shop shop) {
+		Order order = this.orderService.findOrderById(orderId);
+		if (order.getOrderStatus().equals(OrderStatus.INPROCESS)
+				&& order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2))) {
+			order.orderCanceled();
+			this.orderService.saveOrder(order);
+			return "redirect:/shops/" + shop.getId() + "/orders/" + orderId;
+		} else {
+			return "/exception";
+		}
+	}
+
+	@GetMapping(value = "/orders/{orderId}/delete")
+	public String processOrderDetele(@PathVariable("orderId") int orderId, Shop shop) {
+		Order order = this.orderService.findOrderById(orderId);
+		if (!order.getOrderStatus().equals(OrderStatus.INPROCESS)) {
+			shop.deleteOrder(order);
+			this.orderService.deleteOrder(order);
+			return "redirect:/shops/" + shop.getId();
+		} else {
+			return "/exception";
+		}
+	}
+
 	@GetMapping("/orders/{orderId}")
 	public ModelAndView showOrder(@PathVariable("orderId") int orderId) {
 		ModelAndView mav = new ModelAndView("orders/orderDetails");
 		Order order = this.orderService.findOrderById(orderId);
-		mav.addObject(order);
+		mav.addObject("order", order);
 		mav.addObject("canBeCanceled", order.getOrderDate().isAfter(LocalDateTime.now().minusDays(2)));
 		return mav;
 	}

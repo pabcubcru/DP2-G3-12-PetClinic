@@ -27,7 +27,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class Pet extends NamedEntity {
 	private PetType type;
 
 	@ManyToOne
-	@JoinColumn(name = "status_id")
+	@JoinColumn(name = "pet_status_id")
 	private PetStatus status;
 
 	@ManyToOne
@@ -71,6 +70,13 @@ public class Pet extends NamedEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
 	private Set<Stay> stays;
+	
+	public Pet() {
+		PetStatus status = new PetStatus();
+		status.setName("HEALTHY");
+		status.setId(1);
+		this.status = status;
+	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
@@ -87,7 +93,7 @@ public class Pet extends NamedEntity {
 	public void setType(PetType type) {
 		this.type = type;
 	}
-	
+
 	public Owner getOwner() {
 		return this.owner;
 	}
@@ -125,6 +131,10 @@ public class Pet extends NamedEntity {
 		getVisitsInternal().add(visit);
 		visit.setPet(this);
 	}
+	
+	public void deleteVisit(Visit visit) {
+		getVisitsInternal().remove(visit);
+	}
 
 	protected Set<Hospitalisation> getHospitalisationsInternal() {
 		if (this.hospitalisations == null) {
@@ -148,6 +158,10 @@ public class Pet extends NamedEntity {
 		hospitalisation.setPet(this);
 	}
 
+	public void deleteHospitalisation(Hospitalisation hospitalisation) {
+		getHospitalisationsInternal().remove(hospitalisation);
+	}
+
 	protected Set<Stay> getStaysInternal() {
 		if (this.stays == null) {
 			this.stays = new HashSet<>();
@@ -168,6 +182,10 @@ public class Pet extends NamedEntity {
 	public void addStay(Stay stay) {
 		getStaysInternal().add(stay);
 		stay.setPet(this);
+	}
+	
+	public void deleteStay(Stay stay) {
+		getStaysInternal().remove(stay);
 	}
 
 }

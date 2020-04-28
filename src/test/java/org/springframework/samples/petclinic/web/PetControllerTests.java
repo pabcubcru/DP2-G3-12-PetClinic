@@ -28,7 +28,6 @@ import java.time.LocalDate;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -70,6 +69,7 @@ class PetControllerTests {
 
 	Owner owner;
 	Pet pet;
+	Pet pet2;
 
 	@BeforeEach
 	void setup() {
@@ -96,19 +96,27 @@ class PetControllerTests {
 		pet.setId(TEST_PET_ID);
 		pet.setName("pet1");
 		PetStatus status = new PetStatus();
-		status.setId(1);
+		status.setId(0);
 		status.setName("SICK");
 		pet.setStatus(status);
 		pet.setType(cat);
 		owner.addPet(pet);
 		
+		pet2 = new Pet();
+		pet2.setBirthDate(LocalDate.now().minusYears(8));
+		pet2.setId(2);
+		pet2.setName("pet2");
 		PetStatus status2 = new PetStatus();
-		status.setId(2);
-		status.setName("HEALTHY");
+		status2.setId(1);
+		status2.setName("HEALTHY");
+		pet2.setStatus(status2);
+		pet2.setType(cat);
+		owner.addPet(pet2);		
 		
 		given(this.petService.findPetTypes()).willReturn(Lists.newArrayList(cat));
 		given(this.ownerService.findOwnerById(TEST_OWNER_ID)).willReturn(this.owner);
 		given(this.petService.findPetById(TEST_PET_ID)).willReturn(this.pet);
+		given(this.petService.findPetById(2)).willReturn(this.pet2);
 		given(this.petService.findPetStatus()).willReturn(Lists.newArrayList(status, status2));
 	}
 
@@ -160,6 +168,20 @@ class PetControllerTests {
 				.param("name", "Betty").param("birthDate", "2015/02/12"))
 				.andExpect(model().attributeHasNoErrors("owner")).andExpect(model().attributeHasErrors("pet"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdatePetForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitDeleteFormSuccess() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, 2))
+				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testInitDeleteFormHasErrors() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, TEST_PET_ID))
+				.andExpect(status().isOk()).andExpect(view().name("/exception"));
 	}
 
 }
