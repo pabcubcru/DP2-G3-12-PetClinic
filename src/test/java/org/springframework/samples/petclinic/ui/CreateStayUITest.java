@@ -66,7 +66,7 @@ public class CreateStayUITest {
 		driver.findElement(By.linkText("David Schroeder")).click();
 		driver.findElement(By.linkText("Add Stay")).click();
 		driver.findElement(By.id("finishdate")).clear();
-		driver.findElement(By.id("finishdate")).sendKeys("2020/04/30");
+		driver.findElement(By.id("finishdate")).sendKeys("2020/07/30");
 		driver.findElement(By.id("specialCares")).clear();
 		driver.findElement(By.id("specialCares")).sendKeys("hairdressing");
 		driver.findElement(By.id("price")).clear();
@@ -76,7 +76,7 @@ public class CreateStayUITest {
 
 	public void checkStayHasBeenCreatedSuccess() throws Exception {
 		assertEquals(LocalDate.now().toString(), driver.findElement(By.xpath("//td[2]/table/tbody/tr/td[2]")).getText());
-		assertEquals("2020-04-30", driver.findElement(By.xpath("//td[3]")).getText());
+		assertEquals("2020-07-30", driver.findElement(By.xpath("//td[3]")).getText());
 		assertEquals("hairdressing", driver.findElement(By.xpath("//td[4]")).getText());
 		assertEquals("25.0", driver.findElement(By.xpath("//td[5]")).getText());
 	}

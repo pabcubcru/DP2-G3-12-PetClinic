@@ -1,7 +1,5 @@
 package org.springframework.samples.petclinic.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Discount;
@@ -25,12 +23,17 @@ public class DiscountService {
 	}
 	
 	@Transactional
+	public void deleteDiscount(Discount discount) throws DataAccessException {
+		this.discountRepository.delete(discount);
+	}
+	
+	@Transactional
 	public void deleteDiscount(int id) throws DataAccessException {
 		this.discountRepository.deleteById(id);
 	}
 	
 	@Transactional
 	public Discount findDiscountById(int id) throws DataAccessException {
-		return this.discountRepository.findById(id).get();
+		return this.discountRepository.findById(id).orElse(null);
 	}
 }

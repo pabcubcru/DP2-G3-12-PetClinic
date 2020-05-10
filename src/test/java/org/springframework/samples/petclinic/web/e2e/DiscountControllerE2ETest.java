@@ -51,8 +51,8 @@ public class DiscountControllerE2ETest {
 	@Test
 	void testProcessNewDiscountFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/new", TEST_PRODUCT_ID_2).with(csrf())
-				.param("startDate", "2020/05/02")
-				.param("finishDate", "2020/06/03")
+				.param("startDate", "2020/08/02")
+				.param("finishDate", "2020/08/03")
 				.param("percentage", "20.0")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
 	}
@@ -61,7 +61,7 @@ public class DiscountControllerE2ETest {
 	@Test
 	void testProcessNewDiscountFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/new", TEST_PRODUCT_ID_4).with(csrf())
-				.param("startDate", "2020/05/06").param("finishDate", "2020/05/01"))
+				.param("startDate", "2020/07/06").param("finishDate", "2020/07/01"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));
@@ -84,8 +84,8 @@ public class DiscountControllerE2ETest {
 	@Test
 	void testProcessEditDiscountFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID_1, TEST_DISCOUNT_ID_1).with(csrf())
-				.param("startDate", "2020/05/02")
-				.param("finishDate", "2020/06/03")
+				.param("startDate", "2020/08/02")
+				.param("finishDate", "2020/08/03")
 				.param("percentage", "20.0").param("id", "1"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
@@ -95,10 +95,24 @@ public class DiscountControllerE2ETest {
 	@Test
 	void testProcessEditDiscountFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", 5, 3).with(csrf())
-				.param("startDate", "2020/05/06")
-				.param("finishDate", "2020/05/01"))
+				.param("startDate", "2020/07/06")
+				.param("finishDate", "2020/07/01"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testDeleteDiscountSuccess() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", 1, 1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testDeleteDiscountErrorProductDiscountNotEqual() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", 1, TEST_DISCOUNT_ID_2)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}
 }

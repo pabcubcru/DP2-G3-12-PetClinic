@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.web.integration;
 
+import static org.junit.Assert.assertThat;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
@@ -119,5 +121,23 @@ public class DiscountControllerIntegrationTest {
 		
 		assertEquals(view, "discounts/createOrUpdateDiscountForm");
 		assertEquals(result.getFieldErrorCount("percentage"), 1);
+	}
+	
+	@Test
+	void testProcessDeleteDiscountSuccess() throws Exception {
+		Product product = productService.findProductById(1);
+		String view = discountController.processDeleteDiscount(1, product, 1);
+		
+		assertEquals(view, "redirect:/shops/1/products/{productId}");
+		assertEquals(productService.findProductById(1).getDiscount(), null);
+	}
+	
+	@Test
+	void testProcessDeleteDiscountHasError() throws Exception {
+		Product product = productService.findProductById(2);
+		String view = discountController.processDeleteDiscount(2, product, 1);
+		
+		assertEquals(view, "/exception");
+		assertEquals(productService.findProductById(3).getDiscount(), discountService.findDiscountById(2));
 	}
 }
