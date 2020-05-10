@@ -105,12 +105,10 @@ class DiscountServiceTests {
 		} catch (Exception ex) {
 			Logger.getLogger(DiscountServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
 		producto2.setDiscount(discount2);
 		productService.saveProduct(producto2);
 		assertThat(producto2.getDiscount().getPercentage()).isEqualTo(20.0);
 		assertThat(discount2.getId()).isNotNull();
-
 	}
 
 	@Test
@@ -133,7 +131,7 @@ class DiscountServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldThowsExceptionEditingDiscountNullParameter() throws Exception {
+	public void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
 		Discount discount = discountService.findDiscountById(1);
 		assertThrows(Exception.class, () -> {
 			discount.setPercentage(null);
@@ -141,5 +139,21 @@ class DiscountServiceTests {
 			this.discountService.saveDiscount(discount);
 		});
 	}
+	
+	@Test
+	@Transactional
+	public void shouldDeleteDiscount() throws Exception {
+		Product product = productService.findProductById(1);
+		Discount discount1 = this.discountService.findDiscountById(1);
 
+		try {
+			product.setDiscount(null); productService.saveProduct(product);
+			this.discountService.deleteDiscount(discount1);
+		} catch (Exception ex) {
+			Logger.getLogger(DiscountServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		assertThat(product.getDiscount()).isNull();
+		assertThat(this.discountService.findDiscountById(1)).isNull();
+	}
 }

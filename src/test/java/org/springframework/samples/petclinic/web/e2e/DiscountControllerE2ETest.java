@@ -101,4 +101,18 @@ public class DiscountControllerE2ETest {
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));
 	}
+	
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testDeleteDiscountSuccess() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", 1, 1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
+	}
+	
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testDeleteDiscountErrorProductDiscountNotEqual() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", 1, TEST_DISCOUNT_ID_2)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
+	}
 }
