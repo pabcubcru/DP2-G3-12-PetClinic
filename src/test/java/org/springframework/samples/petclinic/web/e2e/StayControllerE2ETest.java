@@ -118,7 +118,7 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessEditStayFormHasErrors() throws Exception {
 		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", 1, 1).with(csrf())
-				.param("startdate", "2020/06/06").param("finishdate", "2020/05/04")
+				.param("startdate", "2020/07/06").param("finishdate", "2020/07/04")
 				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrors("stay", "price"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate"))

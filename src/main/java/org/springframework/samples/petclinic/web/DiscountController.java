@@ -94,4 +94,17 @@ public class DiscountController {
 			return "redirect:/shops/" + shopId + "/products/{productId}";
 		}
 	}
+	
+	@GetMapping("/discounts/{discountId}/delete")
+	public String processDeleteDiscount(@PathVariable("discountId") int discountId, Product product, @PathVariable("shopId") int shopId) {
+		Discount discount = discountService.findDiscountById(discountId);
+		if(product.getDiscount().equals(discount)) {
+			product.setDiscount(null);
+			productService.saveProduct(product);
+			discountService.deleteDiscount(discount);
+			return "redirect:/shops/" + shopId + "/products/{productId}";
+		} else {
+			return "/exception";
+		}
+	}
 }
