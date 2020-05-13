@@ -45,11 +45,6 @@ public class OrderController {
 		return this.shopService.findShops().iterator().next();
 	}
 	
-	@InitBinder("shop")
-	public void initOwnerBinder(final WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");

@@ -10,7 +10,6 @@
 
 	<h2>Product Information</h2>
 
-
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
@@ -30,6 +29,7 @@
 			<th>Stock</th>
 			<td><c:out value="${product.stock}" /></td>
 		</tr>
+		
 	</table>
 	<c:if test="${product.discount != null}">
 		<h2>Discount Information</h2>
