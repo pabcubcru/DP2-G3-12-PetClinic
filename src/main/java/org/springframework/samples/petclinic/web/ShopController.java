@@ -59,8 +59,8 @@ public class ShopController {
 			return "shops/createOrUpdateShopForm";
 		} else {
 			Shop shopToUpdate = shopService.findShopById(1);
-			BeanUtils.copyProperties(shop, shopToUpdate, "id", "products", "orders");
-			this.shopService.saveShop(shop);
+			shopToUpdate.setName(shop.getName());
+			this.shopService.saveShop(shopToUpdate);
 			return "redirect:/shops/1";
 		}
 	}

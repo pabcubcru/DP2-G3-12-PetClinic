@@ -16,6 +16,8 @@
         	<th>Name</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Discount:</th>
+            <th>Percentage</th>
         </tr>
         </thead>
         <tbody>
@@ -32,6 +34,10 @@
                 </td>
                 <td>
                     <c:out value="${product.stock}"/>
+                </td>
+                <td></td>
+                <td>
+                	<c:out value="${product.discount.percentage}"></c:out>
                 </td>
             </tr>
         </c:forEach>
