@@ -2,6 +2,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -9,6 +10,7 @@ import javax.validation.Validator;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 public class OrderTests {
@@ -21,6 +23,8 @@ public class OrderTests {
 
 	@Test
 	void shouldNotValidateWhenSupplierEmpty() {
+		LocaleContextHolder.setLocale(Locale.ENGLISH);
+
 		Order order = new Order();
 		order.setSupplier("");
 		order.setProductNumber(1);
@@ -37,12 +41,14 @@ public class OrderTests {
 		Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Order> violation = constraintViolations.iterator().next();
 		Assertions.assertThat(violation.getPropertyPath().toString()).isEqualTo("supplier");
-		Assertions.assertThat(violation.getMessage()).isEqualTo("no puede estar vacío");
+		Assertions.assertThat(violation.getMessage()).isEqualTo("must not be blank");
 
 	}
 
 	@Test
 	void shouldNotValidateWhenProductNumberWrongRange() {
+		LocaleContextHolder.setLocale(Locale.ENGLISH);
+
 		Order order = new Order();
 		order.setSupplier("Supplier");
 		order.setProductNumber(0);
@@ -59,12 +65,14 @@ public class OrderTests {
 		Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Order> violation = constraintViolations.iterator().next();
 		Assertions.assertThat(violation.getPropertyPath().toString()).isEqualTo("productNumber");
-		Assertions.assertThat(violation.getMessage()).isEqualTo("tiene que estar entre 1 y 9223372036854775807");
+		Assertions.assertThat(violation.getMessage()).isEqualTo("must be between 1 and 9223372036854775807");
 
 	}
 
 	@Test
 	void shouldNotValidateWhenOrderStatusNull() {
+		LocaleContextHolder.setLocale(Locale.ENGLISH);
+
 		Order order = new Order();
 		order.setSupplier("Supplier");
 		order.setProductNumber(1);
@@ -81,7 +89,7 @@ public class OrderTests {
 		Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
 		ConstraintViolation<Order> violation = constraintViolations.iterator().next();
 		Assertions.assertThat(violation.getPropertyPath().toString()).isEqualTo("orderStatus");
-		Assertions.assertThat(violation.getMessage()).isEqualTo("no puede ser null");
+		Assertions.assertThat(violation.getMessage()).isEqualTo("must not be null");
 
 	}
 }
