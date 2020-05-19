@@ -20,11 +20,11 @@ class CreateOrderDiagnosis extends Simulation {
 		"Proxy-Connection" -> "keep-alive",
 		"Upgrade-Insecure-Requests" -> "1")
 
-	val headers_2 = Map(
+	val headers_1 = Map(
 		"Accept" -> "image/webp,image/apng,image/*,*/*;q=0.8",
 		"Proxy-Connection" -> "keep-alive")
 
-	val headers_3 = Map(
+	val headers_2 = Map(
 		"Origin" -> "http://www.dp2.com",
 		"Proxy-Connection" -> "keep-alive",
 		"Upgrade-Insecure-Requests" -> "1")
@@ -44,7 +44,7 @@ object Login {
 		.pause(17)
 		.exec(http("LoggedAsAdmin")
 			.post("/login")
-			.headers(headers_3)
+			.headers(headers_2)
 			.formParam("username", "admin1")
 			.formParam("password", "4dm1n")
 			.formParam("_csrf", "${stoken}"))
@@ -66,7 +66,7 @@ object CreateOrderSuccess {
 		.pause(43)
 		.exec(http("OrderCreated")
 			.post("/shops/1/orders/new")
-			.headers(headers_3)
+			.headers(headers_2)
 			.formParam("id", "")
 			.formParam("name", "orderTest")
 			.formParam("supplier", "orderTest")
@@ -84,7 +84,7 @@ object CreateOrderHasErrors {
 		.pause(43)
 		.exec(http("OrderHasErrors")
 			.post("/shops/1/orders/new")
-			.headers(headers_3)
+			.headers(headers_2)
 			.formParam("name", "orderTest")
 			.formParam("supplier", "orderTest")
 			.formParam("productNumber", "0")
@@ -97,8 +97,8 @@ object CreateOrderHasErrors {
 	val negativeScn = scenario("CreateOrderHasErrors").exec(Home.home, Login.login, ShowShop.showShop, CreateOrderHasErrors.createOrderHasErrors)
 
 	setUp(
-		negativeScn.inject(rampUsers(1500) during (100 seconds)), 
-		positiveScn.inject(rampUsers(1500) during (100 seconds))
+		negativeScn.inject(rampUsers(5000) during (100 seconds)), 
+		positiveScn.inject(rampUsers(5000) during (100 seconds))
 	).protocols(httpProtocol)
 	.assertions(
 		global.responseTime.max.lt(5000),
