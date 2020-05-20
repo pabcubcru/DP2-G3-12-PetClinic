@@ -523,6 +523,36 @@ class PetServiceTests {
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
 	}
+	
+	// EDIT HOSPITALISATION
+	
+	@Test
+	@Transactional
+	public void shouldEditHospitalisationForPet() throws Exception {
+		Pet pet1 = this.petService.findPetById(1);
+		int found = pet1.getHospitalisations().size();
+		Hospitalisation hospitalisation = petService.findHospitalisationById(1);
+		hospitalisation.setTotalPrice(15.0);
+		this.petService.saveHospitalisation(hospitalisation);
+		pet1.addHospitalisation(hospitalisation);
+		pet1 = this.petService.findPetById(7);
+		assertThat(pet1.getHospitalisations().size()).isEqualTo(found);
+		assertThat(hospitalisation.getTotalPrice()).isEqualTo(petService.findHospitalisationById(1).getTotalPrice());
+	}
+
+	@Test
+	@Transactional
+	public void shouldThrowExceptionEditingHospitalisation() throws Exception {
+		Hospitalisation hospitalisation = petService.findHospitalisationById(1);
+		hospitalisation.setTotalPrice(-6.0);
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.petService.findPetById(1).addHospitalisation(hospitalisation);
+			entityManager.flush();
+			this.petService.saveHospitalisation(hospitalisation);
+		});
+	}
+	
+	// DELETE HOSPITALISATION
 
 	@Test
 	@Transactional
