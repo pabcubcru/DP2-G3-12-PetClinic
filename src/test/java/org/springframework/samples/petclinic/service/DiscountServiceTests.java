@@ -98,7 +98,7 @@ class DiscountServiceTests {
 		Discount discount2 = new Discount();
 		discount2.setPercentage(20.0);
 		discount2.setStartDate(LocalDate.now());
-		discount2.setFinishDate(LocalDate.of(2020, 5, 20));
+		discount2.setFinishDate(LocalDate.of(2020, 8, 20));
 
 		try {
 			discountService.saveDiscount(discount2);

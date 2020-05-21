@@ -36,7 +36,7 @@ public class ShopController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@GetMapping("/1")
+	@GetMapping("/*")
 	public ModelAndView showShop() {
 		ModelAndView mav = new ModelAndView("shops/shopDetails");
 		Shop shop = this.shopService.findShopById(1);
