@@ -226,4 +226,20 @@ public class StayControllerTest {
 		mockMvc.perform(get("/owners/*/pets/{petId}/stays", TEST_PET_ID_1)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("stays")).andExpect(view().name("stayList"));
 	}
+	
+	// DELETE STAY
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessDeleteStaySuccess() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/1/stays/{stayId}/delete", TEST_STAY_ID_1)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testProcessDeleteStayError() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/1/stays/{stayId}/delete", TEST_STAY_ID_4)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
+	}
 }
