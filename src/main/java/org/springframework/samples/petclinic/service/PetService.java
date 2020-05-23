@@ -131,7 +131,7 @@ public class PetService {
 	}
 	
 	public Stay findStayById(int id) throws DataAccessException {
-		return stayRepository.findById(id).get();
+		return stayRepository.findById(id).orElse(null);
 		
 	}
     

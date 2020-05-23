@@ -206,6 +206,24 @@ public class StayControllerIntegrationTest {
 		assertEquals(view, "/exception");
 
 	}
+	
+	// DELETE STAY
+	
+	@Test
+	void testProcessDeleteStaySuccess() throws Exception {
+		Stay stay2 = petService.findStayById(2);
+
+		String view = stayController.initDeleteStayForm(stay2.getPet(), stay2.getId());
+		assertEquals(view, "redirect:/owners/{ownerId}");
+	}
+	
+	@Test
+	void testProcessDeteleStayError() throws Exception {
+		Stay stay8 = petService.findStayById(8);
+
+		String view = stayController.initDeleteStayForm(stay8.getPet(), stay8.getId());
+		assertEquals(view, "/exception");
+	}
 
 
 	void testShowStays() throws Exception {
