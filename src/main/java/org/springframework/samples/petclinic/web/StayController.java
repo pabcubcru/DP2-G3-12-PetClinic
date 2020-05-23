@@ -142,4 +142,18 @@ public class StayController {
 		return "stayList";
 	}
 
+	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/delete")
+	public String initDeleteStayForm(Pet pet, @PathVariable("stayId") int stayId) {
+		String res = "/exception";
+		Stay stay = this.petService.findStayById(stayId);
+		if (stay != null) {
+			if (!stay.activeStay()) {
+				pet.deleteStay(stay);
+				this.petService.deleteStay(stay);
+				res = "redirect:/owners/{ownerId}";
+			}
+		}
+		return res;
+	}
+
 }
