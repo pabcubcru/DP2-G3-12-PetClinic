@@ -425,7 +425,7 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	public void shouldDeleteStay() throws Exception{
-		Stay stay = petService.findStayById(1);
+		Stay stay = petService.findStayById(7);
 		int petId = stay.getPet().getId();
 		Pet pet = stay.getPet();
 		int numberStaysBefore = petService.findStaysByPetId(petId).size();
@@ -434,7 +434,7 @@ class PetServiceTests {
 		entityManager.flush();
 		int numberStaysAfter = petService.findStaysByPetId(petId).size();
 		assertThat(numberStaysBefore-1).isEqualTo(numberStaysAfter);
-		assertThat(petService.findStayById(1)).isNull();
+		assertThat(petService.findStayById(7)).isNull();
 	}
 
 	// ADD HOSPITALISATION
