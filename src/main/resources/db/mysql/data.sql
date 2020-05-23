@@ -81,6 +81,8 @@ INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) V
 INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (5, 30.0, '2020-11-01', '2020-11-11','special',2);
 INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (6, 30.0, '2020-05-20', '2020-05-25','special',2);
 INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (7, 30.0, '2020-02-02', '2020-02-05','special',13);
+INSERT IGNORE INTO stays(id,price,start_date,finish_date,special_cares,pet_id) VALUES (8, 30.0, '2020-02-02', '2020-11-05','special',13);
+
 
 INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (1, '2020-02-12', '2020-02-20','treatment1','diagnosis1',30,1,2);
 INSERT IGNORE INTO hospitalisations(id,start_date,finish_date,treatment,diagnosis,total_price,pet_id,hospitalisation_status) VALUES (2, '2020-04-15', '2020-04-19','treatment2','diagnosis2',50,7,2);
