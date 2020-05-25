@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +32,8 @@ public class ShopControllerIntegrationTest {
 	@Autowired
 	private ShopService shopService;
 	
-
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	@Test
 	void testInitUpdateShopForm() throws Exception {
@@ -44,10 +48,9 @@ public class ShopControllerIntegrationTest {
 	
 	@Test
 	void testProcessUpdateShopFormSuccess() throws Exception {
-		Shop shop = shopService.findShopById(1);
-		shop.setName("shop1");
+		Shop shop = new Shop();
+		shop.setName("shopTest");
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
-		
 		String view = shopController.processUpdateShopForm(shop, result);
 		
 		assertEquals(view, "redirect:/shops/1");
