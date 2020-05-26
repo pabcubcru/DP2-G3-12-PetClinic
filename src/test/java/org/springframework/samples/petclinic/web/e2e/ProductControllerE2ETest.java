@@ -92,7 +92,7 @@ public class ProductControllerE2ETest {
 	@Test
 	void testProcessUpdateProductFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/edit", TEST_PRODUCT_ID_6).with(csrf())
-				.param("name", "product6").param("price", "18.0").param("stock", "6"))
+				.param("name", "product50").param("price", "18.0").param("stock", "6"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/" + TEST_PRODUCT_ID_6));
 	}

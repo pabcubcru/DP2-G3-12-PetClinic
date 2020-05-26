@@ -31,5 +31,5 @@
 	    <cache alias="shopById" uses-template="default">
 	        <key-type>java.lang.Integer</key-type>
 	        <value-type>org.springframework.samples.petclinic.model.Shop</value-type>
-	    </cache>        
+	    </cache>       
     </config>
