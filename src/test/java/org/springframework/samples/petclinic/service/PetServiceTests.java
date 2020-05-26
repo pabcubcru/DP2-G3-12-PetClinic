@@ -288,18 +288,6 @@ class PetServiceTests {
 
 	@Test
 	@Transactional
-	public void shouldDeleteStayForPet() {
-		Pet pet7 = this.petService.findPetById(7);
-		int found = pet7.getStays().size();
-		Stay stay = petService.findStayById(3);
-		pet7.deleteStay(stay);
-		petService.deleteStay(stay);
-		pet7 = this.petService.findPetById(7);
-		assertThat(pet7.getStays().size()).isEqualTo(found - 1);
-	}
-
-	@Test
-	@Transactional
 	public void shouldThrowExceptionInsertingStay() {
 		Stay stay = new Stay();
 		stay.setFinishdate(LocalDate.now().plusDays(2));

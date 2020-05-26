@@ -90,55 +90,69 @@ class DiscountServiceTests {
 		assertThat(discount1.getPercentage()).isEqualTo(30.0);
 
 	}
+	
+//	INSERT DISCOUNT
 
 	@Test
-	void shouldInsertDiscountForProduct() {
-
-		Product producto2 = this.productService.findProductById(2);
-		Discount discount2 = new Discount();
-		discount2.setPercentage(20.0);
-		discount2.setStartDate(LocalDate.now());
-		discount2.setFinishDate(LocalDate.of(2020, 8, 20));
-
-		try {
-			discountService.saveDiscount(discount2);
-		} catch (Exception ex) {
-			Logger.getLogger(DiscountServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		producto2.setDiscount(discount2);
-		productService.saveProduct(producto2);
-		assertThat(producto2.getDiscount().getPercentage()).isEqualTo(20.0);
-		assertThat(discount2.getId()).isNotNull();
+	@Transactional
+	void shouldInsertDiscountForProduct() throws Exception {
+		Product product2 = this.productService.findProductById(2);
+		Discount discount = new Discount();
+		discount.setFinishDate(LocalDate.now().plusDays(2));
+		discount.setStartDate(LocalDate.now());
+		discount.setPercentage(50.0);
+		this.discountService.saveDiscount(discount);
+		product2.setDiscount(discount);
+		product2 = this.productService.findProductById(2);
+		assertThat(discount.getId()).isNotNull();
+		assertThat(product2.getDiscount()).isNotNull();
 	}
 
 	@Test
 	@Transactional
-	public void shouldUpdateDiscountPercentage() throws Exception {
-		Discount discount1 = this.discountService.findDiscountById(1);
-		Double oldPercentage = discount1.getPercentage();
-
-		Double newPercentage = oldPercentage + 10.0;
-		discount1.setPercentage(newPercentage);
-
-		try {
-			this.discountService.saveDiscount(discount1);
-		} catch (Exception ex) {
-			Logger.getLogger(DiscountServiceTests.class.getName()).log(Level.SEVERE, null, ex);
-		}
-
-		assertThat(discount1.getPercentage()).isEqualTo(newPercentage);
-	}
-
-	@Test
-	@Transactional
-	public void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
-		Discount discount = discountService.findDiscountById(1);
+	void shouldThowsExceptionInsertingDiscountNullParameter() throws Exception {
+		Discount discount = new Discount();
+		discount.setFinishDate(LocalDate.now().plusDays(2));
+		discount.setStartDate(LocalDate.now());
 		assertThrows(Exception.class, () -> {
 			discount.setPercentage(null);
+			this.discountService.saveDiscount(discount);
+		});
+	}
+
+//	EDIT DISCOUNT
+
+	@Test
+	@Transactional
+	void shouldEditDiscountForProduct() throws Exception {
+		Product product1 = this.productService.findProductById(1);
+		Discount discount = this.discountService.findDiscountById(1);
+		discount.setFinishDate(LocalDate.now().plusDays(2));
+		this.discountService.saveDiscount(discount);
+		product1.setDiscount(discount);
+		assertThat(product1.getDiscount()).isNotNull();
+		assertThat(product1.getDiscount().getFinishDate()).isEqualTo(LocalDate.now().plusDays(2));
+	}
+
+	@Test
+	@Transactional
+	void shouldThrowsExceptionEditingDiscountNullParameter() throws Exception {
+		Discount discount = new Discount();
+		discount.setFinishDate(LocalDate.now().plusDays(2));
+		discount.setStartDate(LocalDate.now());
+		try {
+			this.discountService.saveDiscount(discount);
+		} catch (Exception ex) {
+			Logger.getLogger(ProductServiceTests.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		assertThrows(Exception.class, () -> {
+			discount.setFinishDate(null); 
 			entityManager.flush();
 			this.discountService.saveDiscount(discount);
 		});
 	}
+
+// DELETE DISCOUNT
 	
 	@Test
 	@Transactional
