@@ -83,8 +83,8 @@ public class StayControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessNewStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
-		mockMvc.perform(post("/owners/6/pets/{petId}/stays/new", 7).with(csrf()).param("startdate", "2020/05/10")
-				.param("finishdate", "2020/05/24").param("price", "50.0")
+		mockMvc.perform(post("/owners/6/pets/{petId}/stays/new", 7).with(csrf()).param("startdate", "2020/08/10")
+				.param("finishdate", "2020/08/24").param("price", "50.0")
 				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
