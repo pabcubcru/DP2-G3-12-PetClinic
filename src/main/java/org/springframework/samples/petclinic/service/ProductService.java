@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.repository.ProductRepository;
@@ -32,11 +33,13 @@ public class ProductService {
 	}
 
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void saveProduct(Product product) throws DataAccessException {
 		this.productRepository.save(product);
 	}
 
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void deleteProduct(final Product product) throws DataAccessException {
 		this.productRepository.delete(product);
 	}

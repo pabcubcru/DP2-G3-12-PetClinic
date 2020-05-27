@@ -54,7 +54,7 @@ public class ShopController {
 	}
 
 	@PostMapping(value = "/{shopId}/edit")
-	public String processUpdateShopForm(@Valid final Shop shop, final BindingResult result) {
+	public String processUpdateShopForm(@Valid Shop shop, final BindingResult result) {
 		if (result.hasErrors()) {
 			return "shops/createOrUpdateShopForm";
 		} else {

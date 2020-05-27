@@ -20,6 +20,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetStatus;
 import org.springframework.samples.petclinic.model.PetType;
@@ -40,5 +41,8 @@ public interface SpringDataPetRepository extends PetRepository, Repository<Pet, 
 	@Override
 	@Query("SELECT pstatus FROM PetStatus pstatus ORDER BY pstatus.name")
 	List<PetStatus> findPetStatus() throws DataAccessException;
+	
+	@Query("SELECT p FROM Pet p LEFT JOIN FETCH p.owner o LEFT JOIN FETCH p.status st LEFT JOIN FETCH p.type t LEFT JOIN FETCH p.hospitalisations h LEFT JOIN FETCH h.hospitalisationStatus hs WHERE p.id=?1")
+	public Pet findPetById(int id);
 
 }

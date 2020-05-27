@@ -23,7 +23,6 @@ public class Hospitalisation extends BaseEntity {
 	@Column(name = "start_date")
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	@NotNull
-	@FutureOrPresent
 	private LocalDate	startDate;
 
 	@Column(name = "finish_date")

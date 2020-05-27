@@ -2,7 +2,7 @@ package org.springframework.samples.petclinic.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Order;
 import org.springframework.samples.petclinic.repository.OrderRepository;
@@ -31,11 +31,13 @@ public class OrderService {
 	}	
 	
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void saveOrder(Order order) throws DataAccessException {
 		this.orderRepository.save(order);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void deleteOrder(Order order) throws DataAccessException {
 		this.orderRepository.delete(order);
 	}

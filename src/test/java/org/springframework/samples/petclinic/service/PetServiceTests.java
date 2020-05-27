@@ -189,7 +189,9 @@ class PetServiceTests {
 	@Transactional
 	public void shouldDeletePet() throws Exception {
 		Pet pet7 = this.petService.findPetById(7);
+		pet7.getOwner().removePet(pet7);
 		petService.deletePet(pet7);
+		entityManager.flush();
 		pet7 = this.petService.findPetById(7);
 		assertThat(pet7).isNull();
 	}
@@ -540,7 +542,7 @@ class PetServiceTests {
 		hospitalisation.setTotalPrice(15.0);
 		this.petService.saveHospitalisation(hospitalisation);
 		pet1.addHospitalisation(hospitalisation);
-		pet1 = this.petService.findPetById(7);
+		pet1 = this.petService.findPetById(1);
 		assertThat(pet1.getHospitalisations().size()).isEqualTo(found);
 		assertThat(hospitalisation.getTotalPrice()).isEqualTo(petService.findHospitalisationById(1).getTotalPrice());
 	}
