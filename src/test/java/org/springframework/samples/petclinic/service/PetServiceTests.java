@@ -296,7 +296,7 @@ class PetServiceTests {
 		stay.setStartdate(LocalDate.now());
 		stay.setPrice(null);
 		stay.setSpecialCares("special cares");
-		assertThrows(ConstraintViolationException.class, () -> {
+		assertThrows(Exception.class, () -> {
 			this.petService.findPetById(7).addStay(stay);
 			this.petService.saveStay(stay);
 		});
