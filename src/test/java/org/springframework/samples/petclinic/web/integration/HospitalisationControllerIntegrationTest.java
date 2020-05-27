@@ -73,9 +73,9 @@ public class HospitalisationControllerIntegrationTest {
 	void testInitEditHospitalisationForm() throws Exception {
 		ModelMap model = new ModelMap();
 		Pet pet = petService.findPetById(1);
-		Hospitalisation hospitalisation = petService.findHospitalisationById(1);
+		Hospitalisation hospitalisation = petService.findHospitalisationById(4);
 		model.put("hospitalisation", hospitalisation);
-		String view = hospitalisationController.initEditHospitalisationForm(pet, model, 1);
+		String view = hospitalisationController.initEditHospitalisationForm(pet, model, 4);
 		
 		assertEquals(view, "pets/createOrUpdateHospitalisationForm");
 		assertNotNull(model.get("hospitalisation"));
