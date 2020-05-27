@@ -23,7 +23,7 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public Product findProductById(final int id) throws DataAccessException {
+	public Product findProductById(int id) throws DataAccessException {
 		return this.productRepository.findById(id);
 	}
 

@@ -182,6 +182,7 @@ class PetServiceTests {
 		this.petService.savePet(pet7);
 
 		pet7 = this.petService.findPetById(7);
+		entityManager.flush();
 		assertThat(pet7.getName()).isEqualTo(newName);
 	}
 
@@ -250,6 +251,7 @@ class PetServiceTests {
 	@Test
 	void shouldFindVisitsByPetId() throws Exception {
 		Collection<Visit> visits = this.petService.findVisitsByPetId(7);
+		entityManager.flush();
 		assertThat(visits.size()).isEqualTo(2);
 		Visit[] visitArr = visits.toArray(new Visit[visits.size()]);
 		assertThat(visitArr[0].getPet()).isNotNull();
@@ -462,6 +464,7 @@ class PetServiceTests {
 	@Transactional
 	void shouldFindStaysByPetIdCorrectNumberHospitalisations() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
+		entityManager.flush();
 		assertThat(hospitalisations.size()).isEqualTo(2);
 	}
 
