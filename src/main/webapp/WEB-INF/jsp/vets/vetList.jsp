@@ -12,7 +12,6 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Specialties</th>
         </tr>
         </thead>
         <tbody>
@@ -21,12 +20,7 @@
                 <td>
                     <c:out value="${vet.firstName} ${vet.lastName}"/>
                 </td>
-                <td>
-                    <c:forEach var="specialty" items="${vet.specialties}">
-                        <c:out value="${specialty.name} "/>
-                    </c:forEach>
-                    <c:if test="${vet.nrOfSpecialties == 0}">none</c:if>
-                </td>
+               
             </tr>
         </c:forEach>
         </tbody>
