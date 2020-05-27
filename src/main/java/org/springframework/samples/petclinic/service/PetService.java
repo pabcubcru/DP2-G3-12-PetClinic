@@ -120,25 +120,25 @@ public class PetService {
 		petRepository.delete(pet);
 	}
 
-
+	@Transactional
 	public Collection<Visit> findVisitsByPetId(int petId) throws DataAccessException {
 		return visitRepository.findByPetId(petId);
 	}
-	
+	@Transactional
 	public Collection<Stay> findStaysByPetId(int petId) throws DataAccessException {
 		return stayRepository.findByPetId(petId);
 		
 	}
-	
+	@Transactional
 	public Stay findStayById(int id) throws DataAccessException {
 		return stayRepository.findById(id).orElse(null);
 		
 	}
-    
+	@Transactional
 	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) throws DataAccessException{
 		return hospitalisationRepository.findByPetId(petId);
 	}
-	
+	@Transactional
 	public Hospitalisation findHospitalisationById(int id) throws DataAccessException {
 		return hospitalisationRepository.findById(id).get();
 	}
