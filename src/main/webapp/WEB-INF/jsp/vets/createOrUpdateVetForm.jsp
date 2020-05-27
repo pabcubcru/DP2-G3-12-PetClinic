@@ -17,16 +17,7 @@
             <div class="form-group has-feedback">
                 <petclinic:inputField label="FirstName" name="firstName"/>
                 <petclinic:inputField label="LastName" name="lastName"/>
-				<select multiple name="listaSpe">
-					<c:forEach items="${listSpecialties}" var="item">
-						<c:if test="${fn:contains(vet.specialties, item)}">
-							<option value="${item}" selected="selected">${item}</option>
-						</c:if>
-						<c:if test="${not fn:contains(vet.specialties, item)}">
-							<option value="${item}">${item}</option>
-						</c:if>
-					</c:forEach>
-				</select>
+	
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
