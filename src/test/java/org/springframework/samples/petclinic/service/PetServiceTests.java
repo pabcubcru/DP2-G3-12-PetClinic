@@ -281,8 +281,8 @@ class PetServiceTests {
 		stay.setStartdate(LocalDate.now());
 		stay.setPrice(15.0);
 		stay.setSpecialCares("test special cares");
-		this.petService.saveStay(stay);
 		pet7.addStay(stay);
+		this.petService.saveStay(stay);
 		pet7 = this.petService.findPetById(7);
 		assertThat(pet7.getStays().size()).isEqualTo(found + 1);
 		assertThat(stay.getId()).isNotNull();

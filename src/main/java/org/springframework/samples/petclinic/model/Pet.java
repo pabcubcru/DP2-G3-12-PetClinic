@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.model;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -184,6 +185,7 @@ public class Pet extends NamedEntity {
 		stay.setPet(this);
 	}
 	
+	@Transactional
 	public void deleteStay(Stay stay) {
 		getStaysInternal().remove(stay);
 	}
