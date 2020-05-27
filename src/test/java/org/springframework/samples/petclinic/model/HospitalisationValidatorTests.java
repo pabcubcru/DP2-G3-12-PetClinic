@@ -46,30 +46,6 @@ public class HospitalisationValidatorTests {
 
 	}
 
-	@Test
-	void shouldNotValidateWhenStartDateInPast() {
-		LocaleContextHolder.setLocale(Locale.ENGLISH);
-
-		Hospitalisation hospitalisation = new Hospitalisation();
-		hospitalisation.setStartDate(LocalDate.of(2020, 01, 10));
-		hospitalisation.setFinishDate(LocalDate.of(2020, 11, 10));
-		Pet pet = new Pet();
-		hospitalisation.setPet(pet);
-		HospitalisationStatus hs1 = new HospitalisationStatus();
-		hospitalisation.setHospitalisationStatus(hs1);
-		hospitalisation.setTreatment("Tratamiento 1");
-		hospitalisation.setDiagnosis("Diagnostico 1");
-		hospitalisation.setTotalPrice(30.0);
-
-		Validator validator = this.createValidator();
-		Set<ConstraintViolation<Hospitalisation>> constraintViolations = validator.validate(hospitalisation);
-
-		Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
-		ConstraintViolation<Hospitalisation> violation = constraintViolations.iterator().next();
-		Assertions.assertThat(violation.getPropertyPath().toString()).isEqualTo("startDate");
-		Assertions.assertThat(violation.getMessage()).isEqualTo("must be a date in the present or in the future");
-
-	}
 
 	@Test
 	void shouldNotValidateWhenTreatmentNull() {

@@ -103,7 +103,7 @@ public class PetService {
 	}
 
 	public Pet findPetById(int id) throws DataAccessException {
-		return petRepository.findById(id);
+		return petRepository.findPetById(id);
 	}
 
 	@Transactional(rollbackFor = DuplicatedPetNameException.class)
