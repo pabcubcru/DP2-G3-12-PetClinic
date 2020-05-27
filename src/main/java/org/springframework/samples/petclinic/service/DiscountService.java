@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Discount;
 import org.springframework.samples.petclinic.repository.DiscountRepository;
@@ -18,16 +19,19 @@ public class DiscountService {
 	}	
 	
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void saveDiscount(Discount discount) throws DataAccessException {
 		this.discountRepository.save(discount);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void deleteDiscount(Discount discount) throws DataAccessException {
 		this.discountRepository.delete(discount);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "shopById", allEntries = true)
 	public void deleteDiscount(int id) throws DataAccessException {
 		this.discountRepository.deleteById(id);
 	}
