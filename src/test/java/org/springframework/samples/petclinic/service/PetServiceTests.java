@@ -21,7 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -465,77 +467,66 @@ class PetServiceTests {
 	@Test
 	@Transactional
 	void shouldFindStaysByPetIdCorrectNumberHospitalisations() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
 		assertThat(hospitalisations.size()).isEqualTo(2);
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdPetNotNull() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getPet()).isNotNull();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getPet()).isNotNull();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsDischargedByPetIdFinishDateNotNull() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getHospitalisationStatus().getName().equals("DISCHARGED"));
-		assertThat(hospitArr[0].getFinishDate()).isNotNull();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getHospitalisationStatus().getName().equals("DISCHARGED"));
+		assertThat(hospitalisations.get(0).getFinishDate()).isNotNull();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsHospitalisedByPetIdFinishDateNull() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[1].getHospitalisationStatus().getName().equals("HOSPITALISED"));
-		assertThat(hospitArr[1].getFinishDate()).isNull();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(1).getHospitalisationStatus().getName().equals("HOSPITALISED"));
+		assertThat(hospitalisations.get(1).getFinishDate()).isNull();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdStartDateNotNull() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		entityManager.flush();
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getStartDate()).isNotNull();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getStartDate()).isNotNull();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdTotalPriceNotNull() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		entityManager.flush();
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getTotalPrice()).isNotNull();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getTotalPrice()).isNotNull();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdDiagnosisNotBlank() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		entityManager.flush();
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getDiagnosis()).isNotBlank();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getDiagnosis()).isNotBlank();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdTreatmentNotBlank() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getTreatment()).isNotBlank();
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getTreatment()).isNotBlank();
 	}
 
 	@Test
 	@Transactional
 	void shouldFindHospitalisationsByPetIdEqualPetId() throws Exception {
-		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
+		List<Hospitalisation> hospitalisations = new ArrayList<Hospitalisation>(this.petService.findHospitalisationsByPetId(7));
+		assertThat(hospitalisations.get(0).getPet().getId()).isEqualTo(7);
 	}
 	
 	// EDIT HOSPITALISATION

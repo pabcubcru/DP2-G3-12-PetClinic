@@ -51,25 +51,25 @@ public class Pet extends NamedEntity {
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate birthDate;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "type_id")
 	private PetType type;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pet_status_id")
 	private PetStatus status;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id")
 	private Owner owner;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.LAZY)
 	private Set<Visit> visits;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.LAZY)
 	private Set<Hospitalisation> hospitalisations;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.LAZY)
 	private Set<Stay> stays;
 	
 	public Pet() {
