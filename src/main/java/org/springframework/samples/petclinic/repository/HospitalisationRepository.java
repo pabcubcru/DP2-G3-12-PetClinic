@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -11,7 +12,7 @@ import org.springframework.samples.petclinic.model.HospitalisationStatus;
 public interface HospitalisationRepository extends CrudRepository<Hospitalisation, Integer>{
 	
 	@Query("select h from Hospitalisation h where h.pet.id = ?1")
-	List<Hospitalisation> findByPetId(int petId);
+	Collection<Hospitalisation> findByPetId(int petId);
 	
 
 	void delete(Hospitalisation hospitalisation) throws DataAccessException;

@@ -499,8 +499,8 @@ class PetServiceTests {
 	@Transactional
 	void shouldFindHospitalisationsByPetIdStartDateNotNull() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		entityManager.flush();
+		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getStartDate()).isNotNull();
 	}
 
@@ -508,8 +508,8 @@ class PetServiceTests {
 	@Transactional
 	void shouldFindHospitalisationsByPetIdTotalPriceNotNull() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		entityManager.flush();
+		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getTotalPrice()).isNotNull();
 	}
 
@@ -517,6 +517,7 @@ class PetServiceTests {
 	@Transactional
 	void shouldFindHospitalisationsByPetIdDiagnosisNotBlank() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
+		entityManager.flush();
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getDiagnosis()).isNotBlank();
 	}
