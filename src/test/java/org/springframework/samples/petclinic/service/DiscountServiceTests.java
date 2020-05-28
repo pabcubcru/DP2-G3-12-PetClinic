@@ -36,6 +36,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Discount;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * Integration test of the Service and the Repository layer.
@@ -70,6 +71,7 @@ import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=Replace.NONE)
+@DirtiesContext
 class DiscountServiceTests {
 
 	@Autowired

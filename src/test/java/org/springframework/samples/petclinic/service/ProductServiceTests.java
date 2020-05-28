@@ -38,6 +38,7 @@ import org.springframework.samples.petclinic.model.Discount;
 import org.springframework.samples.petclinic.model.Product;
 import org.springframework.samples.petclinic.model.Shop;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -73,6 +74,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=Replace.NONE)
+@DirtiesContext
 class ProductServiceTests {
 
 	@Autowired

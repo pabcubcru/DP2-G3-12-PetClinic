@@ -47,6 +47,7 @@ import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.exceptions.DuplicatedPetNameException;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -82,6 +83,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=Replace.NONE)
+@DirtiesContext
 class PetServiceTests {
 	@Autowired
 	protected PetService petService;
