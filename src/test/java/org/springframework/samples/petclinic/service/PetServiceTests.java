@@ -464,7 +464,6 @@ class PetServiceTests {
 	@Transactional
 	void shouldFindStaysByPetIdCorrectNumberHospitalisations() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
-		entityManager.flush();
 		assertThat(hospitalisations.size()).isEqualTo(2);
 	}
 
@@ -473,7 +472,6 @@ class PetServiceTests {
 	void shouldFindHospitalisationsByPetIdPetNotNull() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		entityManager.flush();
 		assertThat(hospitArr[0].getPet()).isNotNull();
 	}
 
@@ -491,7 +489,6 @@ class PetServiceTests {
 	void shouldFindHospitalisationsHospitalisedByPetIdFinishDateNull() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		entityManager.flush();
 		assertThat(hospitArr[1].getHospitalisationStatus().getName().equals("HOSPITALISED"));
 		assertThat(hospitArr[1].getFinishDate()).isNull();
 	}
@@ -519,7 +516,6 @@ class PetServiceTests {
 	void shouldFindHospitalisationsByPetIdDiagnosisNotBlank() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		entityManager.flush();
 		assertThat(hospitArr[0].getDiagnosis()).isNotBlank();
 	}
 
@@ -528,7 +524,6 @@ class PetServiceTests {
 	void shouldFindHospitalisationsByPetIdTreatmentNotBlank() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		entityManager.flush();
 		assertThat(hospitArr[0].getTreatment()).isNotBlank();
 	}
 
@@ -537,7 +532,6 @@ class PetServiceTests {
 	void shouldFindHospitalisationsByPetIdEqualPetId() throws Exception {
 		Collection<Hospitalisation> hospitalisations = this.petService.findHospitalisationsByPetId(7);
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
-		entityManager.flush();
 		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
 	}
 	
