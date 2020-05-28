@@ -42,7 +42,7 @@ public interface SpringDataPetRepository extends PetRepository, Repository<Pet, 
 	@Query("SELECT pstatus FROM PetStatus pstatus ORDER BY pstatus.name")
 	List<PetStatus> findPetStatus() throws DataAccessException;
 	
-	@Query("SELECT p FROM Pet p LEFT JOIN FETCH p.owner o LEFT JOIN FETCH p.status st LEFT JOIN FETCH p.type t LEFT JOIN FETCH p.hospitalisations h LEFT JOIN FETCH p.stays s LEFT JOIN FETCH p.visits v LEFT JOIN FETCH h.hospitalisationStatus hs WHERE p.id=?1")
-	public Pet findPetById(int id);
+	@Query("SELECT p FROM Pet p LEFT JOIN FETCH p.hospitalisations h LEFT JOIN FETCH p.stays s LEFT JOIN FETCH p.visits v WHERE p.id=?1")
+	Pet findPetById(int id);
 
 }

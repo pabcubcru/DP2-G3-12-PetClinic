@@ -132,16 +132,16 @@ public class PetService {
 	@Transactional
 	public Stay findStayById(int id) throws DataAccessException {
 		return stayRepository.findById(id).orElse(null);
-		
 	}
-	@Transactional
+	
+	@Transactional(readOnly = true)
 	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) throws DataAccessException{
 		return hospitalisationRepository.findByPetId(petId);
 	}
 	
 	@Transactional
 	public Hospitalisation findHospitalisationById(int id) throws DataAccessException {
-		return hospitalisationRepository.findById(id).get();
+		return hospitalisationRepository.findById(id).orElse(null);
 	}
   
 	@Transactional(readOnly = true)

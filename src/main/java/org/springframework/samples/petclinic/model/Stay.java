@@ -21,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "stays")
 public class Stay extends BaseEntity {
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "pet_id")
 	private Pet			pet;
 
