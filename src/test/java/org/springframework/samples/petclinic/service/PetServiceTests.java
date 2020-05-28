@@ -85,7 +85,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=Replace.NONE)
-@DirtiesContext
 class PetServiceTests {
 	@Autowired
 	protected PetService petService;
@@ -99,6 +98,7 @@ class PetServiceTests {
 	@Test
 	void shouldFindPetWithCorrectId() {
 		Pet pet7 = this.petService.findPetById(7);
+		entityManager.flush();
 		assertThat(pet7.getName()).startsWith("Samantha");
 		assertThat(pet7.getOwner().getFirstName()).isEqualTo("Jean");
 
