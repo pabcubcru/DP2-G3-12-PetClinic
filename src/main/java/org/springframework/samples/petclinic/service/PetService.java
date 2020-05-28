@@ -138,6 +138,7 @@ public class PetService {
 	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) throws DataAccessException{
 		return hospitalisationRepository.findByPetId(petId);
 	}
+	
 	@Transactional
 	public Hospitalisation findHospitalisationById(int id) throws DataAccessException {
 		return hospitalisationRepository.findById(id).get();
