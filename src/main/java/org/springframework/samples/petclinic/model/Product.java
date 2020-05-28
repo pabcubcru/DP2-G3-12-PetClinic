@@ -15,10 +15,13 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
 @Table(name = "products")
+@Getter
+@Setter
 public class Product extends BaseEntity {
 
 	@NotBlank
@@ -39,7 +42,7 @@ public class Product extends BaseEntity {
 	@JoinColumn(name = "discount_id")
 	private Discount	discount;
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(name = "shop_id")
 	private Shop		shop;
 

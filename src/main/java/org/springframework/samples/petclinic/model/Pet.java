@@ -150,7 +150,6 @@ public class Pet extends NamedEntity {
 
 	public List<Hospitalisation> getHospitalisations() {
 		List<Hospitalisation> sortedHospitalisations = new ArrayList<>(getHospitalisationsInternal());
-		PropertyComparator.sort(sortedHospitalisations, new MutableSortDefinition("date", false, false));
 		return Collections.unmodifiableList(sortedHospitalisations);
 	}
 
@@ -176,7 +175,6 @@ public class Pet extends NamedEntity {
 
 	public List<Stay> getStays() {
 		List<Stay> sortedStays = new ArrayList<>(getStaysInternal());
-		PropertyComparator.sort(sortedStays, new MutableSortDefinition("date", false, false));
 		return Collections.unmodifiableList(sortedStays);
 	}
 
