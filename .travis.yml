@@ -6,3 +6,6 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE petclinic;'
 script: mvn test -Dspring.profiles.active=mysql-travis
+spring:
+  cache:
+    type: "none"
