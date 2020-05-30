@@ -33,18 +33,18 @@ public class CreateOrderUITest {
 		driver.get("http://localhost:" + port);
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
+	
+	@Test
+	public void testCreateNewOrderProductNumberIs0() throws Exception {
+		loginAsAdmin();
+		fillCreateOrderFormProductNumberIs0AndCheckErrorMessage();
+	}
 
 	@Test
 	public void testCreateNewOrderSuccess() throws Exception {
 		loginAsAdmin();
 		fillCreateOrderFormSuccess();
 		checkOrderHasBeenCreatedSuccess();
-	}
-
-	@Test
-	public void testCreateNewOrderProductNumberIs0() throws Exception {
-		loginAsAdmin();
-		fillCreateOrderFormProductNumberIs0AndCheckErrorMessage();
 	}
 
 	@Given("Un administrador con id=1 que quiere hacer un pedido")
