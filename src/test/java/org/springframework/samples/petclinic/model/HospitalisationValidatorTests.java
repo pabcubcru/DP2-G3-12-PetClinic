@@ -46,7 +46,6 @@ public class HospitalisationValidatorTests {
 
 	}
 
-
 	@Test
 	void shouldNotValidateWhenTreatmentNull() {
 		LocaleContextHolder.setLocale(Locale.ENGLISH);

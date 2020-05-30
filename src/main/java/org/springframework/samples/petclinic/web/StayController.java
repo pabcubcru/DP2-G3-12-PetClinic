@@ -64,7 +64,6 @@ public class StayController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	// Spring MVC calls method loadPetWithStay(...) before initNewStayForm is called
 	@GetMapping(value = "/owners/*/pets/{petId}/stays/new")
 	public String initNewStayForm(final Map<String, Object> model) {
 		model.put("stay", new Stay());
@@ -73,23 +72,37 @@ public class StayController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid final Stay stay, final BindingResult result, final Pet pet) {
-		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
-		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
-			if (stay.getStartdate().isBefore(LocalDate.now())) {
-				result.rejectValue("startdate", "dateStartDateIsPast", "The start date must be present or future");
-			}
-			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
-			} else if (Validaciones.validacionReserva(stay, stays)) {
-				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
-			}
-		}
+		rejectValues(stay, result, pet.getId());
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
 			pet.addStay(stay);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
+		}
+	}
+
+	private void rejectValues(Stay stay, BindingResult result, int petId) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(petId);
+		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			rejectValueIfStartDateIsBeforeNow(stay.getStartdate(), result);
+			rejectValuesIfFinishDateIsBeforeStartDateOrExistAnotherBookInSameDate(stay, result, stays);
+		}
+	}
+
+	private void rejectValueIfStartDateIsBeforeNow(LocalDate startDate, BindingResult result) {
+		if (startDate.isBefore(LocalDate.now())) {
+			result.rejectValue("startdate", "dateStartDateIsPast", "The start date must be present or future");
+		}
+	}
+
+	private void rejectValuesIfFinishDateIsBeforeStartDateOrExistAnotherBookInSameDate(Stay stay, BindingResult result,
+			Collection<Stay> stays) {
+		if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+			result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
+					"The finish date must be after than start date");
+		} else if (Validaciones.validacionReserva(stay, stays)) {
+			result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
 		}
 	}
 
