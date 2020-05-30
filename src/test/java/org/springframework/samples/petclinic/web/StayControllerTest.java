@@ -164,7 +164,7 @@ public class StayControllerTest {
 	@Test
 	void testProcessEditStayFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", TEST_PET_ID_2, TEST_STAY_ID_1).with(csrf())
-				.param("startdate", "2020/06/06").param("finishdate", "2020/06/08").param("price", "15.0")
+				.param("startdate", "2020/07/06").param("finishdate", "2020/07/08").param("price", "15.0")
 				.param("id", "1").param("specialCares", "A lot of special cares"))
 				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
 	}

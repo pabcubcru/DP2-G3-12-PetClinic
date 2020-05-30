@@ -82,8 +82,7 @@ public class HospitalisationController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit")
 	public String processEditHospitalisationForm(@Valid Hospitalisation hospitalisation, BindingResult result, Pet pet,
-			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId)
-			throws DataAccessException, DuplicatedPetNameException {
+			Map<String, Object> model, @PathVariable("hospitalisationId") int hospitalisationId) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {

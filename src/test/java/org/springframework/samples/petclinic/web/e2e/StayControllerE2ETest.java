@@ -110,7 +110,7 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessEditStayFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/6/pets/{petId}/stays/{stayId}/edit", 7, 4).with(csrf())
-				.param("startdate", "2020/06/20").param("finishdate", "2020/06/25").param("price", "15.0")
+				.param("startdate", "2020/07/20").param("finishdate", "2020/07/25").param("price", "15.0")
 				.param("specialCares", "A lot of special cares")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
