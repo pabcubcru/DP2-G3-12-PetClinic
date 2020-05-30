@@ -1,9 +1,7 @@
 package org.springframework.samples.petclinic.util;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.samples.petclinic.model.Stay;
 
@@ -13,29 +11,31 @@ public class Validaciones {
 		new Validaciones();
 	}
 
-	public static boolean validacionReserva(Stay stay, Collection<Stay> stays) {
-		boolean ocupado = false;
-		List<Stay> staysOfAPet = new ArrayList<>(stays);
+	public static boolean validacionReserva(Stay newStay, Collection<Stay> stays) {
+		boolean res = false;
 
-		for (int i = 0; i < stays.size(); i++) {
-			if (ocupado) {
+		for (Stay oldStay : stays) {
+			LocalDate oldStayStartDate = oldStay.getStartdate();
+			LocalDate oldStayFinishDate = oldStay.getFinishdate();
+			LocalDate newStayStartDate = newStay.getStartdate();
+			LocalDate newStayFinishDate = newStay.getFinishdate();
+
+			boolean b1 = newStayStartDate.isBefore(oldStayStartDate);
+			boolean b2 = newStayFinishDate.isBefore(oldStayStartDate);
+			boolean b3 = newStayStartDate.isAfter(oldStayFinishDate);
+			boolean b4 = newStayFinishDate.isAfter(oldStayFinishDate);
+
+			boolean newStayStartDateAndFinishDateIsBeforeOldStayStartDate = b1 && b2;
+			boolean newStayStartDateAndFinishDateIsAfterOldStayFinishDate = b3 && b4;
+
+			boolean isBusy = !(newStayStartDateAndFinishDateIsBeforeOldStayStartDate
+					|| newStayStartDateAndFinishDateIsAfterOldStayFinishDate);
+
+			if (isBusy) {
+				res = true;
 				break;
-			} else {
-				LocalDate actualStartDate = staysOfAPet.get(i).getStartdate();
-				LocalDate actualFinishDate = staysOfAPet.get(i).getFinishdate();
-				LocalDate newStartDate = stay.getStartdate();
-				LocalDate newFinishDate = stay.getFinishdate();
-
-				boolean b1 = newStartDate.isBefore(actualStartDate);
-				boolean b2 = newFinishDate.isBefore(actualStartDate);
-				boolean b3 = newStartDate.isAfter(actualFinishDate);
-				boolean b4 = newFinishDate.isAfter(actualFinishDate);
-
-				if (!((b1 && b2) || b3 && b4)) {
-					ocupado = true;
-				}
 			}
 		}
-		return ocupado;
+		return res;
 	}
 }

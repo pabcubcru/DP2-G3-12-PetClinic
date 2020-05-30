@@ -57,27 +57,17 @@ public class StayController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	// Spring MVC calls method loadPetWithStay(...) before initNewStayForm is called
 	@GetMapping(value = "/owners/*/pets/{petId}/stays/new")
 	public String initNewStayForm(Map<String, Object> model) {
 		model.put("stay", new Stay());
 		return "pets/createOrUpdateStayForm";
 	}
+	
+	// REFACTORIZACIÓN PABLO
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/new")
 	public String processNewStayForm(@Valid Stay stay, BindingResult result, Pet pet) {
-		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
-		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
-			if (stay.getStartdate().isBefore(LocalDate.now())) {
-				result.rejectValue("startdate", "dateStartDateIsPast", "The start date must be present or future");
-			}
-			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
-						"The finish date must be after than start date");
-			} else if (Validaciones.validacionReserva(stay, stays)) {
-				result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
-			}
-		}
+		rejectValuesNew(stay, result, pet.getId());
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
@@ -87,6 +77,36 @@ public class StayController {
 		}
 	}
 
+	private void rejectValuesNew(Stay stay, BindingResult result, int petId) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(petId);
+		if (stay.getStartdate() != null && stay.getFinishdate() != null) {
+			rejectValueIfStartDateIsBeforeNow(stay.getStartdate(), result);
+			rejectValuesIfFinishDateIsBeforeStartDateOrExistAnotherBookInSameDate(stay, result, stays);
+		}
+	}
+
+	private void rejectValueIfStartDateIsBeforeNow(LocalDate startDate, BindingResult result) {
+		if (startDate.isBefore(LocalDate.now())) {
+			result.rejectValue("startdate", "dateStartDateIsPast", "The start date must be present or future");
+		}
+	}
+
+	private void rejectValuesIfFinishDateIsBeforeStartDateOrExistAnotherBookInSameDate(Stay stay, BindingResult result,
+			Collection<Stay> stays) {
+		if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+			result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
+					"The finish date must be after than start date");
+		} else checkValidacionReserva(stay, stays, result);
+	}
+	
+	private void checkValidacionReserva(Stay stay, Collection<Stay> stays, BindingResult result) {
+		if (Validaciones.validacionReserva(stay, stays)) {
+			result.rejectValue("finishdate", "duplicatedStay", "There is already a current booking for this pet");
+		}
+	}
+	
+	// FIN REFACTORIZACIÓN PABLO
+
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
 	public String initEditStayForm(Pet pet, Map<String, Object> model, @PathVariable("stayId") int stayId) {
 		Stay stay = petService.findStayById(stayId);
@@ -94,34 +114,57 @@ public class StayController {
 		return "pets/createOrUpdateStayForm";
 	}
 
+	// REFACTORIZACION CONCEPCIÓN
+
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
-	public String processEditStayForm(@Valid Stay stay, BindingResult result, Pet pet, Map<String, Object> model,
-			@PathVariable("stayId") int stayId) {
-		Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
-		if (!result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate")) {
-			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
-						"The finish date must be after than start date");
-			} else {
-				Stay s = this.petService.findStayById(stayId);
-				stays.remove(s);
-				if (!s.getStartdate().equals(stay.getStartdate()) || !s.getFinishdate().equals(stay.getFinishdate())) {
-					if (Validaciones.validacionReserva(stay, stays)) {
-						result.rejectValue("finishdate", "duplicatedStay",
-								"There is already a current booking for this pet");
-					}
-				}
-			}
-		}
+	public String processEditStayForm(@Valid final Stay stay, BindingResult result, final Pet pet,
+			@PathVariable("stayId") final int stayId) {
+		stay.setId(stayId);
+		rejectValuesEdit(stay, result, pet.getId());
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
-			stay.setId(stayId);
 			stay.setPet(pet);
 			this.petService.saveStay(stay);
 			return "redirect:/owners/{ownerId}";
 		}
 	}
+
+	private void rejectValuesEdit(Stay stay, BindingResult result, int petId) {
+		Collection<Stay> stays = this.petService.findStaysByPetId(petId);
+		if (startDateAndFinishDateHasNotErrors(result)) {
+			rejectValuesIfFinishDateIsBeforeFinishDateOrIfDuplicatedStay(stay, result, stays);
+		}
+	}
+
+	private boolean startDateAndFinishDateHasNotErrors(BindingResult result) {
+		return !result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate");
+	}
+
+	private void rejectValuesIfFinishDateIsBeforeFinishDateOrIfDuplicatedStay(Stay stay, BindingResult result,
+			Collection<Stay> stays) {
+		if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+			result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
+					"The finish date must be after than start date");
+		} else {
+			rejectValuesIfDuplicatedStay(stay, result, stays);
+		}
+	}
+
+	private void rejectValuesIfDuplicatedStay(Stay stay, BindingResult result, Collection<Stay> stays) {
+		Stay oldStay = this.petService.findStayById(stay.getId());
+		stays.remove(oldStay);
+		if (checkIfDatesHasNotChanged(stay, oldStay)) {
+			checkValidacionReserva(stay, stays, result);
+		}
+	}
+
+	private boolean checkIfDatesHasNotChanged(Stay newStay, Stay oldStay) {
+		return !oldStay.getStartdate().equals(newStay.getStartdate())
+				|| !oldStay.getFinishdate().equals(newStay.getFinishdate());
+	}
+
+	// FIN REFACTORIZACION CONCEPCIÓN
 
 	@GetMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/end")
 	public String initEndStayForm(@PathVariable("stayId") int stayId) {
