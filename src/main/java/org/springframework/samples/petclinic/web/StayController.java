@@ -102,23 +102,7 @@ public class StayController {
 
 	@PostMapping(value = "/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit")
 	public String processEditStayForm(@Valid final Stay stay, final BindingResult result, final Pet pet, final Map<String, Object> model, @PathVariable("stayId") final int stayId) {
-		this.rejectValues(stay, result, pet.getId());
-//				Collection<Stay> stays = this.petService.findStaysByPetId(pet.getId());
-//				if (!result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate")) {
-//					if (stay.getFinishdate().isBefore(stay.getStartdate())) {
-//						result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate",
-//								"The finish date must be after than start date");
-//					} else {
-//						Stay s = this.petService.findStayById(stayId);
-//						stays.remove(s);
-//						if (!s.getStartdate().equals(stay.getStartdate()) || !s.getFinishdate().equals(stay.getFinishdate())) {
-//							if (Validaciones.validacionReserva(stay, stays)) {
-//								result.rejectValue("finishdate", "duplicatedStay",
-//										"There is already a current booking for this pet");
-//							}
-//						}
-//					}
-//				}
+		rejectValuesEdit(stay, result, pet.getId());
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateStayForm";
 		} else {
@@ -129,12 +113,15 @@ public class StayController {
 		}
 	}
 
-	private void rejectValues(final Stay stay, final BindingResult result, final int petId) {
+	private void rejectValuesEdit(final Stay stay, final BindingResult result, final int petId) {
 		Collection<Stay> stays = this.petService.findStaysByPetId(petId);
 		if (!result.hasFieldErrors("startdate") && !result.hasFieldErrors("finishdate")) {
-			rejectValuesIfFinishDateIsBeforeFinishDate(stay, result);
-		} else {
-			rejectValuesIfDuplicatedStay(stay, result, stays);
+			if (stay.getFinishdate().isBefore(stay.getStartdate())) {
+				result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate", "The finish date must be after than start date");
+			} else {
+				rejectValuesIfDuplicatedStay(stay, result, stays);
+			}
+
 		}
 	}
 
