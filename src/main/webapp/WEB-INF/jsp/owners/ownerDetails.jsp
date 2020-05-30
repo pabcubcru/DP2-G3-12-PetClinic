@@ -104,17 +104,16 @@
 								<td><c:out value="${stay.specialCares}" /></td>
 								<td><c:out value="${stay.price}" /></td>
 								<sec:authorize access="hasAuthority('admin')">
-								<c:if test="${!stay.pastStay()}">
-								<td><spring:url
+								<td><c:if test="${!stay.pastStay()}">
+								<spring:url
 										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
 										var="stayUrl">
 										<spring:param name="ownerId" value="${owner.id}" />
 										<spring:param name="petId" value="${pet.id}" />
 										<spring:param name="stayId" value="${stay.id}" />
-									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update</a></td>
-								</c:if>
-								<td>
-								<c:if test="${stay.activeStay()}">
+									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update</a>
+								</c:if></td>
+								<td><c:if test="${stay.activeStay()}">
            							 <spring:url
 										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/end"
 										var="stayUrl">
@@ -122,7 +121,7 @@
 										<spring:param name="petId" value="${pet.id}" />
 										<spring:param name="stayId" value="${stay.id}" />
                       				</spring:url> <a href="${fn:escapeXml(stayUrl)}">End Stay</a>
-           						</c:if>
+           						</c:if></td>
            						<td><c:if test="${!stay.activeStay()}">
 									<spring:url
 											value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/delete"
@@ -132,9 +131,7 @@
 											<spring:param name="stayId" value="${stay.id}" />
 										</spring:url> <a href="${fn:escapeXml(stayUrl)}">Remove</a>
 										</c:if></td>
-           						
            						</sec:authorize>
-           						</td>
 							</tr>
 						</c:forEach>
 						<thead>
