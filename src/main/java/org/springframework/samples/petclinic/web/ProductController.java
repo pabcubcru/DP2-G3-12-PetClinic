@@ -78,15 +78,27 @@ public class ProductController {
 	public String deleteProduct(final Map<String, Object> model, @PathVariable("productId") final int productId,
 			final Shop shop) {
 		Product product = this.productService.findProductById(productId);
-		if (this.orderService.countOrdersByProductId(productId) == 0) {
-			shop.deleteProduct(product);
-			this.productService.deleteProduct(product);
-			if (product.getDiscount() != null) {
-				this.discountService.deleteDiscount(product.getDiscount().getId());
-			}
+		if (productWithoutOrders(productId, shop, product)) {
 			return "redirect:/shops/" + shop.getId();
 		} else {
 			return "/exception";
+		}
+	}
+
+	private boolean productWithoutOrders(int productId, Shop shop, Product product) {
+		if (this.orderService.countOrdersByProductId(productId) == 0) {
+			shop.deleteProduct(product);
+			this.productService.deleteProduct(product);
+			productWithoutDiscount(product);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void productWithoutDiscount(Product product) {
+		if (product.getDiscount() != null) {
+			this.discountService.deleteDiscount(product.getDiscount().getId());
 		}
 	}
 
@@ -110,7 +122,8 @@ public class ProductController {
 	}
 
 	@GetMapping(value = "/products/{productId}/edit")
-	public String initUpdateProductForm(@PathVariable("productId") final int productId, final Map<String, Object> model) {
+	public String initUpdateProductForm(@PathVariable("productId") final int productId,
+			final Map<String, Object> model) {
 		Product product = this.productService.findProductById(productId);
 		model.put("product", product);
 		return "products/createOrUpdateProductForm";
