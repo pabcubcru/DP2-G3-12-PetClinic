@@ -114,7 +114,7 @@ public class PetService {
 	}
 
 	@Transactional(rollbackFor = DuplicatedPetNameException.class)
-	@CacheEvict(cacheNames = "ownerById", allEntries = true)
+	@CacheEvict(cacheNames = {"ownerById", "ownerByLastName"}, allEntries = true)
 	public void savePet(Pet pet) throws DataAccessException, DuplicatedPetNameException {
 			Pet otherPet=pet.getOwner().getPetwithIdDifferent(pet.getName(), pet.getId());
             if (StringUtils.hasLength(pet.getName()) &&  (otherPet!= null && otherPet.getId()!=pet.getId())) {            	
@@ -124,7 +124,7 @@ public class PetService {
 	}
 	
 	@Transactional
-	@CacheEvict(cacheNames = "ownerById", allEntries = true)
+	@CacheEvict(cacheNames = {"ownerById", "ownerByLastName"}, allEntries = true)
 	public void deletePet(Pet pet) throws DataAccessException {
 		petRepository.delete(pet);
 	}
