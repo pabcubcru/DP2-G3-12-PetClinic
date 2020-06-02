@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.service;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Hospitalisation;
 import org.springframework.samples.petclinic.model.HospitalisationStatus;
@@ -73,31 +74,37 @@ public class PetService {
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void saveVisit(Visit visit) throws DataAccessException {
 		visitRepository.save(visit);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void deleteVisit(Visit visit) throws DataAccessException {
 		visitRepository.delete(visit);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void saveStay(Stay stay) throws DataAccessException {
 		stayRepository.save(stay);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void deleteStay(Stay stay) throws DataAccessException {
 		stayRepository.delete(stay);
 	}
 
 	@Transactional  
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void saveHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
 		hospitalisationRepository.save(hospitalisation);
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void deleteHospitalisation(Hospitalisation hospitalisation) throws DataAccessException {
 		hospitalisationRepository.delete(hospitalisation);
 	}
@@ -107,6 +114,7 @@ public class PetService {
 	}
 
 	@Transactional(rollbackFor = DuplicatedPetNameException.class)
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void savePet(Pet pet) throws DataAccessException, DuplicatedPetNameException {
 			Pet otherPet=pet.getOwner().getPetwithIdDifferent(pet.getName(), pet.getId());
             if (StringUtils.hasLength(pet.getName()) &&  (otherPet!= null && otherPet.getId()!=pet.getId())) {            	
@@ -116,6 +124,7 @@ public class PetService {
 	}
 	
 	@Transactional
+	@CacheEvict(cacheNames = "ownerById", allEntries = true)
 	public void deletePet(Pet pet) throws DataAccessException {
 		petRepository.delete(pet);
 	}
@@ -132,7 +141,6 @@ public class PetService {
 	
 	public Stay findStayById(int id) throws DataAccessException {
 		return stayRepository.findById(id).orElse(null);
-		
 	}
     
 	public Collection<Hospitalisation> findHospitalisationsByPetId(int petId) throws DataAccessException{
