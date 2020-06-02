@@ -58,9 +58,8 @@ public class OwnerService {
 	}	
 
 	@Transactional(readOnly = true)
-	@Cacheable("ownerById")
-	public Owner findOwnerById(Integer id) throws DataAccessException {
-		return ownerRepository.findById(id);
+	public Owner findOwnerById(int id) throws DataAccessException {
+		return ownerRepository.OwnerWithCollections(id);
 	}
 
 	@Transactional(readOnly = true)
