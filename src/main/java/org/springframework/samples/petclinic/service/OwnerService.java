@@ -64,12 +64,13 @@ public class OwnerService {
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable("ownerByLastName")
 	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
 		return ownerRepository.findByLastName(lastName);
 	}
 
 	@Transactional
-	@CacheEvict(cacheNames = "ownerById", allEntries = true)
+	@CacheEvict(cacheNames = {"ownerById", "ownerByLastName"}, allEntries = true)
 	public void saveOwner(Owner owner) throws DataAccessException {
 		//creating owner
 		ownerRepository.save(owner);		

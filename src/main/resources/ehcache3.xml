@@ -31,5 +31,9 @@
 	    <cache alias="ownerById" uses-template="default">
 	        <key-type>java.lang.Integer</key-type>
 	        <value-type>org.springframework.samples.petclinic.model.Owner</value-type>
-	    </cache>  
+	    </cache>
+	    <cache alias="ownerByLastName" uses-template="default">
+            <key-type>java.lang.String</key-type>
+            <value-type>java.util.Collection</value-type>
+        </cache>  
     </config>
