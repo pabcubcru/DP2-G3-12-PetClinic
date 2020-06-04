@@ -164,14 +164,15 @@ public class PetController {
 	@GetMapping(value = "/pets/{petId}/delete")
 	public String initDeleteForm(@PathVariable("petId") int petId, Owner owner) {
 		Pet pet = this.petService.findPetById(petId);
-
-		if (pet.getStatus().getName().equals("HEALTHY")) {
-			owner.removePet(pet);
-			this.petService.deletePet(pet);
-			return "redirect:/owners/{ownerId}";
-		}else {
-			return "/exception";
+		String res = "/exception";
+		if (res != null) {
+			if (pet.getStatus().getName().equals("HEALTHY")) {
+				owner.removePet(pet);
+				this.petService.deletePet(pet);
+				res = "redirect:/owners/{ownerId}";
+			} 
 		}
+		return res;
 	}
 
 }
