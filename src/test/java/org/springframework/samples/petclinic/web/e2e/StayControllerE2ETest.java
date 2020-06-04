@@ -35,6 +35,7 @@ public class StayControllerE2ETest {
 	private static final int TEST_STAY_ID_4 = 4;
 	private static final int TEST_STAY_ID_5 = 5;
 	private static final int TEST_STAY_ID_7 = 7;
+	private static final int TEST_STAY_ID_8 = 8;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -52,7 +53,7 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessNewStayFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf())
-				.param("startdate", "2020/06/06").param("finishdate", "2020/06/08").param("price", "15.0")
+				.param("startdate", "2020/07/06").param("finishdate", "2020/07/08").param("price", "15.0")
 				.param("specialCares", "A lot of special cares")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
@@ -61,8 +62,8 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessNewStayFormHasErrorsFinishDateBeforeStartDateAndPriceNull() throws Exception {
 		mockMvc.perform(
-				post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/06/06")
-						.param("finishdate", "2020/06/04").param("specialCares", "A lot of special cares"))
+				post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf()).param("startdate", "2020/07/06")
+						.param("finishdate", "2020/07/04").param("specialCares", "A lot of special cares"))
 				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrors("stay", "price"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate"))
@@ -73,7 +74,7 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessNewStayFormHasErrorsStartDateInPast() throws Exception {
 		mockMvc.perform(post("/owners/1/pets/{petId}/stays/new", TEST_PET_ID_1).with(csrf())
-				.param("startdate", "2020/03/06").param("price", "15.0").param("finishdate", "2020/06/04")
+				.param("startdate", "2020/03/06").param("price", "15.0").param("finishdate", "2020/07/04")
 				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "startdate", "dateStartDateIsPast"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
@@ -82,8 +83,8 @@ public class StayControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessNewStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
-		mockMvc.perform(post("/owners/6/pets/{petId}/stays/new", 7).with(csrf())
-				.param("startdate", "2020/05/10").param("finishdate", "2020/05/24").param("price", "50.0")
+		mockMvc.perform(post("/owners/6/pets/{petId}/stays/new", 7).with(csrf()).param("startdate", "2020/08/10")
+				.param("finishdate", "2020/08/24").param("price", "50.0")
 				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
@@ -110,16 +111,17 @@ public class StayControllerE2ETest {
 	void testProcessEditStayFormSuccess() throws Exception {
 		mockMvc.perform(post("/owners/6/pets/{petId}/stays/{stayId}/edit", 7, 4).with(csrf())
 				.param("startdate", "2020/06/20").param("finishdate", "2020/06/25").param("price", "15.0")
-				.param("specialCares", "A lot of special cares"))
-				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
+				.param("specialCares", "A lot of special cares")).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/owners/{ownerId}"));
 	}
 
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessEditStayFormHasErrors() throws Exception {
-		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", 1, 1).with(csrf())
-				.param("startdate", "2020/06/06").param("finishdate", "2020/05/04")
-				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
+		mockMvc.perform(
+				post("/owners/1/pets/{petId}/stays/{stayId}/edit", 1, 1).with(csrf()).param("startdate", "2020/07/06")
+						.param("finishdate", "2020/07/04").param("specialCares", "A lot of special cares"))
+				.andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrors("stay", "price"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "dateStartDateAfterDateFinishDate"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
@@ -129,9 +131,8 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessEditStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
 		mockMvc.perform(post("/owners/7/pets/{petId}/stays/{stayId}/edit", 7, 4).with(csrf())
-				.param("startdate", "2020/07/22").param("finishdate", "2020/08/27")
-				.param("price", "50.0").param("specialCares", "A lot of special cares"))
-				.andExpect(model().attributeHasErrors("stay"))
+				.param("startdate", "2020/07/22").param("finishdate", "2020/08/27").param("price", "50.0")
+				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
 				.andExpect(model().attributeHasFieldErrorCode("stay", "finishdate", "duplicatedStay"))
 				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
@@ -139,10 +140,9 @@ public class StayControllerE2ETest {
 	@WithMockUser(username = "admin1", authorities = "admin")
 	@Test
 	void testProcessEditStayFormHasErrorsDatesNull() throws Exception {
-		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", 1, 1).with(csrf())
-				.param("price", "50.0").param("specialCares", "A lot of special cares"))
-				.andExpect(model().attributeHasErrors("stay")).andExpect(status().isOk())
-				.andExpect(view().name("pets/createOrUpdateStayForm"));
+		mockMvc.perform(post("/owners/1/pets/{petId}/stays/{stayId}/edit", 1, 1).with(csrf()).param("price", "50.0")
+				.param("specialCares", "A lot of special cares")).andExpect(model().attributeHasErrors("stay"))
+				.andExpect(status().isOk()).andExpect(view().name("pets/createOrUpdateStayForm"));
 	}
 
 	// DAR POR FINALIZADA ESTANCIA
@@ -158,6 +158,22 @@ public class StayControllerE2ETest {
 	@Test
 	void testProcessEndStayError() throws Exception {
 		mockMvc.perform(get("/owners/10/pets/13/stays/{stayId}/end", TEST_STAY_ID_7)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
+	}
+
+	// DELETE STAY
+
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testProcessDeleteStaySuccess() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/3/stays/{stayId}/delete", TEST_STAY_ID_2))
+				.andExpect(status().is3xxRedirection()).andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+
+	@WithMockUser(username = "admin1", authorities = "admin")
+	@Test
+	void testProcessDeleteStayError() throws Exception {
+		mockMvc.perform(get("/owners/1/pets/13/stays/{stayId}/delete", TEST_STAY_ID_8)).andExpect(status().isOk())
 				.andExpect(view().name("/exception"));
 	}
 

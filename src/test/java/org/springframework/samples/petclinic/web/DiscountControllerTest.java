@@ -34,6 +34,7 @@ public class DiscountControllerTest {
 
 	private static final int TEST_PRODUCT_ID = 1;
 	private static final int TEST_DISCOUNT_ID = 1;
+	private static final int TEST_DISCOUNT_ID_2 = 2;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -45,9 +46,8 @@ public class DiscountControllerTest {
 	private ProductService productService;
 	
 	private Discount testDiscount;
+	private Discount testDiscount2;
 	
-	
-
 	@BeforeEach
 	void setup() {
 		testDiscount = new Discount();
@@ -55,8 +55,19 @@ public class DiscountControllerTest {
 		testDiscount.setStartDate(LocalDate.now());
 		testDiscount.setId(TEST_DISCOUNT_ID);
 		testDiscount.setPercentage(50.0);
+		
+		testDiscount2 = new Discount();
+		testDiscount2.setFinishDate(LocalDate.now().plusDays(2));
+		testDiscount2.setStartDate(LocalDate.now());
+		testDiscount2.setId(TEST_DISCOUNT_ID_2);
+		testDiscount2.setPercentage(10.0);
+		
+		Product product1 = new Product();
+		product1.setDiscount(testDiscount);
+		
 		given(this.discountService.findDiscountById(TEST_DISCOUNT_ID)).willReturn(this.testDiscount);
-		given(this.productService.findProductById(TEST_PRODUCT_ID)).willReturn(new Product());
+		given(this.discountService.findDiscountById(TEST_DISCOUNT_ID_2)).willReturn(this.testDiscount2);
+		given(this.productService.findProductById(TEST_PRODUCT_ID)).willReturn(product1);
 	}
 
 	@WithMockUser(value = "spring")
@@ -70,8 +81,8 @@ public class DiscountControllerTest {
 	@Test
 	void testProcessNewDiscountFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/new", TEST_PRODUCT_ID).with(csrf())
-				.param("startDate", "2020/05/02")
-				.param("finishDate", "2020/06/03")
+				.param("startDate", "2020/07/02")
+				.param("finishDate", "2020/09/03")
 				.param("percentage", "20.0")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
 	}
@@ -80,7 +91,7 @@ public class DiscountControllerTest {
 	@Test
 	void testProcessNewDiscountFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/new", TEST_PRODUCT_ID).with(csrf())
-				.param("startDate", "2020/05/06").param("finishDate", "2020/05/01"))
+				.param("startDate", "2020/08/06").param("finishDate", "2020/08/01"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));
@@ -104,8 +115,8 @@ public class DiscountControllerTest {
 	@Test
 	void testProcessEditDiscountFormSuccess() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID, TEST_DISCOUNT_ID).with(csrf())
-				.param("startDate", "2020/05/02")
-				.param("finishDate", "2020/06/03")
+				.param("startDate", "2020/08/02")
+				.param("finishDate", "2020/09/03")
 				.param("percentage", "20.0").param("id", "1"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
@@ -115,10 +126,24 @@ public class DiscountControllerTest {
 	@Test
 	void testProcessEditDiscountFormHasErrors() throws Exception {
 		mockMvc.perform(post("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID, TEST_DISCOUNT_ID).with(csrf())
-				.param("startDate", "2020/05/06")
-				.param("finishDate", "2020/05/01").param("id", "1"))
+				.param("startDate", "2020/07/06")
+				.param("finishDate", "2020/07/01").param("id", "1"))
 				.andExpect(model().attributeHasErrors("discount")).andExpect(model().attributeHasFieldErrors("discount", "percentage"))
 				.andExpect(model().attributeHasFieldErrorCode("discount", "finishDate", "wrongDate")).andExpect(status().isOk())
 				.andExpect(view().name("discounts/createOrUpdateDiscountForm"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeleteDiscountSuccess() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", TEST_PRODUCT_ID, TEST_DISCOUNT_ID)).andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/shops/1/products/{productId}"));
+	}
+	
+	@WithMockUser(value = "spring")
+	@Test
+	void testDeleteDiscountErrorProductDiscountNotEqual() throws Exception {
+		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/delete", TEST_PRODUCT_ID, TEST_DISCOUNT_ID_2)).andExpect(status().isOk())
+				.andExpect(view().name("/exception"));
 	}
 }

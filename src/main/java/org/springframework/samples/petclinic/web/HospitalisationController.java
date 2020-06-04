@@ -64,8 +64,7 @@ public class HospitalisationController {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateHospitalisationForm";
 		} else {
-			pet.setStatus(
-					petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
+			pet.setStatus(petService.findPetStatus().stream().filter(s -> s.getName().equals("SICK")).findFirst().get());
 			pet.addHospitalisation(hospitalisation);
 			this.petService.saveHospitalisation(hospitalisation);
 			return "redirect:/owners/{ownerId}";

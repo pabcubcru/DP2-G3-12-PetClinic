@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -60,7 +61,7 @@ public class Owner extends Person {
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Set<Pet> pets;
 	
 	//
@@ -120,7 +121,6 @@ public class Owner extends Person {
 
 	public void addPet(Pet pet) {
 		getPetsInternal().add(pet);
-		pet.setOwner(this);
 	}
 	
 	public boolean removePet(Pet pet) {
@@ -138,7 +138,7 @@ public class Owner extends Person {
 	
 	public Pet getPetwithIdDifferent(String name,Integer id) {
 		name = name.toLowerCase();
-		for (Pet pet : getPetsInternal()) {
+		for (Pet pet : getPets()) {
 			String compName = pet.getName();
 			compName = compName.toLowerCase();
 			if (compName.equals(name) && pet.getId()!=id) {

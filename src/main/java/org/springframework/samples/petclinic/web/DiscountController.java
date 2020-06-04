@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -55,7 +56,7 @@ public class DiscountController {
 	@PostMapping(value = "/discounts/new")
 	public String processNewDiscountForm(@Valid Discount discount, BindingResult result, Product product,
 			@PathVariable("shopId") int shopId) {
-		if(discount.getFinishDate() != null && discount.getStartDate() != null) {
+		if (discount.getFinishDate() != null && discount.getStartDate() != null) {
 			if (discount.getFinishDate().isBefore(discount.getStartDate())) {
 				result.rejectValue("finishDate", "wrongDate", "Finish date must be after than start date");
 			}
@@ -73,6 +74,7 @@ public class DiscountController {
 	public String initEditDiscountForm(Map<String, Object> model, Product product,
 			@PathVariable("discountId") int discountId) {
 		Discount discount = discountService.findDiscountById(discountId);
+		discount.setStartDate(LocalDate.now());
 		model.put("discount", discount);
 		return "discounts/createOrUpdateDiscountForm";
 	}
@@ -92,6 +94,24 @@ public class DiscountController {
 			product.setDiscount(discount);
 			discountService.saveDiscount(discount);
 			return "redirect:/shops/" + shopId + "/products/{productId}";
+		}
+	}
+
+	@GetMapping("/discounts/{discountId}/delete")
+	public String processDeleteDiscount(@PathVariable("discountId") int discountId, Product product,
+			@PathVariable("shopId") int shopId) {
+		Discount discount = discountService.findDiscountById(discountId);
+		if (product.getDiscount() != null) {
+			if (product.getDiscount().equals(discount)) {
+				product.setDiscount(null);
+				productService.saveProduct(product);
+				discountService.deleteDiscount(discount);
+				return "redirect:/shops/" + shopId + "/products/{productId}";
+			} else {
+				return "/exception";
+			}
+		} else {
+			return "/exception";
 		}
 	}
 }

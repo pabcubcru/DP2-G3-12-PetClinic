@@ -10,18 +10,18 @@
 
 	<h2>Product Information</h2>
 
-
 	<table class="table table-striped">
 		<tr>
 			<th>Name</th>
 			<td><c:out value="${product.name}" /></td>
 		</tr>
 		<tr>
-			<th>Price <c:if test="${activeDiscount}">With Discount</c:if> (EUR)</th>
+			<th>Price <c:if test="${activeDiscount}">With Discount</c:if>
+				(EUR)
+			</th>
 			<td><c:if test="${activeDiscount}">
 					<c:out value="${priceWithDiscount}" />
-				</c:if>
-				<c:if test="${!activeDiscount}">
+				</c:if> <c:if test="${!activeDiscount}">
 					<c:out value="${product.price}" />
 				</c:if></td>
 		</tr>
@@ -29,6 +29,7 @@
 			<th>Stock</th>
 			<td><c:out value="${product.stock}" /></td>
 		</tr>
+		
 	</table>
 	<c:if test="${product.discount != null}">
 		<h2>Discount Information</h2>
@@ -39,18 +40,17 @@
 			</tr>
 			<tr>
 				<th>Start Date</th>
-				<td><petclinic:localDate
-						date="${product.discount.startDate}" pattern="yyyy/MM/dd" /></td>
+				<td><petclinic:localDate date="${product.discount.startDate}"
+						pattern="yyyy/MM/dd" /></td>
 			</tr>
 			<tr>
 				<th>Finish Date</th>
-				<td><petclinic:localDate
-						date="${product.discount.finishDate}" pattern="yyyy/MM/dd" /></td>
+				<td><petclinic:localDate date="${product.discount.finishDate}"
+						pattern="yyyy/MM/dd" /></td>
 			</tr>
 		</table>
 	</c:if>
 	<sec:authorize access="hasAuthority('admin')">
-    <a href="/shops/${product.shop.id}/products/${product.id}/edit" class="btn btn-default" >Update Product</a>
 		<c:if test="${product.discount == null}">
 			<a
 				href="/shops/${product.shop.id}/products/${product.id}/discounts/new"
@@ -60,7 +60,12 @@
 			<a
 				href="/shops/${product.shop.id}/products/${product.id}/discounts/${product.discount.id}/edit"
 				class="btn btn-default">Update Discount</a>
+			<a
+				href="/shops/${product.shop.id}/products/${product.id}/discounts/${product.discount.id}/delete"
+				class="btn btn-default">Delete Discount</a>
 		</c:if>
+		<a href="/shops/${product.shop.id}/products/${product.id}/edit"
+			class="btn btn-default">Update Product</a>
 		<c:if test="${canDeleteIt}">
 			<a href="/shops/${product.shop.id}/products/${product.id}/delete"
 				class="btn btn-default">Delete Product</a>

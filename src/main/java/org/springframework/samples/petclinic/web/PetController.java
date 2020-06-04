@@ -66,11 +66,6 @@ public class PetController {
 		return this.petService.findPetTypes();
 	}
 
-	@ModelAttribute("status")
-	public Collection<PetStatus> populatePetStatus() {
-		return this.petService.findPetStatus();
-	}
-
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") final int ownerId) {
 		return this.ownerService.findOwnerById(ownerId);
@@ -96,7 +91,7 @@ public class PetController {
 	@GetMapping(value = "/pets/new")
 	public String initCreationForm(final Owner owner, final ModelMap model) {
 		Pet pet = new Pet();
-		owner.addPet(pet);
+		pet.setOwner(owner);
 		model.put("pet", pet);
 		return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
@@ -104,16 +99,19 @@ public class PetController {
 	@PostMapping(value = "/pets/new")
 	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
 			final ModelMap model) {
-		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+		if (pet.getBirthDate() != null) {
+			if (pet.getBirthDate().isAfter(LocalDate.now())) {
+				result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+			}
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
 			try {
-				owner.addPet(pet);
+				pet.setOwner(owner);
 				this.petService.savePet(pet);
+				owner.addPet(pet);
 			} catch (DuplicatedPetNameException ex) {
 				result.rejectValue("name", "duplicate", "already exists");
 				return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
@@ -142,10 +140,13 @@ public class PetController {
 	@PostMapping(value = "/pets/{petId}/edit")
 	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner,
 			@PathVariable("petId") final int petId, final ModelMap model) {
-		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+		if (pet.getBirthDate() != null) {
+			if (pet.getBirthDate().isAfter(LocalDate.now())) {
+				result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+			}
 		}
 		if (result.hasErrors()) {
+			pet.setOwner(owner);
 			model.put("pet", pet);
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
@@ -164,14 +165,15 @@ public class PetController {
 	@GetMapping(value = "/pets/{petId}/delete")
 	public String initDeleteForm(@PathVariable("petId") int petId, Owner owner) {
 		Pet pet = this.petService.findPetById(petId);
-
-		if (pet.getStatus().getName().equals("HEALTHY")) {
-			owner.removePet(pet);
-			this.petService.deletePet(pet);
-			return "redirect:/owners/{ownerId}";
-		}else {
-			return "/exception";
+		String res = "/exception";
+		if (res != null) {
+			if (pet.getStatus().getName().equals("HEALTHY")) {
+				owner.removePet(pet);
+				this.petService.deletePet(pet);
+				res = "redirect:/owners/{ownerId}";
+			}
 		}
+		return res;
 	}
 
 }

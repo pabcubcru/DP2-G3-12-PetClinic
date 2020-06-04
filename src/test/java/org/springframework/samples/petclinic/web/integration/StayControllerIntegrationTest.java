@@ -120,7 +120,6 @@ public class StayControllerIntegrationTest {
 
 	@Test
 	void testProcessEditStayFormSuccess() throws Exception {
-		ModelMap model = new ModelMap();
 		Stay stay2 = new Stay();
 		stay2.setStartdate(LocalDate.of(2020, 11, 01));
 		stay2.setFinishdate(LocalDate.of(2020, 11, 20));
@@ -129,14 +128,13 @@ public class StayControllerIntegrationTest {
 		Pet pet = this.petService.findPetById(1);
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		int stayId = 1;
-		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
+		String view = stayController.processEditStayForm(stay2, result, pet, stayId);
 
 		assertEquals(view, "redirect:/owners/{ownerId}");
 	}
 
 	@Test
 	void testProcessEditStayFormHasErrors() throws Exception {
-		ModelMap model = new ModelMap();
 		Stay stay2 = new Stay();
 		stay2.setStartdate(LocalDate.of(2020, 11, 20));
 		stay2.setFinishdate(LocalDate.of(2020, 11, 01));
@@ -146,7 +144,7 @@ public class StayControllerIntegrationTest {
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		int stayId = 1;
 		result.rejectValue("finishdate", "dateStartDateAfterDateFinishDate");
-		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
+		String view = stayController.processEditStayForm(stay2, result, pet, stayId);
 
 		assertEquals(view, "pets/createOrUpdateStayForm");
 		assertEquals(result.getFieldErrorCount("finishdate"), 1);
@@ -154,7 +152,6 @@ public class StayControllerIntegrationTest {
 
 	@Test
 	void testProcessEditStayFormHasErrorsExistAnotherWithSamePeriod() throws Exception {
-		ModelMap model = new ModelMap();
 		Stay stay2 = new Stay();
 		stay2.setStartdate(LocalDate.of(2020, 10, 5));
 		stay2.setFinishdate(LocalDate.of(2020, 11, 01));
@@ -164,7 +161,7 @@ public class StayControllerIntegrationTest {
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		int stayId = 1;
 		result.rejectValue("finishdate", "duplicatedStay");
-		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
+		String view = stayController.processEditStayForm(stay2, result, pet, stayId);
 
 		assertEquals(view, "pets/createOrUpdateStayForm");
 		assertEquals(result.getFieldErrorCount("finishdate"), 1);
@@ -172,7 +169,6 @@ public class StayControllerIntegrationTest {
 
 	@Test
 	void testProcessEditStayFormHasErrorsDatesNull() throws Exception {
-		ModelMap model = new ModelMap();
 		Stay stay2 = new Stay();
 		stay2.setStartdate(LocalDate.of(2020, 12, 01));
 		stay2.setFinishdate(null);
@@ -182,7 +178,7 @@ public class StayControllerIntegrationTest {
 		BindingResult result = new MapBindingResult(Collections.emptyMap(), "");
 		int stayId = 1;
 		result.rejectValue("finishdate", "dateNull");
-		String view = stayController.processEditStayForm(stay2, result, pet, model, stayId);
+		String view = stayController.processEditStayForm(stay2, result, pet, stayId);
 
 		assertEquals(view, "pets/createOrUpdateStayForm");
 		assertEquals(result.getFieldErrorCount("finishdate"), 1);
@@ -205,6 +201,24 @@ public class StayControllerIntegrationTest {
 		String view = stayController.initEndStayForm(stay7.getId());
 		assertEquals(view, "/exception");
 
+	}
+	
+	// DELETE STAY
+	
+	@Test
+	void testProcessDeleteStaySuccess() throws Exception {
+		Stay stay2 = petService.findStayById(2);
+
+		String view = stayController.initDeleteStayForm(stay2.getPet(), stay2.getId());
+		assertEquals(view, "redirect:/owners/{ownerId}");
+	}
+	
+	@Test
+	void testProcessDeteleStayError() throws Exception {
+		Stay stay8 = petService.findStayById(8);
+
+		String view = stayController.initDeleteStayForm(stay8.getPet(), stay8.getId());
+		assertEquals(view, "/exception");
 	}
 
 

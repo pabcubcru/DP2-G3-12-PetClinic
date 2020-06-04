@@ -29,17 +29,19 @@
 			<td><c:out value="${owner.telephone}" /></td>
 		</tr>
 	</table>
+	<sec:authorize access="hasAuthority('admin')">
+		<spring:url value="{ownerId}/edit" var="editUrl">
+			<spring:param name="ownerId" value="${owner.id}" />
+		</spring:url>
+		<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit
+			Owner</a>
 
-	<spring:url value="{ownerId}/edit" var="editUrl">
-		<spring:param name="ownerId" value="${owner.id}" />
-	</spring:url>
-	<a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Owner</a>
-
-	<spring:url value="{ownerId}/pets/new" var="addUrl">
-		<spring:param name="ownerId" value="${owner.id}" />
-	</spring:url>
-	<a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a>
-
+		<spring:url value="{ownerId}/pets/new" var="addUrl">
+			<spring:param name="ownerId" value="${owner.id}" />
+		</spring:url>
+		<a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New
+			Pet</a>
+	</sec:authorize>
 	<br />
 	<br />
 	<h2>Pets, Visits, Stays and Hospitalisations</h2>
@@ -104,27 +106,37 @@
 								<td><c:out value="${stay.specialCares}" /></td>
 								<td><c:out value="${stay.price}" /></td>
 								<sec:authorize access="hasAuthority('admin')">
-								<c:if test="${!stay.pastStay()}">
-								<td><spring:url
-										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
-										var="stayUrl">
-										<spring:param name="ownerId" value="${owner.id}" />
-										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="stayId" value="${stay.id}" />
-									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Update</a></td>
-								</c:if>
-								<td>
-								<c:if test="${stay.activeStay()}">
-           							 <spring:url
-										value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/end"
-										var="stayUrl">
-										<spring:param name="ownerId" value="${owner.id}" />
-										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="stayId" value="${stay.id}" />
-                      				</spring:url> <a href="${fn:escapeXml(stayUrl)}">End Stay</a>
-           						</c:if>
-           						</sec:authorize>
-           						</td>
+									<td><c:if test="${!stay.pastStay()}">
+											<spring:url
+												value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/edit"
+												var="stayUrl">
+												<spring:param name="ownerId" value="${owner.id}" />
+												<spring:param name="petId" value="${pet.id}" />
+												<spring:param name="stayId" value="${stay.id}" />
+											</spring:url>
+											<a href="${fn:escapeXml(stayUrl)}">Update</a>
+										</c:if></td>
+									<td><c:if test="${stay.activeStay()}">
+											<spring:url
+												value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/end"
+												var="stayUrl">
+												<spring:param name="ownerId" value="${owner.id}" />
+												<spring:param name="petId" value="${pet.id}" />
+												<spring:param name="stayId" value="${stay.id}" />
+											</spring:url>
+											<a href="${fn:escapeXml(stayUrl)}">End Stay</a>
+										</c:if></td>
+									<td><c:if test="${!stay.activeStay()}">
+											<spring:url
+												value="/owners/{ownerId}/pets/{petId}/stays/{stayId}/delete"
+												var="stayUrl">
+												<spring:param name="ownerId" value="${owner.id}" />
+												<spring:param name="petId" value="${pet.id}" />
+												<spring:param name="stayId" value="${stay.id}" />
+											</spring:url>
+											<a href="${fn:escapeXml(stayUrl)}">Remove</a>
+										</c:if></td>
+								</sec:authorize>
 							</tr>
 						</c:forEach>
 						<thead>
@@ -143,77 +155,86 @@
 								<td></td>
 								<td><petclinic:localDate
 										date="${hospitalisation.startDate}" pattern="yyyy-MM-dd" /></td>
-								<td><c:if test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}"><petclinic:localDate
-										date="${hospitalisation.finishDate}" pattern="yyyy-MM-dd" /></c:if></td>
+								<td><c:if
+										test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}">
+										<petclinic:localDate date="${hospitalisation.finishDate}"
+											pattern="yyyy-MM-dd" />
+									</c:if></td>
 								<td><c:out value="${hospitalisation.diagnosis}" /></td>
 								<td><c:out value="${hospitalisation.treatment}" /></td>
 								<td><c:out value="${hospitalisation.hospitalisationStatus}" /></td>
 								<td><c:out value="${hospitalisation.totalPrice}" /></td>
 								<sec:authorize access="hasAuthority('admin')">
-								<c:if test="${hospitalisation.hospitalisationStatus == 'HOSPITALISED'}">
-								<td><spring:url
-										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
-										var="hospitaliationUrl">
-										<spring:param name="ownerId" value="${owner.id}" />
-										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
-									</spring:url> <a href="${fn:escapeXml(hospitaliationUrl)}">Update</a></td>
-								</c:if>
-									
-									<c:if test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}">
-								<td><spring:url
-										value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete"
-										var="hospitaliationDeleteUrl">
-										<spring:param name="ownerId" value="${owner.id}" />
-										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="hospitalisationId" value="${hospitalisation.id}" />
-									</spring:url> <a href="${fn:escapeXml(hospitaliationDeleteUrl)}">Remove</a></td>
+									<c:if
+										test="${hospitalisation.hospitalisationStatus == 'HOSPITALISED'}">
+										<td><spring:url
+												value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/edit"
+												var="hospitaliationUrl">
+												<spring:param name="ownerId" value="${owner.id}" />
+												<spring:param name="petId" value="${pet.id}" />
+												<spring:param name="hospitalisationId"
+													value="${hospitalisation.id}" />
+											</spring:url> <a href="${fn:escapeXml(hospitaliationUrl)}">Update</a></td>
+									</c:if>
+
+									<c:if
+										test="${hospitalisation.hospitalisationStatus == 'DISCHARGED'}">
+										<td><spring:url
+												value="/owners/{ownerId}/pets/{petId}/hospitalisations/{hospitalisationId}/delete"
+												var="hospitaliationDeleteUrl">
+												<spring:param name="ownerId" value="${owner.id}" />
+												<spring:param name="petId" value="${pet.id}" />
+												<spring:param name="hospitalisationId"
+													value="${hospitalisation.id}" />
+											</spring:url> <a href="${fn:escapeXml(hospitaliationDeleteUrl)}">Remove</a></td>
 									</c:if>
 								</sec:authorize>
 							</tr>
 						</c:forEach>
 						<tr>
-						<sec:authorize access="hasAuthority('admin')">
-						<td><spring:url value="/owners/{ownerId}/pets/{petId}/edit"
-									var="petUrl">
-									<spring:param name="ownerId" value="${owner.id}" />
-									<spring:param name="petId" value="${pet.id}" />
-								</spring:url> <a href="${fn:escapeXml(petUrl)}" class="btn btn-default">Edit Pet</a></td>
-							<c:if test="${pet.status == 'HEALTHY'}">
-								<td><spring:url
-										value="/owners/{ownerId}/pets/{petId}/delete" var="removeUrl">
-										<spring:param name="petId" value="${pet.id}" />
-										<spring:param name="ownerId" value="${owner.id}" />
-									</spring:url> <a href="${fn:escapeXml(removeUrl)}" class="btn btn-default">Remove Pet</a></td>
-							</c:if>
-							<td><spring:url
-									value="/owners/{ownerId}/pets/{petId}/visits/new"
-									var="visitUrl">
-									<spring:param name="ownerId" value="${owner.id}" />
-									<spring:param name="petId" value="${pet.id}" />
-								</spring:url> <a href="${fn:escapeXml(visitUrl)}">Add Visit</a></td>
-								<td><spring:url
-									value="/owners/{ownerId}/pets/{petId}/stays/new" var="stayUrl">
-									<spring:param name="ownerId" value="${owner.id}" />
-									<spring:param name="petId" value="${pet.id}" />
-								</spring:url> <a href="${fn:escapeXml(stayUrl)}">Add Stay</a></td>
-							<c:if test="${pet.status == 'HEALTHY'}">
-								<td><spring:url
-										value="/owners/{ownerId}/pets/{petId}/hospitalisations/new"
-										var="hospitalisationsUrl">
+							<sec:authorize access="hasAuthority('admin')">
+								<td><spring:url value="/owners/{ownerId}/pets/{petId}/edit"
+										var="petUrl">
 										<spring:param name="ownerId" value="${owner.id}" />
 										<spring:param name="petId" value="${pet.id}" />
-									</spring:url> <a href="${fn:escapeXml(hospitalisationsUrl)}">Hospitalise</a></td>
-							</c:if>
+									</spring:url> <a href="${fn:escapeXml(petUrl)}" class="btn btn-default">Edit
+										Pet</a></td>
+								<c:if test="${pet.status == 'HEALTHY'}">
+									<td><spring:url
+											value="/owners/{ownerId}/pets/{petId}/delete" var="removeUrl">
+											<spring:param name="petId" value="${pet.id}" />
+											<spring:param name="ownerId" value="${owner.id}" />
+										</spring:url> <a href="${fn:escapeXml(removeUrl)}" class="btn btn-default">Remove
+											Pet</a></td>
+								</c:if>
+								<td><spring:url
+										value="/owners/{ownerId}/pets/{petId}/visits/new"
+										var="visitUrl">
+										<spring:param name="ownerId" value="${owner.id}" />
+										<spring:param name="petId" value="${pet.id}" />
+									</spring:url> <a href="${fn:escapeXml(visitUrl)}">Add Visit</a></td>
+								<td><spring:url
+										value="/owners/{ownerId}/pets/{petId}/stays/new" var="stayUrl">
+										<spring:param name="ownerId" value="${owner.id}" />
+										<spring:param name="petId" value="${pet.id}" />
+									</spring:url> <a href="${fn:escapeXml(stayUrl)}">Add Stay</a></td>
+								<c:if test="${pet.status == 'HEALTHY'}">
+									<td><spring:url
+											value="/owners/{ownerId}/pets/{petId}/hospitalisations/new"
+											var="hospitalisationsUrl">
+											<spring:param name="ownerId" value="${owner.id}" />
+											<spring:param name="petId" value="${pet.id}" />
+										</spring:url> <a href="${fn:escapeXml(hospitalisationsUrl)}">Hospitalise</a></td>
+								</c:if>
 							</sec:authorize>
-							</tr>
-					</table>
-						<sec:authorize access="hasAuthority('admin')">
-							<c:if test="${pet.status == 'SICK'}">
+						</tr>
+					</table> <sec:authorize access="hasAuthority('admin')">
+						<c:if test="${pet.status == 'SICK'}">
 							<br />
-								<spring:message text="This pet can not be deleted because it is sick."></spring:message>
-							</c:if>
-						</sec:authorize>
+							<spring:message
+								text="This pet can not be deleted because it is sick."></spring:message>
+						</c:if>
+					</sec:authorize>
 				</td>
 			</tr>
 		</c:forEach>

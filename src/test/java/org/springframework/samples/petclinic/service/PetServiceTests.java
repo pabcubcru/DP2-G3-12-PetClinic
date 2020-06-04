@@ -128,14 +128,15 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
-		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
 		try {
+			pet.setOwner(owner6);
 			this.petService.savePet(pet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 		this.ownerService.saveOwner(owner6);
 
 		owner6 = this.ownerService.findOwnerById(6);
@@ -153,9 +154,11 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
+		
 		try {
+			pet.setOwner(owner6);
 			petService.savePet(pet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException e) {
 			// The pet already exists!
 			e.printStackTrace();
@@ -166,8 +169,9 @@ class PetServiceTests {
 		anotherPetWithTheSameName.setType(EntityUtils.getById(types, PetType.class, 1));
 		anotherPetWithTheSameName.setBirthDate(LocalDate.now().minusWeeks(2));
 		Assertions.assertThrows(DuplicatedPetNameException.class, () -> {
-			owner6.addPet(anotherPetWithTheSameName);
+			anotherPetWithTheSameName.setOwner(owner6);
 			petService.savePet(anotherPetWithTheSameName);
+			owner6.addPet(anotherPetWithTheSameName);
 		});
 	}
 
@@ -203,17 +207,20 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
 
 		Pet anotherPet = new Pet();
 		anotherPet.setName("waluigi");
 		anotherPet.setType(EntityUtils.getById(types, PetType.class, 1));
 		anotherPet.setBirthDate(LocalDate.now().minusWeeks(2));
-		owner6.addPet(anotherPet);
+		
 
 		try {
+			pet.setOwner(owner6);
+			anotherPet.setOwner(owner6);
 			petService.savePet(pet);
 			petService.savePet(anotherPet);
+			owner6.addPet(anotherPet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException e) {
 			// The pets already exists!
 			e.printStackTrace();
@@ -284,18 +291,6 @@ class PetServiceTests {
 		pet7 = this.petService.findPetById(7);
 		assertThat(pet7.getStays().size()).isEqualTo(found + 1);
 		assertThat(stay.getId()).isNotNull();
-	}
-
-	@Test
-	@Transactional
-	public void shouldDeleteStayForPet() {
-		Pet pet7 = this.petService.findPetById(7);
-		int found = pet7.getStays().size();
-		Stay stay = petService.findStayById(3);
-		pet7.deleteStay(stay);
-		petService.deleteStay(stay);
-		pet7 = this.petService.findPetById(7);
-		assertThat(pet7.getStays().size()).isEqualTo(found - 1);
 	}
 
 	@Test
@@ -419,6 +414,23 @@ class PetServiceTests {
 			this.petService.saveStay(stay);
 		});
 	}
+	
+	// DELETE STAY
+	
+	@Test
+	@Transactional
+	public void shouldDeleteStay() throws Exception{
+		Stay stay = petService.findStayById(7);
+		int petId = stay.getPet().getId();
+		Pet pet = stay.getPet();
+		int numberStaysBefore = petService.findStaysByPetId(petId).size();
+		pet.deleteStay(stay);
+		petService.deleteStay(stay);
+		entityManager.flush();
+		int numberStaysAfter = petService.findStaysByPetId(petId).size();
+		assertThat(numberStaysBefore-1).isEqualTo(numberStaysAfter);
+		assertThat(petService.findStayById(7)).isNull();
+	}
 
 	// ADD HOSPITALISATION
 
@@ -523,6 +535,37 @@ class PetServiceTests {
 		Hospitalisation[] hospitArr = hospitalisations.toArray(new Hospitalisation[hospitalisations.size()]);
 		assertThat(hospitArr[0].getPet().getId()).isEqualTo(7);
 	}
+	
+	// EDIT HOSPITALISATION
+	
+	@Test
+	@Transactional
+	public void shouldEditHospitalisationForPet() throws Exception {
+		Pet pet1 = this.petService.findPetById(1);
+		Hospitalisation hospitalisation = petService.findHospitalisationById(1);
+		hospitalisation.setTotalPrice(15.0);
+		int found = pet1.getHospitalisations().size();
+		this.petService.saveHospitalisation(hospitalisation);
+		pet1.addHospitalisation(hospitalisation);
+		
+		pet1 = this.petService.findPetById(7);
+		assertThat(pet1.getHospitalisations().size()).isEqualTo(found);
+		assertThat(hospitalisation.getTotalPrice()).isEqualTo(petService.findHospitalisationById(1).getTotalPrice());
+	}
+
+	@Test
+	@Transactional
+	public void shouldThrowExceptionEditingHospitalisation() throws Exception {
+		Hospitalisation hospitalisation = petService.findHospitalisationById(1);
+		hospitalisation.setTotalPrice(-6.0);
+		assertThrows(ConstraintViolationException.class, () -> {
+			this.petService.findPetById(1).addHospitalisation(hospitalisation);
+			entityManager.flush();
+			this.petService.saveHospitalisation(hospitalisation);
+		});
+	}
+	
+	// DELETE HOSPITALISATION
 
 	@Test
 	@Transactional
