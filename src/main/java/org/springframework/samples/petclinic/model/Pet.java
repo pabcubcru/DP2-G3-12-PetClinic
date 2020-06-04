@@ -76,7 +76,7 @@ public class Pet extends NamedEntity {
 	public Pet() {
 		PetStatus status = new PetStatus();
 		status.setName("HEALTHY");
-		status.setId(1);
+		status.setId(2);
 		this.status = status;
 	}
 

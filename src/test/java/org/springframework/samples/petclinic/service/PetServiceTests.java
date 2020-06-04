@@ -128,14 +128,15 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
-		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 
 		try {
+			pet.setOwner(owner6);
 			this.petService.savePet(pet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException ex) {
 			Logger.getLogger(PetServiceTests.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		assertThat(owner6.getPets().size()).isEqualTo(found + 1);
 		this.ownerService.saveOwner(owner6);
 
 		owner6 = this.ownerService.findOwnerById(6);
@@ -153,9 +154,11 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
+		
 		try {
+			pet.setOwner(owner6);
 			petService.savePet(pet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException e) {
 			// The pet already exists!
 			e.printStackTrace();
@@ -166,8 +169,9 @@ class PetServiceTests {
 		anotherPetWithTheSameName.setType(EntityUtils.getById(types, PetType.class, 1));
 		anotherPetWithTheSameName.setBirthDate(LocalDate.now().minusWeeks(2));
 		Assertions.assertThrows(DuplicatedPetNameException.class, () -> {
-			owner6.addPet(anotherPetWithTheSameName);
+			anotherPetWithTheSameName.setOwner(owner6);
 			petService.savePet(anotherPetWithTheSameName);
+			owner6.addPet(anotherPetWithTheSameName);
 		});
 	}
 
@@ -203,17 +207,20 @@ class PetServiceTests {
 		Collection<PetType> types = this.petService.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
 
 		Pet anotherPet = new Pet();
 		anotherPet.setName("waluigi");
 		anotherPet.setType(EntityUtils.getById(types, PetType.class, 1));
 		anotherPet.setBirthDate(LocalDate.now().minusWeeks(2));
-		owner6.addPet(anotherPet);
+		
 
 		try {
+			pet.setOwner(owner6);
+			anotherPet.setOwner(owner6);
 			petService.savePet(pet);
 			petService.savePet(anotherPet);
+			owner6.addPet(anotherPet);
+			owner6.addPet(pet);
 		} catch (DuplicatedPetNameException e) {
 			// The pets already exists!
 			e.printStackTrace();

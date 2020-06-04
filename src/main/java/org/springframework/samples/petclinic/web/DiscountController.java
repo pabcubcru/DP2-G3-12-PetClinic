@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.web;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -73,6 +74,7 @@ public class DiscountController {
 	public String initEditDiscountForm(Map<String, Object> model, Product product,
 			@PathVariable("discountId") int discountId) {
 		Discount discount = discountService.findDiscountById(discountId);
+		discount.setStartDate(LocalDate.now());
 		model.put("discount", discount);
 		return "discounts/createOrUpdateDiscountForm";
 	}

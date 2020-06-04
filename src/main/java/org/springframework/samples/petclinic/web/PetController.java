@@ -99,7 +99,7 @@ public class PetController {
 	@PostMapping(value = "/pets/new")
 	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
 			final ModelMap model) {
-		if(pet.getBirthDate() != null) {
+		if (pet.getBirthDate() != null) {
 			if (pet.getBirthDate().isAfter(LocalDate.now())) {
 				result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
 			}
@@ -140,10 +140,13 @@ public class PetController {
 	@PostMapping(value = "/pets/{petId}/edit")
 	public String processUpdateForm(@Valid final Pet pet, final BindingResult result, final Owner owner,
 			@PathVariable("petId") final int petId, final ModelMap model) {
-		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+		if (pet.getBirthDate() != null) {
+			if (pet.getBirthDate().isAfter(LocalDate.now())) {
+				result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+			}
 		}
 		if (result.hasErrors()) {
+			pet.setOwner(owner);
 			model.put("pet", pet);
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
@@ -168,7 +171,7 @@ public class PetController {
 				owner.removePet(pet);
 				this.petService.deletePet(pet);
 				res = "redirect:/owners/{ownerId}";
-			} 
+			}
 		}
 		return res;
 	}
