@@ -66,11 +66,6 @@ public class PetController {
 		return this.petService.findPetTypes();
 	}
 
-	@ModelAttribute("status")
-	public Collection<PetStatus> populatePetStatus() {
-		return this.petService.findPetStatus();
-	}
-
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") final int ownerId) {
 		return this.ownerService.findOwnerById(ownerId);
@@ -96,7 +91,7 @@ public class PetController {
 	@GetMapping(value = "/pets/new")
 	public String initCreationForm(final Owner owner, final ModelMap model) {
 		Pet pet = new Pet();
-		owner.addPet(pet);
+		pet.setOwner(owner);
 		model.put("pet", pet);
 		return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
@@ -104,16 +99,19 @@ public class PetController {
 	@PostMapping(value = "/pets/new")
 	public String processCreationForm(final Owner owner, @Valid final Pet pet, final BindingResult result,
 			final ModelMap model) {
-		if (pet.getBirthDate().isAfter(LocalDate.now())) {
-			result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+		if(pet.getBirthDate() != null) {
+			if (pet.getBirthDate().isAfter(LocalDate.now())) {
+				result.rejectValue("birthDate", "Incorrect birthdate", "The birthdate must be in the past");
+			}
 		}
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		} else {
 			try {
-				owner.addPet(pet);
+				pet.setOwner(owner);
 				this.petService.savePet(pet);
+				owner.addPet(pet);
 			} catch (DuplicatedPetNameException ex) {
 				result.rejectValue("name", "duplicate", "already exists");
 				return PetController.VIEWS_PETS_CREATE_OR_UPDATE_FORM;

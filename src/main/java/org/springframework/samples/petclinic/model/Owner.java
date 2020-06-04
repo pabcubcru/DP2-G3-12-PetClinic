@@ -121,7 +121,6 @@ public class Owner extends Person {
 
 	public void addPet(Pet pet) {
 		getPetsInternal().add(pet);
-		pet.setOwner(this);
 	}
 	
 	public boolean removePet(Pet pet) {
@@ -139,7 +138,7 @@ public class Owner extends Person {
 	
 	public Pet getPetwithIdDifferent(String name,Integer id) {
 		name = name.toLowerCase();
-		for (Pet pet : getPetsInternal()) {
+		for (Pet pet : getPets()) {
 			String compName = pet.getName();
 			compName = compName.toLowerCase();
 			if (compName.equals(name) && pet.getId()!=id) {
