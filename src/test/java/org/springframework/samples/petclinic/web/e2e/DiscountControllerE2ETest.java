@@ -73,7 +73,7 @@ public class DiscountControllerE2ETest {
 	void testInitEditDiscountForm() throws Exception {
 		mockMvc.perform(get("/shops/1/products/{productId}/discounts/{discountId}/edit", TEST_PRODUCT_ID_5, TEST_DISCOUNT_ID_3)).andExpect(status().isOk())
 				.andExpect(model().attributeExists("discount"))
-				.andExpect(model().attribute("discount", hasProperty("startDate", is(LocalDate.of(2020, 8, 01)))))
+				.andExpect(model().attribute("discount", hasProperty("startDate", is(LocalDate.now()))))
 				.andExpect(model().attribute("discount", hasProperty("finishDate", is(LocalDate.of(2020, 9, 01)))))
 				.andExpect(model().attribute("discount", hasProperty("percentage", is(30.0))))
 				.andExpect(model().attribute("discount", hasProperty("id", is(TEST_DISCOUNT_ID_3))))
